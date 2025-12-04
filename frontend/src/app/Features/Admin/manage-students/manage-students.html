@@ -15,7 +15,7 @@
   [showEditButtons]="true"
   [showDeleteButtons]="true"
   (edit)="openEditModal($event)"
-  (delete)="deleteStudent($event)"
+  (delete)="openDeleteModal($event)"
 >
 </app-table-column>
 
@@ -28,3 +28,10 @@
   (save)="saveEdit($event)"
 >
 </app-form-modal>
+<app-delete-button
+  [showModal]="showDeleteModal"
+  [title]="'Sind Sie sicher, das sie den Schüler löschen wollen?'"
+  (close)="closeDeleteModal()"
+  (delete)="deleteStudent()"
+>
+</app-delete-button>

@@ -10,6 +10,7 @@ import {
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
+import { DeleteButton } from "../../../Shared/Components/delete-button/delete-button";
 
 @Component({
   selector: 'app-manage-students',
@@ -21,7 +22,8 @@ import { FormField, FormModalComponent } from '../../../Shared/Components/form-m
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-  ],
+    DeleteButton
+],
   templateUrl: './manage-students.html',
 })
 export class ManageStudents implements OnInit {
@@ -115,8 +117,10 @@ export class ManageStudents implements OnInit {
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
+  showDeleteModal: boolean = false;
 
   editingStudent: User | null = null;
+  deletingStudent: User | null = null;
 
   firstName = '';
   lastName = '';
@@ -149,6 +153,14 @@ delete: any;
 
   closeAddModel(): void {
     this.showAddModel = false;
+  }
+  openDeleteModal(student: User) {
+    this.deletingStudent = student;
+    this.showDeleteModal = true;
+  }
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.editingStudent = null;
   }
 
   saveEdit(formData: any) {
@@ -207,13 +219,12 @@ delete: any;
     });
   }
 
-  deleteStudent(stundent: User) {
-  if (!confirm(`Wirklich ${stundent.firstName} ${stundent.lastName} löschen?`)) {
-    return;
-  }
-  this.studentService.deleteStudent(stundent).subscribe({
+  deleteStudent() {
+  if (!this.deletingStudent) return;
+    
+  this.studentService.deleteStudent(this.deletingStudent!).subscribe({
     next: () => {
-      this.students = this.students.filter(s => s.id !== stundent.id);
+      this.students = this.students.filter(s => s.id !== this.deletingStudent!.id);
     },
     error: (err) => console.error('Fehler beim Löschen', err)
   });
