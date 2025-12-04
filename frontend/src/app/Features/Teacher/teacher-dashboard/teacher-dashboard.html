@@ -16,13 +16,3 @@
   [showDeleteButtons]="false"
   (edit)="openEditModal($event)"
 ></app-table-column>
-
-<app-form-modal
-  [showModal]="showEditModal"
-  [title]="'Kurs anlegen'"
-  [fields]="fields"
-  [record]="editingClass"
-  (close)="closeEditModal()"
-  (save)="saveEdit($event)"
->
-</app-form-modal>

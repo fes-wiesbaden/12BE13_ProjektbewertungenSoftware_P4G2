@@ -136,22 +136,4 @@ export class TeacherDashboard {
     });
     this.closeAddModel();
   }
-
-  saveEdit(formData: any) {
-    if (!this.editingClass) return;
-
-    const dto = {
-      id: this.editingClass.id,
-      name: formData.courseName,
-    };
-
-    this.classService.updateClass(dto).subscribe({
-      next: (res: Class) => {
-        const index = this.classes.findIndex((s) => s.id === res.id);
-        if (index !== -1) this.classes[index] = res;
-        this.closeEditModal();
-      },
-      error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
-    });
-  }
 }
