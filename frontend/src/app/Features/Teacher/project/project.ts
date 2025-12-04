@@ -1,6 +1,7 @@
 import { Component, input, computed, signal, effect } from '@angular/core';
 import { MatIcon } from "@angular/material/icon";
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 export interface IGroup {
   id: number;
@@ -21,7 +22,7 @@ export interface IProject {
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [MatIcon, CommonModule],
+  imports: [MatIcon, CommonModule, RouterLink],
   templateUrl: './project.html',
   styleUrls: ['./project.css']
 })
