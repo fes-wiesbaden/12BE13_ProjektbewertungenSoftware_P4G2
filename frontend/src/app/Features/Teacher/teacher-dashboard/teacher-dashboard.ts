@@ -131,9 +131,12 @@ export class TeacherDashboard {
     const dto = { id: selectedClass.id };
 
     this.classService.connectClass(dto).subscribe({
-      next: () => console.log('User erfolgreich zur Klasse hinzugefügt'),
+      next: () => {
+        console.log('User erfolgreich zur Klasse hinzugefügt');
+        this.loadAllClasses();
+        this.closeAddModal();
+      },
       error: (err) => console.error('Fehler beim Hinzufügen zur Klasse', err),
     });
-    this.closeAddModal();
   }
 }
