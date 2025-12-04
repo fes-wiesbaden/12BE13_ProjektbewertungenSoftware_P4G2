@@ -54,6 +54,27 @@ public class UserController {
         return ResponseEntity.ok(modules);
     }
 
+    @GetMapping("/role/{roleId}/class/{classId}")
+    public ResponseEntity<List<UserDto>> getAllUsersByClass(@PathVariable Integer roleId, @PathVariable UUID classId) {
+        var students = userRepository.findByClassIdAndRoleId(classId, roleId)
+                .stream()
+                .map(user -> {
+                    var role = roleRepository.findById(user.getRoleId()).orElse(null);
+
+                    return new UserDto(
+                            user.getId(),
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.getUsername(),
+                            user.getCreatedAt(),
+                            role != null ? role.getName() : null
+                    );
+                })
+                .toList();
+
+        return ResponseEntity.ok(students);
+    }
+
     @PostMapping("/role/{roleId}")
     public ResponseEntity<UserDto> createUserByRoleId(@RequestBody AddUserDto dto, @PathVariable Integer roleId) {
         User user = new User();
