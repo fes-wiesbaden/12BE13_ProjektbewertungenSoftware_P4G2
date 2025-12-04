@@ -3,18 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
-import { FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import { TableColumn, TableColumnComponent } from '../../../Shared/Components/table-column/table-column';
 import { User } from '../../../Interfaces/user.interface';
 import { MyStudentsService } from './my-students.service';
-
-export interface Student {
-  id: number;
-  name: string;
-  avatar: string;
-  role: string;
-}
 
 @Component({
   selector: 'app-my-students',
@@ -24,7 +16,6 @@ export interface Student {
     MatIconModule,
     PageHeaderComponents,
     TableColumnComponent,
-    FormModalComponent,
   ],
   templateUrl: './my-students.html',
 })
