@@ -9,8 +9,12 @@
 
 <app-page-header title="Schüler" (addClick)="openAddModel()"></app-page-header>
 
-<app-table-column [items]="students" [columns]="columns" (edit)="openEditModal($event)" (delete)="deleteStudent($event)">
-</app-table-column>
+<app-table-column
+  [items]="students"
+  [columns]="columns"
+  (edit)="openEditModal($event)"
+  (delete)="openDeleteModal($event)"
+></app-table-column>
 
 <app-form-modal
   [showModal]="showEditModal"
@@ -21,3 +25,10 @@
   (save)="saveEdit($event)"
 >
 </app-form-modal>
+<app-delete-button
+  [showModal]="showDeleteModal"
+  [title]="'Sind Sie sicher, das sie den Schüler löschen wollen?'"
+  (close)="closeDeleteModal()"
+  (delete)="deleteStudent()"
+>
+</app-delete-button>
