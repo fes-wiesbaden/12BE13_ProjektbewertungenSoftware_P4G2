@@ -316,3 +316,125 @@ Before deletion, the role will automatically be removed from all users who curre
 
 ✅ Response — 204 No Content
 The role and all associations were removed successfully.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+# Endpoints
+
+## Project Endpoints
+
+### PUSH /api/project
+📝 Description
+Creates a new project.
+
+📥 Request Body
+Content-Type: application/json
+
+Example
+```json
+{
+  "projectName": "Einrichten eines IT-gestützten Arbeitsplatzes",
+  "Deadline": "2025-02-14T10:23:45Z",
+  "Groups": [],
+}
+```
+
+✅ Response — 200 OK
+Example
+```json
+{
+  "message": "Project 'Einrichten eines IT-gestützten Arbeitsplatzes' wurde erstellt.",
+  "result": "success"
+}
+```
+
+### GET /api/project/{projectId}
+📝 Description
+get a project with project id.
+
+✅ Response — 200 OK
+Example
+```json
+{
+  
+}
+```
+
+### GET /api/projects
+📝 Description
+Get all projects
+
+
+✅ Response — 200 OK
+Example
+```json
+{
+  
+}
+```
+
+## Group Endpoints
+
+### PUSH /api/group
+📝 Description
+Creates a new Group.
+
+📥 Request Body
+Content-Type: application/json
+
+Example
+```json
+{
+  "groupName": "P1G1",
+  "members": []
+}
+```
+
+✅ Response — 200 OK
+Example
+```json
+{
+    "message": "Group 'Group 1' wurde erstellt.",
+  "result": "success"
+}
+```
+
+
+
+### GET /api/group/{groupId}
+📝 Description
+get a group with group id.
+
+✅ Response — 200 OK
+Example
+```json
+{
+  
+}
+```
+
+### GET /api/groups
+📝 Description
+Get all groups
+
+
+✅ Response — 200 OK
+Example
+```json
+{
+  
+}
+```

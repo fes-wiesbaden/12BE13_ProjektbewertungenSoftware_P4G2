@@ -26,7 +26,8 @@ public class EntityFinderService {
                                ReviewAnswerRepository reviewAnswerRepository,
                                ReviewRepository reviewRepository,
                                RoleRepository roleRepository,
-                               SchoolClassRepository schoolClassRepository)
+                               SchoolClassRepository schoolClassRepository,
+                            GroupRepository groupRepository)
     {
         this.userRepository = userRepository;
         this.trainingModuleRepository = trainingModuleRepository;
@@ -37,6 +38,7 @@ public class EntityFinderService {
         this.reviewRepository = reviewRepository;
         this.roleRepository = roleRepository;
         this.schoolClassRepository = schoolClassRepository;
+        this.groupRepository = groupRepository;
     }
     public User findUser(UUID userId) {
         return userRepository.findById(userId)
@@ -86,5 +88,12 @@ public class EntityFinderService {
         if (!user.getTrainingModules().contains(trainingModule)) {
             throw new InvalidRelationException("User is not enrolled in this Training Module");
         }
+    }
+    private final GroupRepository groupRepository;
+    // ... other repositories
+
+    public Group findGroup(UUID id) {
+        return groupRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Group not found with id: " + id));
     }
 }
