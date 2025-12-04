@@ -34,7 +34,13 @@ export class MyStudents implements OnInit {
   constructor(private route: ActivatedRoute, private studentService: MyStudentsService) {}
 
   ngOnInit(): void {
-    this.classId = String(this.route.snapshot.paramMap.get('classId'));
+    const classIdParam = this.route.snapshot.paramMap.get('classId');
+    if (!classIdParam) {
+      console.error("Missing or invalid 'classId' route parameter.");
+      this.loading = false;
+      return;
+    }
+    this.classId = classIdParam;
     this.loadStudents();
   }
 
