@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import { TeacherDashboardService } from './teacher-dashboard.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -60,7 +61,7 @@ export class TeacherDashboard {
   editingClass: Class | null = null;
   addClass: Class | null = null;
 
-  constructor(private classService: TeacherDashboardService) {}
+  constructor(private classService: TeacherDashboardService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadMyClasses();
@@ -83,6 +84,11 @@ export class TeacherDashboard {
   closeEditModal() {
     this.showEditModal = false;
     this.editingClass = null;
+  }
+
+  openClassDetail(item: any) {
+    const classId = item.id;
+    this.router.navigate(['/teacher/my-students', classId]);
   }
 
   loadMyClasses() {

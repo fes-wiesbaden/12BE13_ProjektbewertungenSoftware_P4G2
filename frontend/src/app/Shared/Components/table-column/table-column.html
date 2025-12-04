@@ -14,7 +14,8 @@
               >
                 {{ col.label }}
               </th>
-              <th *ngIf="showEditButtons || showDeleteButtons"
+              <th
+                *ngIf="showEditButtons || showDeleteButtons || showViewButton"
                 class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
               >
                 Actions
@@ -46,7 +47,10 @@
                 </ng-container>
               </td>
 
-              <td class="p-4 space-x-2 whitespace-nowrap" *ngIf="showEditButtons || showDeleteButtons">
+              <td
+                class="p-4 space-x-2 whitespace-nowrap"
+                *ngIf="showEditButtons || showDeleteButtons || showViewButton"
+              >
                 <button
                   *ngIf="showEditButtons"
                   (click)="edit.emit(item)"
@@ -61,6 +65,14 @@
                 >
                   <mat-icon class="w-4 h-4 mr-2">delete</mat-icon>
                   Delete
+                </button>
+                <button
+                  *ngIf="showViewButton"
+                  (click)="view.emit(item)"
+                  class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-800"
+                >
+                  <mat-icon class="w-4 h-4 mr-2">visibility</mat-icon>
+                  Anzeigen
                 </button>
               </td>
             </tr>

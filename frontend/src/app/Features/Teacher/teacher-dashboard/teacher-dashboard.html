@@ -14,5 +14,7 @@
   [columns]="columns"
   [showEditButtons]="false"
   [showDeleteButtons]="false"
+  [showViewButton]="true"
   (edit)="openEditModal($event)"
+  (view)="openClassDetail($event)"
 ></app-table-column>
