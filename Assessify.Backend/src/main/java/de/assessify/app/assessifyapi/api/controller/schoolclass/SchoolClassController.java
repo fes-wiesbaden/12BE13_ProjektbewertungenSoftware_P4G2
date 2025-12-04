@@ -11,11 +11,15 @@ import de.assessify.app.assessifyapi.api.repository.SchoolClassRepository;
 import de.assessify.app.assessifyapi.api.repository.UserRepository;
 import de.assessify.app.assessifyapi.api.entity.SchoolClass;
 import de.assessify.app.assessifyapi.api.entity.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api")
@@ -29,6 +33,8 @@ public class SchoolClassController {
         this.userRepository = userRepository;
         this.entityFinderService = entityFinderService;
     }
+
+    private static final Logger logger = Logger.getLogger(SchoolClassController.class.getName());
 
     @GetMapping("/school-class/all")
     public ResponseEntity<List<SchoolClassDto>> getAllSchoolClasses() {
@@ -47,13 +53,7 @@ public class SchoolClassController {
     @GetMapping("/school-class")
     public ResponseEntity<List<SchoolClassDto>> getSchoolClassesForCurrentUser(@RequestHeader("Authorization") String authHeader) {
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return ResponseEntity.status(401).build();
-            }
-
-            String token = authHeader.substring(7);
-            DecodedJWT jwt = JWT.decode(token);
-            UUID userId = UUID.fromString(jwt.getSubject());
+            UUID userId = extractUserId(authHeader);
 
             var classes = schoolClassRepository.findByUsers_Id(userId)
                     .stream()
@@ -63,7 +63,7 @@ public class SchoolClassController {
             return ResponseEntity.ok(classes);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error getting classes for current user", e);
             return ResponseEntity.status(500).build();
         }
     }
@@ -73,13 +73,7 @@ public class SchoolClassController {
             @RequestHeader("Authorization") String authHeader) {
 
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return ResponseEntity.status(401).build();
-            }
-
-            String token = authHeader.substring(7);
-            DecodedJWT jwt = JWT.decode(token);
-            UUID userId = UUID.fromString(jwt.getSubject());
+            UUID userId = extractUserId(authHeader);
 
             List<SchoolClass> allClasses = schoolClassRepository.findAll();
 
@@ -97,7 +91,7 @@ public class SchoolClassController {
             return ResponseEntity.ok(result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error getting available classes", e);
             return ResponseEntity.status(500).build();
         }
     }
@@ -124,13 +118,7 @@ public class SchoolClassController {
             @RequestHeader("Authorization") String authHeader
             ){
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return ResponseEntity.status(401).build();
-            }
-
-            String token = authHeader.substring(7);
-            DecodedJWT jwt = JWT.decode(token);
-            UUID userId = UUID.fromString(jwt.getSubject());
+            UUID userId = extractUserId(authHeader);
 
             User user = entityFinderService.findUser(userId);
             SchoolClass schoolClass = entityFinderService.findSchoolClass(schoolClassId);
@@ -153,7 +141,7 @@ public class SchoolClassController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error adding class to user", e);
             return ResponseEntity.status(500).build();
         }
     }
@@ -196,4 +184,13 @@ public class SchoolClassController {
 //        schoolClassRepository.delete(schoolClass);
 //        return ResponseEntity.noContent().build();
 //    }
+    private UUID extractUserId(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token missing or invalid");
+        }
+
+        String token = authHeader.substring(7);
+        DecodedJWT jwt = JWT.decode(token);
+        return UUID.fromString(jwt.getSubject());
+    }
 }
