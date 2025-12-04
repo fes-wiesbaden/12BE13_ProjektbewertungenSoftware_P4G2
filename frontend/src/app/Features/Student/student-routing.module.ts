@@ -3,7 +3,6 @@ import { StudentDashboard } from './student-dashboard/student-dashboard';
 import { MyProfile } from './my-profile/my-profile';
 import { MyAssessment } from './my-assessment/my-assessment';
 import { MyClasses } from './my-classes/my-classes';
-import { StudentExport } from "../Teacher/student-export/student-export";
 
 
 export const StudentRoutes: Routes = [
