@@ -20,7 +20,7 @@ export const TeacherRoutes: Routes = [
     component: MyProfile
   },
   {
-    path: 'my-students',
+    path: 'my-students/:classId',
     component: MyStudents
   },
   {
