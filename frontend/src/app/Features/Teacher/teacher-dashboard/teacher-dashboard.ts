@@ -68,11 +68,11 @@ export class TeacherDashboard {
     this.loadAllClasses();
   }
 
-  openAddModel(): void {
+  openAddModal(): void {
     this.showAddModal = true;
   }
 
-  closeAddModel(): void {
+  closeAddModal(): void {
     this.showAddModal = false;
   }
 
@@ -134,6 +134,6 @@ export class TeacherDashboard {
       next: () => console.log('User erfolgreich zur Klasse hinzugefügt'),
       error: (err) => console.error('Fehler beim Hinzufügen zur Klasse', err),
     });
-    this.closeAddModel();
+    this.closeAddModal();
   }
 }
