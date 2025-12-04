@@ -13,7 +13,7 @@
   [items]="teachers"
   [columns]="columns"
   (edit)="openEditModal($event)"
-  (delete)="deleteTeacher($event)"
+  (delete)="openDeleteModal($event)"
 ></app-table-column>
 
 <app-form-modal
@@ -25,3 +25,10 @@
   (save)="saveEdit($event)"
 >
 </app-form-modal>
+<app-delete-button
+  [showModal]="showDeleteModal"
+  [title]="'Sind Sie sicher, das sie den Lehrer löschen wollen?'"
+  (close)="closeDeleteModal()"
+  (delete)="deleteTeacher()"
+>
+</app-delete-button>
