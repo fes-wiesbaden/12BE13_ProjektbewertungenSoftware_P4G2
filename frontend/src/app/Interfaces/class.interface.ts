@@ -9,3 +9,7 @@ export interface Class {
     courseName: string;
     className: string;
 }
+
+export interface ConnectCLass {
+    id: string;
+}
