@@ -12,6 +12,8 @@
 <app-table-column
   [items]="admins"
   [columns]="columns"
+  [showEditButtons]="true"
+  [showDeleteButtons]="true"
   (edit)="openEditModal($event)"
   (delete)="deleteAdmin($event)"
 ></app-table-column>

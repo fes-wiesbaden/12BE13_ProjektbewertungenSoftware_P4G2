@@ -90,7 +90,7 @@ export class ManageClasses implements OnInit {
   }
 
   loadClasses() {
-    this.classService.getClass().subscribe({
+    this.classService.getClasses().subscribe({
       next: (data) => {
         this.classes = data;
         this.loading = false;

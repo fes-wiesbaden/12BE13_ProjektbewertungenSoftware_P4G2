@@ -13,8 +13,7 @@ export interface Student {
 @Component({
   selector: 'app-my-students',
   imports: [MatIconModule, RouterLink],
-  templateUrl: './my-students.html',
-  styleUrl: './my-students.css'
+  templateUrl: './my-students.html'
 })
 export class MyStudents implements OnInit {
     students: Student[] = [];
