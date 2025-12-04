@@ -45,7 +45,7 @@ export class MyStudents implements OnInit {
   }
 
   loadStudents() {
-    this.studentService.getStudent(this.classId).subscribe({
+    this.studentService.getStudents(this.classId).subscribe({
       next: (data) => {
         this.students = data;
         this.loading = false;
