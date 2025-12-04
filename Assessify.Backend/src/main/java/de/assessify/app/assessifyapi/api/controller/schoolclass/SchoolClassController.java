@@ -51,7 +51,7 @@ public class SchoolClassController {
                 return ResponseEntity.status(401).build();
             }
 
-            String token = authHeader.substring(7); // "Bearer " abschneiden
+            String token = authHeader.substring(7);
             DecodedJWT jwt = JWT.decode(token);
             UUID userId = UUID.fromString(jwt.getSubject());
 
@@ -61,6 +61,40 @@ public class SchoolClassController {
                     .toList();
 
             return ResponseEntity.ok(classes);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/school-class/available")
+    public ResponseEntity<List<SchoolClassDto>> getAvailableSchoolClasses(
+            @RequestHeader("Authorization") String authHeader) {
+
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(401).build();
+            }
+
+            String token = authHeader.substring(7);
+            DecodedJWT jwt = JWT.decode(token);
+            UUID userId = UUID.fromString(jwt.getSubject());
+
+            List<SchoolClass> allClasses = schoolClassRepository.findAll();
+
+            List<SchoolClassDto> result = allClasses.stream()
+                    .filter(c -> c.getUsers().stream()
+                            .noneMatch(u -> u.getId().equals(userId))
+                    )
+                    .map(c -> new SchoolClassDto(
+                            c.getId(),
+                            c.getCourseName(),
+                            c.getClassName()
+                    ))
+                    .toList();
+
+            return ResponseEntity.ok(result);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,31 +118,44 @@ public class SchoolClassController {
        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/school-class/{schoolClassId}/user/{userId}")
+    @PostMapping("/school-class/{schoolClassId}/user")
     public ResponseEntity<UserWithSchoolClassDto> addSchoolClassToUser(
-            @PathVariable UUID userId,
-            @PathVariable UUID schoolClassId){
+            @PathVariable UUID schoolClassId,
+            @RequestHeader("Authorization") String authHeader
+            ){
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(401).build();
+            }
 
-        User user = entityFinderService.findUser(userId);
-        SchoolClass schoolClass = entityFinderService.findSchoolClass(schoolClassId);
+            String token = authHeader.substring(7);
+            DecodedJWT jwt = JWT.decode(token);
+            UUID userId = UUID.fromString(jwt.getSubject());
 
-        if (!user.getSchoolClasses().contains(schoolClass)) {
-            user.getSchoolClasses().add(schoolClass);
+            User user = entityFinderService.findUser(userId);
+            SchoolClass schoolClass = entityFinderService.findSchoolClass(schoolClassId);
+
+            if (!user.getSchoolClasses().contains(schoolClass)) {
+                user.getSchoolClasses().add(schoolClass);
+            }
+
+            User updatedUser = userRepository.save(user);
+
+            UserWithSchoolClassDto response = new UserWithSchoolClassDto(
+                    updatedUser.getId(),
+                    updatedUser.getFirstName(),
+                    updatedUser.getFirstName(),
+                    updatedUser.getUsername(),
+                    updatedUser.getSchoolClasses().stream()
+                            .map(r -> new SchoolClassDto(r.getId(), r.getCourseName(), r.getClassName()))
+                            .toList()
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
         }
-
-        User updatedUser = userRepository.save(user);
-
-        UserWithSchoolClassDto response = new UserWithSchoolClassDto(
-                updatedUser.getId(),
-                updatedUser.getFirstName(),
-                updatedUser.getFirstName(),
-                updatedUser.getUsername(),
-                updatedUser.getSchoolClasses().stream()
-                        .map(r -> new SchoolClassDto(r.getId(), r.getCourseName(), r.getClassName()))
-                        .toList()
-        );
-
-        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/school-class/{schoolClassId}")
@@ -130,7 +177,7 @@ public class SchoolClassController {
 
         return ResponseEntity.ok(response);
     }
-//
+
 //    @DeleteMapping("/school-class/{schoolClassId}")
 //    public ResponseEntity<Void> deleteSchoolClass(
 //            @PathVariable UUID schoolClassId) {
