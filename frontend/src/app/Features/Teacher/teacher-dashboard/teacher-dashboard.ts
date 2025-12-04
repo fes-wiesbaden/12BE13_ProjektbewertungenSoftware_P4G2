@@ -1,12 +1,161 @@
 import { Component } from '@angular/core';
-import { MatIconModule } from "@angular/material/icon";
+import { MatIconModule } from '@angular/material/icon';
+import { Class } from '../../../Interfaces/class.interface';
+import {
+  TableColumn,
+  TableColumnComponent,
+} from '../../../Shared/Components/table-column/table-column';
+import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
+import { ClassService } from '../../Admin/manage-classes/class.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
+import { TeacherDashboardService } from './teacher-dashboard.service';
 
 @Component({
   selector: 'app-teacher-dashboard',
-  imports: [MatIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatIconModule,
+    PageHeaderComponents,
+    TableColumnComponent,
+    FormModalComponent,
+  ],
   templateUrl: './teacher-dashboard.html',
-  styleUrl: './teacher-dashboard.css'
 })
 export class TeacherDashboard {
+  classes: Class[] = [];
+  myClasses: Class[] = [];
+  loading = true;
 
+  // Tabellen-Spalten: keys müssen zum Interface "Class" passen
+  columns: TableColumn<Class>[] = [
+    { key: 'courseName', label: 'Kursname' },
+    { key: 'className', label: 'Klassenname' },
+  ];
+
+  // Felder für "neu anlegen"
+  fields: FormField[] = [
+    {
+      key: 'courseName', // Name im Form-Objekt
+      label: 'Kursname',
+      type: 'select',
+      required: true,
+      colSpan: 6,
+      options: [],
+    },
+  ];
+
+  // Felder für "bearbeiten"
+  fieldsEdit: FormField[] = [
+    {
+      key: 'courseName',
+      label: 'Kursname',
+      type: 'text',
+      required: true,
+      colSpan: 6,
+      placeholder: 'z.B. 23FIIRG1',
+    },
+  ];
+
+  showAddModel = false;
+  showEditModal = false;
+  editingClass: Class | null = null;
+  addClass: Class | null = null;
+
+  constructor(private classService: TeacherDashboardService) {}
+
+  ngOnInit(): void {
+    this.loadMyClasses();
+    this.loadAllClasses();
+  }
+
+  openAddModel(): void {
+    this.showAddModel = true;
+  }
+
+  closeAddModel(): void {
+    this.showAddModel = false;
+  }
+
+  openEditModal(schoolClass: Class) {
+    this.editingClass = schoolClass;
+    this.showEditModal = true;
+  }
+
+  closeEditModal() {
+    this.showEditModal = false;
+    this.editingClass = null;
+  }
+
+  loadMyClasses() {
+    this.classService.getMyClasses().subscribe({
+      next: (data) => {
+        this.myClasses = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Klassen', err);
+        this.loading = false;
+      },
+    });
+  }
+
+  loadAllClasses() {
+    this.classService.getClasses().subscribe({
+      next: (data) => {
+        this.classes = data;
+
+        const courseField = this.fields.find((f) => f.key === 'courseName');
+        if (courseField) {
+          courseField.options = data.map((c) => c.courseName);
+        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Klassen', err);
+        this.loading = false;
+      },
+    });
+  }
+
+  joinClass(formData: any) {
+    const selectedName = formData.courseName;
+
+    const selectedClass = this.classes.find((c) => c.courseName === selectedName);
+
+    if (!selectedClass) {
+      console.error('Keine Klasse mit dem Namen gefunden:', selectedName);
+      return;
+    }
+
+    const dto = { id: selectedClass.id };
+
+    this.classService.connectClass(dto).subscribe({
+      next: () => console.log('User erfolgreich zur Klasse hinzugefügt'),
+      error: (err) => console.error('Fehler beim Hinzufügen zur Klasse', err),
+    });
+    this.closeAddModel();
+  }
+
+  // Bestehende Klasse bearbeiten
+  saveEdit(formData: any) {
+    if (!this.editingClass) return;
+
+    const dto = {
+      id: this.editingClass.id,
+      name: formData.courseName, // wieder Mapping zum Backend-DTO
+    };
+
+    this.classService.updateClass(dto).subscribe({
+      next: (res: Class) => {
+        const index = this.classes.findIndex((s) => s.id === res.id);
+        if (index !== -1) this.classes[index] = res;
+        this.closeEditModal();
+      },
+      error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
+    });
+  }
 }
