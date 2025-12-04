@@ -41,7 +41,6 @@ export class MyStudents implements OnInit {
   loadStudents() {
     this.studentService.getStudent(this.classId).subscribe({
       next: (data) => {
-        console.log('API Data:', data);
         this.students = data;
         this.loading = false;
       },
