@@ -12,6 +12,8 @@
 <app-table-column
   [items]="teachers"
   [columns]="columns"
+  [showEditButtons]="true"
+  [showDeleteButtons]="true"
   (edit)="openEditModal($event)"
   (delete)="deleteTeacher($event)"
 ></app-table-column>

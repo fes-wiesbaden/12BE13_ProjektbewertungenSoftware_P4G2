@@ -18,6 +18,9 @@ export class TableColumnComponent<T extends { id?: any } = any> {
   @Input() items: T[] = [];
   @Input() columns: TableColumn<T>[] = [];
 
+  @Input() showEditButtons = false;
+  @Input() showDeleteButtons = false;
+
   @Output() edit = new EventEmitter<T>();
   @Output() delete = new EventEmitter<T>();
 }

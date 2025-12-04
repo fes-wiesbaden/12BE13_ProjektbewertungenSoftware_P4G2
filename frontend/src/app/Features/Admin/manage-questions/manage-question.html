@@ -12,6 +12,8 @@
 <app-table-column
   [items]="questions"
   [columns]="columns"
+  [showEditButtons]="true"
+  [showDeleteButtons]="true"
   (edit)="openEditModal($event)"
 ></app-table-column>
 
