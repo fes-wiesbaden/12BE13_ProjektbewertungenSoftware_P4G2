@@ -32,14 +32,6 @@ export class TeacherDashboardService {
     });
   }
 
-  createClass(dto: { name: string }): Observable<Class> {
-    return this.http.post<Class>(this.apiUrl, dto);
-  }
-
-  updateClass(dto: { id: string; name: string }): Observable<Class> {
-    return this.http.put<Class>(`${this.apiUrl}/${dto.id}`, dto);
-  }
-
   // optional für später:
   deleteClass(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
