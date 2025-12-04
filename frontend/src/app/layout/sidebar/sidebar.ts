@@ -58,8 +58,6 @@ export class Sidebar implements OnInit {
         },
         { icon: 'groups', label: 'Klassen', route: '/admin/manage-classes' },
         { icon: 'help_outlined', label: 'Fragen', route: '/admin/manage-questions' },
-        { icon: 'upload', label: 'Import', route: '/admin/import' },
-        { icon: 'download', label: 'Export', route: '/admin/export' },
       ],
       teacher: [
         { icon: 'dashboard', label: 'Übersicht', route: '/teacher/dashboard' },
@@ -75,7 +73,6 @@ export class Sidebar implements OnInit {
         },
         { icon: 'groups', label: 'Meine Klassen', route: '/teacher/my-classes' },
         { icon: 'mode_heat', label: 'Notenverwaltung', route: '/teacher/manage-grades' },
-        { icon: 'download', label: 'Export', route: '/teacher/export' },
       ],
       student: [
         { icon: 'dashboard', label: 'Übersicht', route: '/student/dashboard' },
