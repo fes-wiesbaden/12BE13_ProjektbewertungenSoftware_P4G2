@@ -12,7 +12,6 @@ public class Group {
     private UUID id;
     
     private String name;
-    private String description;
     
     // Constructors
     public Group() {}
@@ -34,11 +33,4 @@ public class Group {
         this.name = name;
     }
     
-    public String getDescription() {
-        return description;
-    }
-    
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

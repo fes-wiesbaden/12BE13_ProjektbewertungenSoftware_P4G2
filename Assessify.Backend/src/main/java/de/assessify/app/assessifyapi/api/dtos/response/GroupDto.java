@@ -4,6 +4,5 @@ import java.util.UUID;
 
 public record GroupDto(
         UUID id,
-        String name,
-        String description
+        String name
 ) {}

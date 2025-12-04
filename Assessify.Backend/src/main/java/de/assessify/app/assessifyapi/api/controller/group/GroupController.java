@@ -30,14 +30,12 @@ public class GroupController{
     public ResponseEntity<GroupDto> addNewGroup(@RequestBody AddGroupDto dto) {
         Group entity = new Group();
         entity.setName(dto.name());
-        entity.setDescription(dto.description());
         
         Group saved = groupRepository.save(entity);
-        
+            
         GroupDto response = new GroupDto(
                 saved.getId(),
-                saved.getName(),
-                saved.getDescription()
+                saved.getName()
         );
         
         return ResponseEntity.ok(response);
@@ -49,8 +47,7 @@ public class GroupController{
         
         GroupDto response = new GroupDto(
                 group.getId(),
-                group.getName(),
-                group.getDescription()
+                group.getName()
         );
         
         return ResponseEntity.ok(response);
@@ -62,8 +59,7 @@ public class GroupController{
                 .stream()
                 .map(group -> new GroupDto(
                         group.getId(),
-                        group.getName(),
-                        group.getDescription()
+                        group.getName()
                 ))
                 .toList();
         
@@ -78,14 +74,12 @@ public class GroupController{
         Group group = entityFinderService.findGroup(groupId);
         
         if (dto.name() != null) group.setName(dto.name());
-        if (dto.description() != null) group.setDescription(dto.description());
         
         Group updated = groupRepository.save(group);
         
         GroupDto response = new GroupDto(
                 updated.getId(),
-                updated.getName(),
-                updated.getDescription()
+                updated.getName()
         );
         
         return ResponseEntity.ok(response);

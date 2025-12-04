@@ -29,6 +29,19 @@ public class ProjectController {
         this.entityFinderService = entityFinderService;
     }
 
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<ProjectDto> getOneProject(@PathVariable UUID projectId) {
+        Project project = entityFinderService.findProject(projectId);
+
+        ProjectDto response = new ProjectDto(
+            project.getId(),
+            project.getProjectName(),
+            project.getProjectDescription()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/projects")
     public ResponseEntity<List<ProjectDto>> getAllProjects() {
         var modules = projectRepository.findAll()
@@ -81,7 +94,7 @@ public class ProjectController {
                 updated.getProjectName(),
                 updated.getProjectDescription(),
                 updated.getTrainingModules().stream()
-                        .map(r -> new TrainingModuleSummaryDto(
+                        .map(   r -> new TrainingModuleSummaryDto(
                                 r.getId(),
                                 r.getName(),
                                 r.getDescription(),

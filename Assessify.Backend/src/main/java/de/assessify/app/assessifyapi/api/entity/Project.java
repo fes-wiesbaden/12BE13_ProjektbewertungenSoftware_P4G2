@@ -23,14 +23,52 @@ public class Project {
     @Column(name = "project_description", nullable = false)
     private String ProjectDescription;
 
+    public UUID getId() {
+        return id;
+    }
+
+    public String getProjectName (){
+        return ProjectName;
+    }
+
+    public void setProjectName(String name){
+        this.ProjectName = name;
+    }
+
+    public String getProjectDescription(){
+        return ProjectDescription;
+    }
+
+    public void setProjectDescription(String description){
+        this.ProjectDescription = description;
+    }
+
     @ManyToMany
     @JoinTable(
             name = "project_training-module",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "training-module_id")
     )
-    private List<TrainingModule> trainingModules = new ArrayList<>();
+    private final List<TrainingModule> trainingModules = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    public List<TrainingModule> getTrainingModules() {
+        return trainingModules;
+    }
+
+    public void setTrainingModules(List<TrainingModule> trainingModules) {
+        this.trainingModules.clear();
+        this.trainingModules.addAll(trainingModules);
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews.clear();
+        this.reviews.addAll(reviews);
+    }
 }
