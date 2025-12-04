@@ -25,10 +25,10 @@ export class MyStudents implements OnInit {
   loading = true;
 
   columns: TableColumn<User>[] = [
-    { key: 'firstName', label: 'First Name' },
-    { key: 'lastName', label: 'Last Name' },
-    { key: 'username', label: 'Username' },
-    { key: 'roleName', label: 'Role' },
+    { key: 'firstName', label: 'Vorname' },
+    { key: 'lastName', label: 'Nachname' },
+    { key: 'username', label: 'Benutzername' },
+    { key: 'roleName', label: 'Rolle' },
   ];
 
   constructor(private route: ActivatedRoute, private studentService: MyStudentsService) {}
