@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Class, ConnectCLass } from '../../../Interfaces/class.interface';
+import { Class, ConnectClass } from '../../../Interfaces/class.interface';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Injectable({
@@ -37,7 +37,7 @@ export class TeacherDashboardService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  connectClass(dto: ConnectCLass): Observable<void> {
+  connectClass(dto: ConnectClass): Observable<void> {
     const token = this.authService.getToken();
     const url = `${this.apiUrl}/${dto.id}/user`;
     return this.http.post<void>(url, null, {

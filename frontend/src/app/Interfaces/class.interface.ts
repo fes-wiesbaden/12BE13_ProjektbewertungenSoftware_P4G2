@@ -10,6 +10,6 @@ export interface Class {
     className: string;
 }
 
-export interface ConnectCLass {
+export interface ConnectClass {
     id: string;
 }
