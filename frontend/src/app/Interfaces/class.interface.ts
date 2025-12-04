@@ -8,9 +8,6 @@ export interface Class {
     id: string;
     courseName: string;
     className: string;
-
-    showEdit?: boolean;
-    showDelete?: boolean;
 }
 
 export interface ConnectCLass {
