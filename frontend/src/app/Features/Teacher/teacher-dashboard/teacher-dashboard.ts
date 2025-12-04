@@ -56,7 +56,7 @@ export class TeacherDashboard {
     },
   ];
 
-  showAddModel = false;
+  showAddModal = false;
   showEditModal = false;
   editingClass: Class | null = null;
   addClass: Class | null = null;
@@ -69,11 +69,11 @@ export class TeacherDashboard {
   }
 
   openAddModel(): void {
-    this.showAddModel = true;
+    this.showAddModal = true;
   }
 
   closeAddModel(): void {
-    this.showAddModel = false;
+    this.showAddModal = false;
   }
 
   openEditModal(schoolClass: Class) {
