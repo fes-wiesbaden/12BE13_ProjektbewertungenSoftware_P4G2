@@ -29,16 +29,14 @@ export class TeacherDashboard {
   myClasses: Class[] = [];
   loading = true;
 
-  // Tabellen-Spalten: keys müssen zum Interface "Class" passen
   columns: TableColumn<Class>[] = [
     { key: 'courseName', label: 'Kursname' },
     { key: 'className', label: 'Klassenname' },
   ];
 
-  // Felder für "neu anlegen"
   fields: FormField[] = [
     {
-      key: 'courseName', // Name im Form-Objekt
+      key: 'courseName',
       label: 'Kursname',
       type: 'select',
       required: true,
@@ -47,7 +45,6 @@ export class TeacherDashboard {
     },
   ];
 
-  // Felder für "bearbeiten"
   fieldsEdit: FormField[] = [
     {
       key: 'courseName',
@@ -140,13 +137,12 @@ export class TeacherDashboard {
     this.closeAddModel();
   }
 
-  // Bestehende Klasse bearbeiten
   saveEdit(formData: any) {
     if (!this.editingClass) return;
 
     const dto = {
       id: this.editingClass.id,
-      name: formData.courseName, // wieder Mapping zum Backend-DTO
+      name: formData.courseName,
     };
 
     this.classService.updateClass(dto).subscribe({
