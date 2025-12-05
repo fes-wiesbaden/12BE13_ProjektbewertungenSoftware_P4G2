@@ -31,35 +31,30 @@ public class GradeController {
         this.gradeCalculationService = gradeCalculationService;
     }
 
-    @GetMapping("/user/{userId}/training-modules/{trainingModulesId}/grades")
-    public ResponseEntity<TrainingModuleWithGradesDto> getGradesForLearningField(
+    @GetMapping("/user/{userId}/training-modules/{trainingModuleId}/grades")
+    public ResponseEntity<List<GradeDto>> getGradesForLearningField(
             @PathVariable UUID userId,
-            @PathVariable UUID trainingModulesId) {
+            @PathVariable UUID trainingModuleId) {
 
         User user = entityFinderService.findUser(userId);
 
         var module = user.getTrainingModules()
                 .stream()
-                .filter(field -> field.getId().equals(trainingModulesId))
+                .filter(m -> m.getId().equals(trainingModuleId))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Training module not found or not assigned to user"));
 
-        var dto = new TrainingModuleWithGradesDto(
-                module.getId(),
-                module.getName(),
-                module.getDescription(),
-                module.getWeighting(),
-                module.getGrades().stream()
-                        .map(g -> new GradeDto(
-                                g.getId(),
-                                g.getValue(),
-                                g.getGradeWeighting(),
-                                g.getDate()
-                        ))
-                        .toList()
-        );
+        var grades = module.getGrades()
+                .stream()
+                .map(g -> new GradeDto(
+                        g.getId(),
+                        g.getValue(),
+                        g.getGradeWeighting(),
+                        g.getDate()
+                ))
+                .toList();
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(grades);
     }
 
     @GetMapping("/user/{userId}/grades")
