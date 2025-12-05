@@ -7,6 +7,8 @@ import { AuthService } from '../../core/auth/auth.service';
 import { SidebarService } from '../../core/services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { SiXMarkIcon, SiBars3Icon } from '@semantic-icons/heroicons/24/solid';
+import { Router } from '@angular/router';    // ⬅️ NEU
+
 @Component({
   selector: 'app-dashboard-navbar',
   standalone: true,
@@ -18,7 +20,7 @@ import { SiXMarkIcon, SiBars3Icon } from '@semantic-icons/heroicons/24/solid';
     MatMenuModule,
     SiXMarkIcon,
     SiBars3Icon
-],
+  ],
   templateUrl: './dashboard-navbar.html',
   styleUrl: './dashboard-navbar.css',
 })
@@ -30,19 +32,25 @@ export class DashboardNavbar implements OnInit {
   sidebarStatus: string = 'close';
   notificationMenuOpen: boolean = false;
   profileMenuOpen: boolean = false;
-  
-  constructor(private auth: AuthService, private sidebarService: SidebarService) {}
-  
+
+  constructor(
+    private auth: AuthService,
+    private sidebarService: SidebarService,
+    private router: Router              // ⬅️ NEU
+  ) {}
+
   onToggleSidebar() {
     this.sidebarService.toggle();
     this.sidebarStatus = this.sidebarStatus === 'open' ? 'close' : 'open';
   }
-  
+
   ngOnInit() {
     this.username = this.auth.getUsername();
     this.theme = localStorage.getItem('theme') || 'dark';
+    // falls du die Rolle aus dem Token holst:
+    // this.role = this.auth.getRole();
   }
-  
+
   changeTheme() {
     this.theme = this.theme === 'light' ? 'dark' : 'light';
     localStorage.setItem('theme', this.theme);
@@ -69,5 +77,10 @@ export class DashboardNavbar implements OnInit {
 
   signOut() {
     this.auth.logout();
+  }
+
+  goToChangePassword() {
+    this.router.navigate(['/change-password']);
+    this.closeMenus();
   }
 }
