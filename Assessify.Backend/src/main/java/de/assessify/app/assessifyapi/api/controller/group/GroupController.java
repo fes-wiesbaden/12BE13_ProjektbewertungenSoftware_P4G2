@@ -4,6 +4,7 @@ import de.assessify.app.assessifyapi.api.dtos.request.AddGroupDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateGroupDto;
 import de.assessify.app.assessifyapi.api.dtos.response.GroupDto;
 import de.assessify.app.assessifyapi.api.entity.Group;
+import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 
 import org.springframework.http.ResponseEntity;
@@ -92,4 +93,9 @@ public class GroupController{
         
         return ResponseEntity.noContent().build();
     }
+
+
+   
+
+
 }

@@ -9,6 +9,7 @@ public class Group {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="group_id", nullable=false, unique=true)
     private UUID id;
     
     private String name;

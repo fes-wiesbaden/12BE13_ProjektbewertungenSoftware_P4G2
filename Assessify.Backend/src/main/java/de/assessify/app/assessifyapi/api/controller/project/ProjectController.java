@@ -8,6 +8,7 @@ import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleSummaryDto;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.repository.TrainingModuleRepository;
 import de.assessify.app.assessifyapi.api.repository.ProjectRepository;
+import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.entity.TrainingModule;
 import org.springframework.http.ResponseEntity;
@@ -145,4 +146,17 @@ public class ProjectController {
         projectRepository.delete(project);
         return ResponseEntity.noContent().build();
     }
+
+
+    // add group to a project
+    //  @PostMapping("project/{projectId}/connect/group/{groupId}")
+    // public ResponseEntity addGroupToProject(
+    //     @PathVariable UUID projectId
+    //     @PathVariable UUID groupId,
+    // ) {
+    //     Group group = entityFinderService.findGroup(groupId);
+    //     Project project = entityFinderService.findProject(projectId);
+
+        
+    // }
 }
