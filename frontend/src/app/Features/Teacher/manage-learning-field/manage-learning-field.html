@@ -1,7 +1,7 @@
 <app-add-grade-form
     [showModal]="isAddModalVisible"
     [title]="'Neue Note hinzufügen'"
-    [initialData]="gradesFromBackend"
+    [initialData]="grades"
     (save)="onSaveGrades($event)"
     (close)="closeAddModal()"
 ></app-add-grade-form>

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LearningField } from '../../../Interfaces/learning-field.interface';
+import { Grade } from '../../../Interfaces/grade.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -13,5 +14,9 @@ export class ManageLearningFieldService {
 
   getLearningField(studentId: string): Observable<LearningField[]> {
     return this.http.get<LearningField[]>(`${this.apiUrl}/user/${studentId}/training-modules`);
+  }
+
+  getGrades(learningFieldId: string, studentId: string): Observable<Grade[]> {
+    return this.http.get<Grade[]>(`${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grades`);
   }
 }
