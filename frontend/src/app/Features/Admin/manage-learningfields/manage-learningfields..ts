@@ -40,9 +40,23 @@ export class ManageLearnfields implements OnInit {
     {
       key: 'learningFieldText',
       label: 'Lernfeld',
-      type: 'textarea',
+      type: 'text',
       required: true,
       placeholder: 'Dein Lernfeld...',
+    },
+    {
+      key: 'description',
+      label: 'Beschreibung',
+      type: 'textarea',
+      required: true,
+      placeholder: 'Beschreibung',
+    },
+    {
+      key: 'weight',
+      label: 'Gewichtung',
+      type: 'text',
+      required: true,
+      placeholder: 'Gewichtung',
     },
   ];
 
