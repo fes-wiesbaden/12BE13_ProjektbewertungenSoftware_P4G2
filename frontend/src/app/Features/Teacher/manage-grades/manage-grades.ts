@@ -16,8 +16,7 @@ interface Student {
   selector: 'app-my-classes',
   standalone: true,
   imports: [CommonModule, FormsModule, MatIconModule],
-  templateUrl: './manage-grades.html',
-  styleUrl: './manage-grades.css'
+  templateUrl: './manage-grades.html'
 })
 export class ManageGrades {
   quickEditEnabled = false;
