@@ -1,8 +1,12 @@
-<app-page-header title="Lernfelder"></app-page-header>
+<app-add-grade-form
+    [showModal]="isAddModalVisible"
+    [title]="'Neue Note hinzufügen'"
+    [initialData]="gradesFromBackend"
+    (save)="onSaveGrades($event)"
+    (close)="closeAddModal()"
+></app-add-grade-form>
 
-<app-table-column
-  [items]="learningFields"
-  [columns]="columns"
-  [showViewButton]="true"
->
+<app-page-header title="Note"></app-page-header>
+
+<app-table-column [items]="learningFields" [columns]="columns" (view)="openAddModal($event)" [showViewButton]="true">
 </app-table-column>
