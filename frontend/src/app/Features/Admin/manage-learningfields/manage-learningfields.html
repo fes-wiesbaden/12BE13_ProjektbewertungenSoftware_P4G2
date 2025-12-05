@@ -15,6 +15,7 @@
   [showEditButtons]="true"
   [showDeleteButtons]="true"
   (edit)="openEditModal($event)"
+  (delete)="openDeleteModal($event)"
 ></app-table-column>
 
 <app-form-modal
@@ -29,7 +30,7 @@
 
 <app-delete-button
   [showModal]="showDeleteModal"
-  [title]="'Sind Sie sicher, dass sie den Schüler löschen wollen?'"
+  [title]="'Sind Sie sicher, dass sie das Lernfeld löschen wollen?'"
   (close)="closeDeleteModal()"
   (delete)="deleteLearningField()"
 >

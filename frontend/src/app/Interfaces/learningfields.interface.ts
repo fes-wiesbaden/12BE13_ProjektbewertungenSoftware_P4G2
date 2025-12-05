@@ -6,5 +6,5 @@ export interface AddLearningfield {
 
 export interface LearningField {
   id: string;
-  learningFieldText: string;
+  name: string;
 }

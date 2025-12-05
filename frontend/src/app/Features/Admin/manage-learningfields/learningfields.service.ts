@@ -19,7 +19,7 @@ export class learningfieldService {
     console.log("hurenson", dto)
     return this.http.post<LearningField>(this.apiUrl, dto);
   }
-  deleteLearningField(dto: LearningField): Observable<void> {
+  deleteLearnField(dto: LearningField): Observable<void> {
       return this.http.delete<void>(`${this.apiUrl}/${dto.id}`);
     }
 

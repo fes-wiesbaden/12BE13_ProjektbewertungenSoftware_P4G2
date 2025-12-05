@@ -34,20 +34,21 @@ export class ManageLearnfields implements OnInit {
   showDeleteModal : boolean = false;
   selectedLearnfield: LearningField | null = null;
 
-  columns: TableColumn<LearningField>[] = [{ key: 'learningFieldText', label: 'Lernfeld' }];
+  columns: TableColumn<LearningField>[] = [{ key: 'name', label: 'Lernfeld' }];
 
   fields: FormField[] = [
     {
-      key: 'learningfieldsText',
-      label: 'Lernfelder',
+      key: 'learningFieldText',
+      label: 'Lernfeld',
       type: 'textarea',
       required: true,
       placeholder: 'Dein Lernfeld...',
     },
   ];
 
+
   editingLearningfields: LearningField | null = null;
-  deletingLearnField: LearningField | null = null;
+  toDeleteLearnField: LearningField | null = null;
 
   learningfieldtext = '';
 
@@ -76,21 +77,18 @@ export class ManageLearnfields implements OnInit {
   }
 
     openDeleteModal(learnfield: LearningField) {
-      this.deletingLearnField = learnfield;
+      this.toDeleteLearnField = learnfield;
       this.showDeleteModal = true;
     }
     closeDeleteModal() {
       this.showDeleteModal = false;
-      this.deletingLearnField = null;
+      this.toDeleteLearnField = null;
     }
 
   saveEdit(formData: any) {
     if (!this.editingLearningfields) return;
 
     const updatedLearningfields = { ...this.editingLearningfields, ...formData };
-
-    console.log(formData);
-    console.log(updatedLearningfields.id);
 
     this.learningfieldService.updateLearningfields(updatedLearningfields).subscribe({
       next: (res: LearningField) => {
@@ -117,17 +115,14 @@ export class ManageLearnfields implements OnInit {
   }
 
   saveLearningfields(formData: any) {
-    console.log(formData);
     const dto = {
-        name: formData.learningfieldsText,
+        name: formData.learningFieldText,
         description: "formData.learningfieldsDescription",
         weighting: 0.2
     };
-    console.log("dto", dto);
 
     this.learningfieldService.createLearningfields(dto).subscribe({
       next: (learnfield) => {
-        console.log(learnfield);
         this.learnfields.push(learnfield); // direkt zur Liste hinzufügen
         this.closeAddModel();
         // Reset Form
@@ -138,12 +133,14 @@ export class ManageLearnfields implements OnInit {
   }
 
   deleteLearningField() {
-    console.log(this.deleteLearningField);
-  if (!this.deletingLearnField) return;
+  if (!this.toDeleteLearnField) return;
+
+  const idToDelete = this.toDeleteLearnField.id;
     
-  this.learningfieldService.deleteLearningField(this.deletingLearnField).subscribe({
+  this.learningfieldService.deleteLearnField(this.toDeleteLearnField).subscribe({
     next: () => {
-      this.learnfields = this.learnfields.filter(s => s.id !== this.deletingLearnField!.id);
+      this.learnfields = this.learnfields.filter(s => s.id !== idToDelete);
+      this.toDeleteLearnField = null;
     },
     error: (err) => console.error('Fehler beim Löschen', err)
   });
