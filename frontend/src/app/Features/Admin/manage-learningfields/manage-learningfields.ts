@@ -147,8 +147,6 @@ export class ManageLearnfields implements OnInit {
       next: (learnfield) => {
         this.learnfields.push(learnfield); // direkt zur Liste hinzufügen
         this.closeAddModel();
-        // Reset Form
-        this.learningfieldtext = '';
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
