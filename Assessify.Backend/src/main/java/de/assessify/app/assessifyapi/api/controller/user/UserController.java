@@ -11,6 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import de.assessify.app.assessifyapi.api.dtos.request.ChangePasswordRequestDto;
+import java.security.Principal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import de.assessify.app.assessifyapi.api.dtos.response.ResetPasswordResponseDto;
 import java.security.SecureRandom;
@@ -149,6 +153,31 @@ public class UserController {
 
         return ResponseEntity.ok(new ResetPasswordResponseDto(tempPassword));
     }
+
+
+    @PostMapping("/{username}/change-password")
+    public ResponseEntity<Void> changePasswordByUsername(
+            @PathVariable String username,
+            @RequestBody ChangePasswordRequestDto dto
+    ) {
+        User user = userRepository.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User nicht gefunden"
+                ));
+
+        if (!passwordEncoder.matches(dto.oldPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Altes Passwort ist falsch");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.newPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
+
 
     private static final String PASSWORD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
