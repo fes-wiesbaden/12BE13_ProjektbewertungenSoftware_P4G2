@@ -13,6 +13,7 @@ import de.assessify.app.assessifyapi.api.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,21 +32,21 @@ public class GradeController {
         this.gradeCalculationService = gradeCalculationService;
     }
 
-    @GetMapping("/user/{userId}/training-modules/{trainingModuleId}/grades")
+    @GetMapping("/user/{userId}/training-modules/{trainingModulesId}/grades")
     public ResponseEntity<List<GradeDto>> getGradesForLearningField(
             @PathVariable UUID userId,
-            @PathVariable UUID trainingModuleId) {
+            @PathVariable UUID trainingModulesId) {
 
         User user = entityFinderService.findUser(userId);
+        TrainingModule trainingModule = entityFinderService.findTrainingModule(trainingModulesId);
 
-        var module = user.getTrainingModules()
-                .stream()
-                .filter(m -> m.getId().equals(trainingModuleId))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Training module not found or not assigned to user"));
+        if (!user.getTrainingModules().contains(trainingModule)) {
+            throw new RuntimeException("User is not enrolled in this Training Module");
+        }
 
-        var grades = module.getGrades()
-                .stream()
+        // Filter grades, die zum User und zum TrainingModule gehören
+        List<GradeDto> dtos = trainingModule.getGrades().stream()
+                .filter(grade -> grade.getUser().getId().equals(userId))
                 .map(g -> new GradeDto(
                         g.getId(),
                         g.getValue(),
@@ -54,7 +55,7 @@ public class GradeController {
                 ))
                 .toList();
 
-        return ResponseEntity.ok(grades);
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/user/{userId}/grades")
@@ -100,8 +101,9 @@ public class GradeController {
         Grade grade = new Grade();
         grade.setValue(dto.value());
         grade.setGradeWeighting(dto.weighting());
-        grade.setDate(dto.date());
+        grade.setDate(new Date());
         grade.setTrainingModules(trainingModule);
+        grade.setUser(user);
 
         Grade savedGrade = gradeRepository.save(grade);
 
