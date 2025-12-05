@@ -7,7 +7,7 @@
 >
 </app-form-modal>
 
-<app-page-header title="Kurs" (addClick)="openAddModel()"></app-page-header>
+<app-page-header title="Kurs" (addClick)="openAddModel()" [showAddButton]="true"></app-page-header>
 
 <app-table-column
   [items]="classes"

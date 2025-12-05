@@ -3,7 +3,9 @@
 <app-table-column
   [items]="students"
   [columns]="columns"
-  [showEditButtons]="true"
-  [showDeleteButtons]="true"
+  [showEditButtons]="false"
+  [showDeleteButtons]="false"
+  [showViewButton]="true"
+  (view)="openStudentDetail($event)"
 >
 </app-table-column>

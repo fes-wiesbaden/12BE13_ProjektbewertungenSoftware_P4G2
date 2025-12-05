@@ -33,6 +33,7 @@
 
       <div class="flex items-center ml-auto space-x-2 sm:space-x-3">
         <button
+          *ngIf="showAddButton"
           type="button"
           (click)="addClick.emit()"
           data-modal-target="add-user-modal"
