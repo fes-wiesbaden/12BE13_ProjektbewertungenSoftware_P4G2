@@ -7,4 +7,6 @@ export interface AddLearningfield {
 export interface LearningField {
   id: string;
   name: string;
+  description: string,
+  weighting: number
 }

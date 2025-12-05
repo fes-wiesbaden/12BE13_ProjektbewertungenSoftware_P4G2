@@ -34,7 +34,7 @@ export class ManageLearnfields implements OnInit {
   showDeleteModal : boolean = false;
   selectedLearnfield: LearningField | null = null;
 
-  columns: TableColumn<LearningField>[] = [{ key: 'name', label: 'Lernfeld' }];
+  columns: TableColumn<LearningField>[] = [{ key: 'name', label: 'Lernfeld' },{ key: 'description', label: 'Beschreibung' }, { key: 'weighting', label: 'Gewichtung' } ];
 
   fields: FormField[] = [
     {
@@ -54,7 +54,7 @@ export class ManageLearnfields implements OnInit {
     {
       key: 'weight',
       label: 'Gewichtung',
-      type: 'text',
+      type: 'number',
       required: true,
       placeholder: 'Gewichtung',
     },
@@ -129,11 +129,13 @@ export class ManageLearnfields implements OnInit {
   }
 
   saveLearningfields(formData: any) {
+    console.log("form",formData);
     const dto = {
         name: formData.learningFieldText,
-        description: "formData.learningfieldsDescription",
-        weighting: 0.2
+        description: formData.description,
+        weighting: formData.weight
     };
+    console.log(dto);
 
     this.learningfieldService.createLearningfields(dto).subscribe({
       next: (learnfield) => {
