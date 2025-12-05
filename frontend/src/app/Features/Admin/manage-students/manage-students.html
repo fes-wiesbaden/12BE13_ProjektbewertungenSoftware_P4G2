@@ -12,12 +12,9 @@
 <app-table-column
   [items]="students"
   [columns]="columns"
-  [showEditButtons]="true"
-  [showDeleteButtons]="true"
   (edit)="openEditModal($event)"
   (delete)="openDeleteModal($event)"
->
-</app-table-column>
+></app-table-column>
 
 <app-form-modal
   [showModal]="showEditModal"
