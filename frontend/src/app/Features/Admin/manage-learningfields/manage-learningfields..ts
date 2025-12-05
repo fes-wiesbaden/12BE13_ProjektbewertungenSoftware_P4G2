@@ -10,6 +10,7 @@ import {
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
+import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
 
 @Component({
   selector: 'app-question',
@@ -21,7 +22,8 @@ import { FormField, FormModalComponent } from '../../../Shared/Components/form-m
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-  ],
+    DeleteButtonComponent
+],
   templateUrl: './manage-learningfields.html',
 })
 export class ManageLearnfields implements OnInit {
@@ -29,6 +31,7 @@ export class ManageLearnfields implements OnInit {
   loading = true;
   showAddModel: boolean = false;
   showEditModal: boolean = false;
+  showDeleteModal : boolean = false;
   selectedLearnfield: LearningField | null = null;
 
   columns: TableColumn<LearningField>[] = [{ key: 'learningFieldText', label: 'Lernfeld' }];
@@ -44,6 +47,7 @@ export class ManageLearnfields implements OnInit {
   ];
 
   editingLearningfields: LearningField | null = null;
+  deletingLearnField: LearningField | null = null;
 
   learningfieldtext = '';
 
@@ -70,6 +74,15 @@ export class ManageLearnfields implements OnInit {
   closeAddModel(): void {
     this.showAddModel = false;
   }
+
+    openDeleteModal(learnfield: LearningField) {
+      this.deletingLearnField = learnfield;
+      this.showDeleteModal = true;
+    }
+    closeDeleteModal() {
+      this.showDeleteModal = false;
+      this.deletingLearnField = null;
+    }
 
   saveEdit(formData: any) {
     if (!this.editingLearningfields) return;
@@ -123,4 +136,16 @@ export class ManageLearnfields implements OnInit {
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
   }
+
+  deleteLearningField() {
+    console.log(this.deleteLearningField);
+  if (!this.deletingLearnField) return;
+    
+  this.learningfieldService.deleteLearningField(this.deletingLearnField).subscribe({
+    next: () => {
+      this.learnfields = this.learnfields.filter(s => s.id !== this.deletingLearnField!.id);
+    },
+    error: (err) => console.error('Fehler beim Löschen', err)
+  });
+}
 }
