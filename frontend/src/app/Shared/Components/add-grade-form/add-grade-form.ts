@@ -1,21 +1,34 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { Grade } from '../../../Interfaces/grade.interface';
 
 @Component({
   selector: 'app-add-grade-form',
-  imports: [
-    CommonModule, FormsModule, MatIconModule, MatSelectModule, ReactiveFormsModule
-  ],
-  templateUrl: './add-grade-form.html'
+  imports: [CommonModule, FormsModule, MatIconModule, MatSelectModule, ReactiveFormsModule],
+  templateUrl: './add-grade-form.html',
 })
 export class AddGradeForm implements OnInit {
   @Input() showModal = false;
   @Input() title = 'Noten bearbeiten';
-  @Input() initialData: any[] = [];
+  @Input() initialData: Grade[] = [];
 
   @Output() save = new EventEmitter<Grade[]>();
   @Output() close = new EventEmitter<void>();
@@ -26,31 +39,44 @@ export class AddGradeForm implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      grades: this.fb.array([])
+      grades: this.fb.array([]),
     });
-
-    this.initialData.forEach(d => this.addRow(d));
+    this.loadInitialData();
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['initialData'] && !changes['initialData'].firstChange) {
+      this.loadInitialData();
+    }
   }
 
-  get grades() {
+  get grades(): FormArray {
     return this.form.get('grades') as FormArray;
   }
 
-  addRow(data?: any) {
-    const group = this.fb.group({
-      gradeName: [data?.gradeName || '', Validators.required],
-      value: [data?.value || '', Validators.required],
-      lastName: [data?.lastName || '', Validators.required],
-    });
-    this.grades.push(group);
+  private loadInitialData() {
+    this.grades.clear();
+    this.initialData.forEach((d) => this.addRow(d, true));
   }
+
+  addRow(data?: any, disabled: boolean = false) {
+  const group = this.fb.group({
+    gradeName: [{ value: data?.gradeName || '', disabled }, Validators.required],
+    value: [{ value: data?.value || '', disabled }, Validators.required],
+    gradeWeighting: [{ value: data?.gradeWeighting || '', disabled }, Validators.required],
+  });
+  this.grades.push(group);
+}
 
   removeRow(index: number) {
     this.grades.removeAt(index);
   }
 
   onSave() {
-    this.save.emit(this.form.value.grades);
+    // nur die neuen (nicht-disabled) Noten zurückgeben
+    const newGrades = this.grades.controls
+      .filter((c) => !c.get('gradeName')?.disabled)
+      .map((c) => c.value);
+    this.save.emit(newGrades);
   }
 
   onClose() {

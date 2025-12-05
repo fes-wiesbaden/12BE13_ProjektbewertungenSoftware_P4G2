@@ -4,3 +4,8 @@ export interface Grade {
   gradeWeighting: number;
   date: string;
 }
+
+export interface AddGrade {
+    value: number;
+    weighting: number;
+}

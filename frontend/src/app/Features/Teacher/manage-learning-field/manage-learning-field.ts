@@ -17,6 +17,7 @@ import { Grade } from '../../../Interfaces/grade.interface';
 })
 export class ManageLearningField {
   studentId!: string;
+  currentLearningFieldId!: string;
   learningFields: LearningField[] = [];
   grades: Grade[] = [];
   loading = true;
@@ -33,17 +34,20 @@ export class ManageLearningField {
   ) {}
 
   openAddModal(item: any) {
+    this.loading = true;
     this.manageLearningFieldService.getGrades(item.id, this.studentId).subscribe({
       next: (data) => {
         this.grades = data;
+        console.log(this.grades)
         this.loading = false;
+        this.currentLearningFieldId = item.id;
+        this.isAddModalVisible = true;
       },
       error: (err) => {
         console.error('Fehler beim Laden der Lernfelder', err);
         this.loading = false;
       },
     });
-    this.isAddModalVisible = true;
   }
 
   closeAddModal() {
@@ -51,6 +55,17 @@ export class ManageLearningField {
   }
 
   onSaveGrades(grades: any[]) {
+    console.log('Neue Noten', grades);
+
+    grades.forEach((grade) => {
+      this.manageLearningFieldService
+        .addGrade(this.studentId, this.currentLearningFieldId, grade)
+        .subscribe({
+          next: (res) => console.log('Note gespeichert', res),
+          error: (err) => console.error('Fehler beim Speichern', err),
+        });
+    });
+
     this.isAddModalVisible = false;
   }
 
