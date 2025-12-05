@@ -1,12 +1,18 @@
 package de.assessify.app.assessifyapi.api.controller.group;
 
 import de.assessify.app.assessifyapi.api.dtos.request.AddGroupDto;
+import de.assessify.app.assessifyapi.api.dtos.request.AddMembertoGroupDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateGroupDto;
 import de.assessify.app.assessifyapi.api.dtos.response.GroupDto;
+import de.assessify.app.assessifyapi.api.dtos.response.UserProjectGroupResponseDto;
 import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.Project;
+import de.assessify.app.assessifyapi.api.entity.UserProjectGroup;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
+import de.assessify.app.assessifyapi.api.service.ProjectService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +22,7 @@ import java.util.UUID;
 import de.assessify.app.assessifyapi.api.repository.GroupRepository;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/groups")
 public class GroupController{
 
     private final GroupRepository groupRepository;
@@ -27,22 +33,7 @@ public class GroupController{
         this.entityFinderService = entityFinderService;
     }
 
-    @PostMapping("/group")
-    public ResponseEntity<GroupDto> addNewGroup(@RequestBody AddGroupDto dto) {
-        Group entity = new Group();
-        entity.setName(dto.name());
-        
-        Group saved = groupRepository.save(entity);
-            
-        GroupDto response = new GroupDto(
-                saved.getId(),
-                saved.getName()
-        );
-        
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/group/{groupId}")
+    @GetMapping("/{groupId}")
     public ResponseEntity<GroupDto> getOneGroup(@PathVariable UUID groupId) {
         Group group = entityFinderService.findGroup(groupId);
         
@@ -54,7 +45,7 @@ public class GroupController{
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/groups")
+    @GetMapping
     public ResponseEntity<List<GroupDto>> getAllGroups() {
         List<GroupDto> groups = groupRepository.findAll()
                 .stream()
@@ -67,7 +58,7 @@ public class GroupController{
         return ResponseEntity.ok(groups);
     }
 
-    @PutMapping("/group/{groupId}")
+    @PutMapping("/{groupId}")
     public ResponseEntity<GroupDto> updateOneGroup(
             @PathVariable UUID groupId,
             @RequestBody UpdateGroupDto dto) {
@@ -86,7 +77,7 @@ public class GroupController{
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/group/{groupId}")
+    @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> deleteOneGroup(@PathVariable UUID groupId) {
         Group group = entityFinderService.findGroup(groupId);
         groupRepository.delete(group);
@@ -95,6 +86,58 @@ public class GroupController{
     }
 
 
+
+
+    @Autowired
+    private ProjectService projectService;
+    
+    // Create a new group (in a project)
+    @PostMapping
+    public ResponseEntity<Group> createGroup(@RequestBody AddGroupDto request) {
+        Group group = projectService.createGroup(request);
+        return new ResponseEntity<>(group, HttpStatus.CREATED);
+    }
+    
+    // Add member to group - FIXED to return DTO
+    @PostMapping("/members")
+    public ResponseEntity<UserProjectGroupResponseDto> addMember(@RequestBody AddMembertoGroupDto request) {
+        UserProjectGroup upg = projectService.addMemberToGroup(request);
+        
+        // Convert to DTO to avoid circular reference
+        UserProjectGroupResponseDto response = new UserProjectGroupResponseDto(
+            upg.getId(),
+            upg.getUser().getId(),
+            upg.getUser().getFirstName() + " " + upg.getUser().getLastName(),
+            upg.getProject().getId(),
+            upg.getProject().getProjectName(),
+            upg.getGroup().getId(),
+            upg.getGroup().getName(),
+            upg.getRole()
+        );
+        
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+    
+    // Get all members in a group - FIXED to return DTOs
+    @GetMapping("/{groupId}/members")
+    public ResponseEntity<List<UserProjectGroupResponseDto>> getGroupMembers(@PathVariable UUID groupId) {
+        List<UserProjectGroup> members = projectService.getGroupMembers(groupId);
+        
+        List<UserProjectGroupResponseDto> response = members.stream()
+            .map(upg -> new UserProjectGroupResponseDto(
+                upg.getId(),
+                upg.getUser().getId(),
+                upg.getUser().getFirstName() + " " + upg.getUser().getLastName(),
+                upg.getProject().getId(),
+                upg.getProject().getProjectName(),
+                upg.getGroup().getId(),
+                upg.getGroup().getName(),
+                upg.getRole()
+            ))
+            .toList();
+        
+        return ResponseEntity.ok(response);
+    }
    
 
 

@@ -6,11 +6,15 @@ import de.assessify.app.assessifyapi.api.dtos.response.ProjectDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectWithTrainingModulesDto;
 import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleSummaryDto;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
+import de.assessify.app.assessifyapi.api.service.ProjectService;
 import de.assessify.app.assessifyapi.api.repository.TrainingModuleRepository;
 import de.assessify.app.assessifyapi.api.repository.ProjectRepository;
 import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.entity.TrainingModule;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +22,9 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/projects")
 public class ProjectController {
+
     private final ProjectRepository projectRepository;
     private final TrainingModuleRepository trainingModuleRepository;
     private final EntityFinderService entityFinderService;
@@ -30,55 +35,38 @@ public class ProjectController {
         this.entityFinderService = entityFinderService;
     }
 
-    @GetMapping("/project/{projectId}")
-    public ResponseEntity<ProjectDto> getOneProject(@PathVariable UUID projectId) {
-        Project project = entityFinderService.findProject(projectId);
+    @Autowired
+    private ProjectService projectService;
 
-        ProjectDto response = new ProjectDto(
-            project.getId(),
-            project.getProjectName(),
-            project.getProjectDescription()
-        );
-
-        return ResponseEntity.ok(response);
+    // Create a new project
+    @PostMapping
+    public ResponseEntity<Project> createProject(@RequestBody AddProjectDto request) {
+        Project project = projectService.createProject(request);
+        return new ResponseEntity<>(project, HttpStatus.CREATED);
     }
 
-    @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDto>> getAllProjects() {
-        var modules = projectRepository.findAll()
-                .stream()
-                .map(field -> new ProjectDto(
-                        field.getId(),
-                        field.getProjectName(),
-                        field.getProjectDescription()
-                ))
-                .toList();
-
-        return ResponseEntity.ok(modules);
+    // Get all projects
+    @GetMapping
+    public ResponseEntity<List<Project>> getAllProjects() {
+        return ResponseEntity.ok(projectService.getAllProjects());
     }
 
-    @PostMapping("/project")
-    public ResponseEntity<ProjectDto> addProject(@RequestBody AddProjectDto dto) {
+    // Get project by ID
+    @GetMapping("/{projectId}")
+    public ResponseEntity<Project> getProject(@PathVariable UUID projectId) {
+        return ResponseEntity.ok(projectService.getProjectById(projectId));
+    }
 
-        Project entity = new Project();
-        entity.setProjectName(dto.name());
-        entity.setProjectDescription(dto.description());
-
-        Project saved = projectRepository.save(entity);
-
-        ProjectDto response = new ProjectDto(
-                saved.getId(),
-                saved.getProjectName(),
-                saved.getProjectDescription()
-        );
-
-        return ResponseEntity.ok(response);
+    // Get all groups in a project
+    @GetMapping("/{projectId}/groups")
+    public ResponseEntity<List<Group>> getProjectGroups(@PathVariable UUID projectId) {
+        return ResponseEntity.ok(projectService.getProjectGroups(projectId));
     }
 
     @PostMapping("project/{projectId}/connect/training-module/{trainingModulesId}")
     public ResponseEntity<ProjectWithTrainingModulesDto> addProjectToTrainingModule(
             @PathVariable UUID projectId,
-            @PathVariable UUID trainingModulesId){
+            @PathVariable UUID trainingModulesId) {
 
         TrainingModule trainingModule = entityFinderService.findTrainingModule(trainingModulesId);
         Project project = entityFinderService.findProject(projectId);
@@ -95,12 +83,12 @@ public class ProjectController {
                 updated.getProjectName(),
                 updated.getProjectDescription(),
                 updated.getTrainingModules().stream()
-                        .map(   r -> new TrainingModuleSummaryDto(
-                                r.getId(),
-                                r.getName(),
-                                r.getDescription(),
-                                r.getWeighting()
-                        ))
+                        .map(r -> new TrainingModuleSummaryDto(
+                        r.getId(),
+                        r.getName(),
+                        r.getDescription(),
+                        r.getWeighting()
+                ))
                         .toList()
         );
 
@@ -114,8 +102,12 @@ public class ProjectController {
 
         Project project = entityFinderService.findProject(projectId);
 
-        if (dto.name() != null) project.setProjectName(dto.name());
-        if (dto.description() != null) project.setProjectDescription(dto.description());
+        if (dto.name() != null) {
+            project.setProjectName(dto.name());
+        }
+        if (dto.description() != null) {
+            project.setProjectDescription(dto.description());
+        }
 
         Project updated = projectRepository.save(project);
 
@@ -147,16 +139,5 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
-
-    // add group to a project
-    //  @PostMapping("project/{projectId}/connect/group/{groupId}")
-    // public ResponseEntity addGroupToProject(
-    //     @PathVariable UUID projectId
-    //     @PathVariable UUID groupId,
-    // ) {
-    //     Group group = entityFinderService.findGroup(groupId);
-    //     Project project = entityFinderService.findProject(projectId);
-
-        
-    // }
+    
 }

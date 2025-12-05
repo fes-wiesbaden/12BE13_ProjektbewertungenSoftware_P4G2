@@ -1,6 +1,8 @@
 package de.assessify.app.assessifyapi.api.dtos.request;
 
+import java.util.UUID;
+
 public record AddGroupDto(
-    String name
-    
+    String name,
+    UUID projectId
 ) {}
