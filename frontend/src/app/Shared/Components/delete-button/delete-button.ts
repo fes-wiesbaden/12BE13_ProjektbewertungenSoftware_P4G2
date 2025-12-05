@@ -11,7 +11,7 @@ export class DeleteButtonComponent {
   @Input() showModal = false;
   @Input() title = 'Are you sure you want to delete this item?';
   @Output() close = new EventEmitter<void>();
-  @Output() delete = new EventEmitter<User>();
+  @Output() delete = new EventEmitter<void>();
 
 
   onClose() {
