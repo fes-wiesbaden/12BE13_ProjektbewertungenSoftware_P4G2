@@ -222,7 +222,7 @@ delete: any;
   deleteStudent() {
   if (!this.deletingStudent) return;
     
-  this.studentService.deleteStudent(this.deletingStudent!).subscribe({
+  this.studentService.deleteStudent(this.deletingStudent).subscribe({
     next: () => {
       this.students = this.students.filter(s => s.id !== this.deletingStudent!.id);
     },

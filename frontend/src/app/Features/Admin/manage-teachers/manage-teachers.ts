@@ -219,7 +219,7 @@ export class ManageTeachers implements OnInit {
   deleteTeacher() {
     if (!this.deletingTeacher) return;
     
-  this.teacherService.deleteTeacher(this.deletingTeacher!).subscribe({
+  this.teacherService.deleteTeacher(this.deletingTeacher).subscribe({
     next: () => {
       this.teachers = this.teachers.filter(s => s.id !== this.deletingTeacher!.id);
     },
