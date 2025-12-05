@@ -15,7 +15,7 @@
   [showEditButtons]="true"
   [showDeleteButtons]="true"
   (edit)="openEditModal($event)"
-  (delete)="deleteAdmin($event)"
+  (delete)="openDeleteModal($event)"
 ></app-table-column>
 
 <app-form-modal
@@ -27,3 +27,10 @@
   (save)="saveEdit($event)"
 >
 </app-form-modal>
+<app-delete-button
+  [showModal]="showDeleteModal"
+  [title]="'Sind Sie sicher, dass sie den Admin löschen wollen?'"
+  (close)="closeDeleteModal()"
+  (delete)="deleteAdmin()"
+>
+</app-delete-button>

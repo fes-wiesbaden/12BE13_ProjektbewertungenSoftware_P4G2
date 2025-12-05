@@ -10,6 +10,7 @@ import {
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
+import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
 
 @Component({
   selector: 'app-manage-teachers',
@@ -21,7 +22,8 @@ import { FormField, FormModalComponent } from '../../../Shared/Components/form-m
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-  ],
+    DeleteButtonComponent
+],
   templateUrl: './manage-teachers.html',
 })
 export class ManageTeachers implements OnInit {
@@ -115,8 +117,10 @@ export class ManageTeachers implements OnInit {
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
+  showDeleteModal: boolean = false;
 
   editingTeacher: User | null = null;
+  deletingTeacher: User | null = null;
 
   firstName = '';
   lastName = '';
@@ -146,6 +150,14 @@ export class ManageTeachers implements OnInit {
 
   closeAddModel(): void {
     this.showAddModel = false;
+  }
+  openDeleteModal(teacher: User) {
+    this.deletingTeacher = teacher;
+    this.showDeleteModal = true;
+  }
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.deletingTeacher = null;
   }
 
   saveEdit(formData: any) {
@@ -204,13 +216,12 @@ export class ManageTeachers implements OnInit {
     });
   }
 
-  deleteTeacher(teacher: User) {
-  if (!confirm(`Wirklich ${teacher.firstName} ${teacher.lastName} löschen?`)) {
-    return;
-  }
-  this.teacherService.deleteTeacher(teacher).subscribe({
+  deleteTeacher() {
+    if (!this.deletingTeacher) return;
+    
+  this.teacherService.deleteTeacher(this.deletingTeacher).subscribe({
     next: () => {
-      this.teachers = this.teachers.filter(s => s.id !== teacher.id);
+      this.teachers = this.teachers.filter(s => s.id !== this.deletingTeacher!.id);
     },
     error: (err) => console.error('Fehler beim Löschen', err)
   });

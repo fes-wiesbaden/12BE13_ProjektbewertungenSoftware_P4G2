@@ -11,6 +11,7 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
+import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
 
 @Component({
   selector: 'app-manage-admin',
@@ -22,7 +23,8 @@ import { PageHeaderComponents } from '../../../Shared/Components/page-header/pag
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-  ],
+    DeleteButtonComponent
+],
   templateUrl: './manage-admin.html',
 })
 export class ManageAdmins implements OnInit {
@@ -31,6 +33,7 @@ export class ManageAdmins implements OnInit {
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
+  showDeleteModal: boolean = false;
 
   columns: TableColumn<User>[] = [
     { key: 'firstName', label: 'First Name' },
@@ -125,6 +128,7 @@ export class ManageAdmins implements OnInit {
   role = '';
 
   editingAdmin: User | null = null;
+  deletingAdmin: User | null = null;
 
   constructor(
     private adminService: AdminService,
@@ -151,6 +155,16 @@ export class ManageAdmins implements OnInit {
   closeEditModal() {
     this.showEditModal = false;
     this.editingAdmin = null;
+  }
+
+  openDeleteModal(admin: User) {
+    this.deletingAdmin = admin;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.deletingAdmin = null;
   }
 
   saveEdit(formData: any) {
@@ -208,15 +222,15 @@ export class ManageAdmins implements OnInit {
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
   }
-  deleteAdmin(admin: User) {
-    if (!confirm(`Wirklich ${admin.firstName} ${admin.lastName} löschen?`)) {
-      return;
-    }
-    this.adminService.deleteAdmin(admin).subscribe({
-      next: () => {
-        this.admins = this.admins.filter((s) => s.id !== admin.id);
-      },
-      error: (err) => console.error('Fehler beim Löschen', err),
-    });
-  }
+
+  deleteAdmin() {
+    if (!this.deletingAdmin) return;
+    
+  this.adminService.deleteAdmin(this.deletingAdmin).subscribe({
+    next: () => {
+      this.admins = this.admins.filter(s => s.id !== this.deletingAdmin!.id);
+    },
+    error: (err) => console.error('Fehler beim Löschen', err)
+  });
+}
 }
