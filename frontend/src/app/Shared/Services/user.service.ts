@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface ChangePasswordDto {
+export interface ChangePasswordRequestDto {
   oldPassword: string;
   newPassword: string;
 }
@@ -15,10 +15,7 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-
-  changePassword(dto: ChangePasswordRequest): Observable<void> {
-
-    return this.http.post<void>(`${this.apiUrl}/change-password`, dto);
+  changePassword(username: string, dto: ChangePasswordRequestDto): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${username}/change-password`, dto);
   }
-
 }

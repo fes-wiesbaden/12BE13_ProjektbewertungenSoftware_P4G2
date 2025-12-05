@@ -7,7 +7,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { SidebarService } from '../../core/services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { SiXMarkIcon, SiBars3Icon } from '@semantic-icons/heroicons/24/solid';
-import { Router } from '@angular/router';    // ⬅️ NEU
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -36,7 +36,7 @@ export class DashboardNavbar implements OnInit {
   constructor(
     private auth: AuthService,
     private sidebarService: SidebarService,
-    private router: Router              // ⬅️ NEU
+    private router: Router
   ) {}
 
   onToggleSidebar() {
@@ -47,8 +47,7 @@ export class DashboardNavbar implements OnInit {
   ngOnInit() {
     this.username = this.auth.getUsername();
     this.theme = localStorage.getItem('theme') || 'dark';
-    // falls du die Rolle aus dem Token holst:
-    // this.role = this.auth.getRole();
+
   }
 
   changeTheme() {

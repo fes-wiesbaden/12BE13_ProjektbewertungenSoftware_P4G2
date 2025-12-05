@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import de.assessify.app.assessifyapi.api.dtos.request.ChangePasswordRequestDto;
+import java.security.Principal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -132,16 +133,13 @@ public class UserController {
         return ResponseEntity.ok(new ResetPasswordResponseDto(tempPassword));
     }
 
-    @PostMapping("/me/change-password")
-    public ResponseEntity<Void> changeOwnPassword(
-            @AuthenticationPrincipal UserDetails userDetails,
+
+    @PostMapping("/{username}/change-password")
+    public ResponseEntity<Void> changePasswordByUsername(
+            @PathVariable String username,
             @RequestBody ChangePasswordRequestDto dto
     ) {
-        if (userDetails == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nicht eingeloggt");
-        }
-
-        User user = userRepository.findByUsernameIgnoreCase(userDetails.getUsername())
+        User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User nicht gefunden"
@@ -156,6 +154,9 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
+
+
+
 
     private static final String PASSWORD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
