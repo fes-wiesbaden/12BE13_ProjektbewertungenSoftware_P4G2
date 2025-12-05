@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { Question } from '../../../Interfaces/question.interface';
-import { QuestionService } from './question.service';
+import { LearningField } from '../../../Interfaces/learningfields.interface';
+import { learningfieldService } from './learningfields.service';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import {
   TableColumn,
@@ -22,46 +22,45 @@ import { FormField, FormModalComponent } from '../../../Shared/Components/form-m
     TableColumnComponent,
     FormModalComponent,
   ],
-  templateUrl: './manage-question.html',
+  templateUrl: './manage-learningfields.html',
 })
-export class ManageQuestions implements OnInit {
-  questions: Question[] = [];
+export class ManageLearnfields implements OnInit {
+  learnfields: LearningField[] = [];
   loading = true;
   showAddModel: boolean = false;
   showEditModal: boolean = false;
-  selectedQuestion: Question | null = null;
-  showEditModel: boolean = false;
+  selectedLearnfield: LearningField | null = null;
 
-  columns: TableColumn<Question>[] = [{ key: 'questionText', label: 'Frage' }];
+  columns: TableColumn<LearningField>[] = [{ key: 'learningfieldText', label: 'Lernfeld' }];
 
   fields: FormField[] = [
     {
-      key: 'questionText',
-      label: 'Frage',
+      key: 'learningfieldsText',
+      label: 'Lernfelder',
       type: 'textarea',
       required: true,
-      placeholder: 'Deine Frage...',
+      placeholder: 'Dein Lernfeld...',
     },
   ];
 
-  editingQuestions: Question | null = null;
+  editingLearningfields: LearningField | null = null;
 
-  questionText = '';
+  learningfieldtext = '';
 
-  constructor(private questionService: QuestionService) {}
+  constructor(private learningfieldService: learningfieldService) {}
 
   ngOnInit(): void {
-    this.loadQuestions();
+    this.loadLearningfields();
   }
 
-  openEditModal(question: Question) {
-    this.editingQuestions = question;
+  openEditModal(lernfeld: LearningField) {
+    this.editingLearningfields = lernfeld;
     this.showEditModal = true;
   }
 
   closeEditModal() {
     this.showEditModal = false;
-    this.editingQuestions = null;
+    this.editingLearningfields = null;
   }
 
   openAddModel(): void {
@@ -73,28 +72,28 @@ export class ManageQuestions implements OnInit {
   }
 
   saveEdit(formData: any) {
-    if (!this.editingQuestions) return;
+    if (!this.editingLearningfields) return;
 
-    const updatedQuestion = { ...this.editingQuestions, ...formData };
+    const updatedLearningfields = { ...this.editingLearningfields, ...formData };
 
     console.log(formData);
-    console.log(updatedQuestion.id);
+    console.log(updatedLearningfields.id);
 
-    this.questionService.updateQuestion(updatedQuestion).subscribe({
-      next: (res: Question) => {
-        const index = this.questions.findIndex((s) => s.id === updatedQuestion.id);
-        if (index !== -1) this.questions[index] = res;
+    this.learningfieldService.updateLearningfields(updatedLearningfields).subscribe({
+      next: (res: LearningField) => {
+        const index = this.learnfields.findIndex((s) => s.id === updatedLearningfields.id);
+        if (index !== -1) this.learnfields[index] = res;
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
     });
   }
 
-  loadQuestions() {
-    this.questionService.getQuestions().subscribe({
+  loadLearningfields() {
+    this.learningfieldService.getLearningfields().subscribe({
       next: (data) => {
         console.log('API Data:', data);
-        this.questions = data;
+        this.learnfields = data;
         this.loading = false;
       },
       error: (err) => {
@@ -104,19 +103,19 @@ export class ManageQuestions implements OnInit {
     });
   }
 
-  saveQuestion(formData: any) {
+  saveLearningfields(formData: any) {
     const dto = {
-      questionText: formData.questionText,
+        learningfieldText : formData.learningfieldText,
     };
 
     console.log(dto);
 
-    this.questionService.createQuestion(dto).subscribe({
-      next: (question) => {
-        this.questions.push(question); // direkt zur Liste hinzufügen
+    this.learningfieldService.createLearningfields(dto).subscribe({
+      next: (learnfield) => {
+        this.learnfields.push(learnfield); // direkt zur Liste hinzufügen
         this.closeAddModel();
         // Reset Form
-        this.questionText = '';
+        this.learningfieldtext = '';
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });

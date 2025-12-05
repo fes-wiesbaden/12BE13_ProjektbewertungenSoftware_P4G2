@@ -1,0 +1,28 @@
+<app-form-modal
+  [showModal]="showAddModel"
+  [title]="'Lernfeld anlegen'"
+  [fields]="fields"
+  (close)="closeAddModel()"
+  (save)="saveLearningfields($event)"
+>
+</app-form-modal>
+
+<app-page-header title="Lernfelder" (addClick)="openAddModel()"></app-page-header>
+
+<app-table-column
+  [items]="learnfields"
+  [columns]="columns"
+  [showEditButtons]="true"
+  [showDeleteButtons]="true"
+  (edit)="openEditModal($event)"
+></app-table-column>
+
+<app-form-modal
+  [showModal]="showEditModal"
+  [title]="'Lernfelder Editieren'"
+  [fields]="fields"
+  [record]="editingLearningfields"
+  (close)="closeEditModal()"
+  (save)="saveEdit($event)"
+>
+</app-form-modal>

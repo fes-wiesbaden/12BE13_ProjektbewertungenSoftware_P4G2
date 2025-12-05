@@ -7,7 +7,7 @@ import { AddLearningfields, LearningField } from '../../../Interfaces/learningfi
   providedIn: 'root',
 })
 export class learningfieldService {
-  private apiUrl = 'http://localhost:4100/api/question';
+  private apiUrl = 'http://localhost:4100/api/training-modules';
 
   constructor(private http: HttpClient) {}
 
