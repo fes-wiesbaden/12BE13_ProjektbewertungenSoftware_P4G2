@@ -7,9 +7,9 @@ import { User } from '../../../Interfaces/user.interface';
   imports: [MatIconModule],
   templateUrl: './delete-button.html',
 })
-export class DeleteButton {
+export class DeleteButtonComponent {
   @Input() showModal = false;
-  @Input() title = 'New Item';
+  @Input() title = 'Are you sure you want to delete this item?';
   @Output() close = new EventEmitter<void>();
   @Output() delete = new EventEmitter<User>();
 
