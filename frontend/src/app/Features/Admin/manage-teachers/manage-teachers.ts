@@ -157,7 +157,7 @@ export class ManageTeachers implements OnInit {
   }
   closeDeleteModal() {
     this.showDeleteModal = false;
-    this.editingTeacher = null;
+    this.deletingTeacher = null;
   }
 
   saveEdit(formData: any) {
