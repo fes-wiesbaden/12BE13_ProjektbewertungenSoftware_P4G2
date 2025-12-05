@@ -10,7 +10,7 @@ import {
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
-import { DeleteButton } from "../../../Shared/Components/delete-button/delete-button";
+import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
 
 @Component({
   selector: 'app-manage-teachers',
@@ -22,7 +22,7 @@ import { DeleteButton } from "../../../Shared/Components/delete-button/delete-bu
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-    DeleteButton
+    DeleteButtonComponent
 ],
   templateUrl: './manage-teachers.html',
 })
