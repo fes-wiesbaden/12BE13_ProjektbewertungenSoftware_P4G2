@@ -11,7 +11,7 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
-import { DeleteButton } from "../../../Shared/Components/delete-button/delete-button";
+import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
 
 @Component({
   selector: 'app-manage-admin',
@@ -23,7 +23,7 @@ import { DeleteButton } from "../../../Shared/Components/delete-button/delete-bu
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-    DeleteButton
+    DeleteButtonComponent
 ],
   templateUrl: './manage-admin.html',
 })
@@ -164,7 +164,7 @@ export class ManageAdmins implements OnInit {
 
   closeDeleteModal() {
     this.showDeleteModal = false;
-    this.editingAdmin = null;
+    this.deletingAdmin = null;
   }
 
   saveEdit(formData: any) {
