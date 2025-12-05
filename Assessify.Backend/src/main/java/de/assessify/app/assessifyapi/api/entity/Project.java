@@ -71,4 +71,6 @@ public class Project {
         this.reviews.clear();
         this.reviews.addAll(reviews);
     }
+    @OneToMany(mappedBy = "project")
+    private List<UserProjectGroup> userProjectGroups = new ArrayList<>();
 }
