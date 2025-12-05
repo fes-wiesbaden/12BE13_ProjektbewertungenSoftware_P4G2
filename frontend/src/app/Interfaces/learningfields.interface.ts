@@ -1,8 +1,10 @@
-export interface AddLearningfields {
-  learningfieldText: string;
+export interface AddLearningfield {
+  name: string;
+  description: string,
+  weighting: number
 }
 
 export interface LearningField {
   id: string;
-  learningfieldText: string;
+  learningFieldText: string;
 }

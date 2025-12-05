@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AddLearningfields, LearningField } from '../../../Interfaces/learningfields.interface';
+import { AddLearningfield, LearningField } from '../../../Interfaces/learningfields.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,8 @@ export class learningfieldService {
     return this.http.get<LearningField[]>(this.apiUrl);
   }
 
-  createLearningfields(dto: AddLearningfields): Observable<LearningField> {
+  createLearningfields(dto: AddLearningfield): Observable<LearningField> {
+    console.log("hurenson", dto)
     return this.http.post<LearningField>(this.apiUrl, dto);
   }
 

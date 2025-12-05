@@ -31,7 +31,7 @@ export class ManageLearnfields implements OnInit {
   showEditModal: boolean = false;
   selectedLearnfield: LearningField | null = null;
 
-  columns: TableColumn<LearningField>[] = [{ key: 'learningfieldText', label: 'Lernfeld' }];
+  columns: TableColumn<LearningField>[] = [{ key: 'learningFieldText', label: 'Lernfeld' }];
 
   fields: FormField[] = [
     {
@@ -104,14 +104,17 @@ export class ManageLearnfields implements OnInit {
   }
 
   saveLearningfields(formData: any) {
+    console.log(formData);
     const dto = {
-        learningfieldText : formData.learningfieldText,
+        name: formData.learningfieldsText,
+        description: "formData.learningfieldsDescription",
+        weighting: 0.2
     };
-
-    console.log(dto);
+    console.log("dto", dto);
 
     this.learningfieldService.createLearningfields(dto).subscribe({
       next: (learnfield) => {
+        console.log(learnfield);
         this.learnfields.push(learnfield); // direkt zur Liste hinzufügen
         this.closeAddModel();
         // Reset Form
