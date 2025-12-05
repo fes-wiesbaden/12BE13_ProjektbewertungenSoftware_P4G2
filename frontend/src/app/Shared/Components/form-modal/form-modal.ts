@@ -16,6 +16,10 @@ export interface FormField {
   value?: any;
   readonly?: boolean;
   colSpan?: number;
+  /** validation rules */
+  min?: number,
+  max?: number;
+  integer?: boolean;
 }
 
 @Component({

@@ -10,7 +10,7 @@ import {
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
-import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
+import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 
 @Component({
   selector: 'app-question',
@@ -22,8 +22,8 @@ import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-    DeleteButtonComponent
-],
+    DeleteButtonComponent,
+  ],
   templateUrl: './manage-learningfields.html',
 })
 export class ManageLearnfields implements OnInit {
@@ -31,10 +31,14 @@ export class ManageLearnfields implements OnInit {
   loading = true;
   showAddModel: boolean = false;
   showEditModal: boolean = false;
-  showDeleteModal : boolean = false;
+  showDeleteModal: boolean = false;
   selectedLearnfield: LearningField | null = null;
 
-  columns: TableColumn<LearningField>[] = [{ key: 'name', label: 'Lernfeld' },{ key: 'description', label: 'Beschreibung' }, { key: 'weighting', label: 'Gewichtung in %' } ];
+  columns: TableColumn<LearningField>[] = [
+    { key: 'name', label: 'Lernfeld' },
+    { key: 'description', label: 'Beschreibung' },
+    { key: 'weighting', label: 'Gewichtung in %' },
+  ];
 
   fields: FormField[] = [
     {
@@ -56,10 +60,10 @@ export class ManageLearnfields implements OnInit {
       label: 'Gewichtung',
       type: 'number',
       required: true,
-      placeholder: 'Gewichtung',
+      placeholder: 'Gewichtung 0 - 99',
+      max: 99,
     },
   ];
-
 
   editingLearningfields: LearningField | null = null;
   toDeleteLearnField: LearningField | null = null;
@@ -90,14 +94,14 @@ export class ManageLearnfields implements OnInit {
     this.showAddModel = false;
   }
 
-    openDeleteModal(learnfield: LearningField) {
-      this.toDeleteLearnField = learnfield;
-      this.showDeleteModal = true;
-    }
-    closeDeleteModal() {
-      this.showDeleteModal = false;
-      this.toDeleteLearnField = null;
-    }
+  openDeleteModal(learnfield: LearningField) {
+    this.toDeleteLearnField = learnfield;
+    this.showDeleteModal = true;
+  }
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.toDeleteLearnField = null;
+  }
 
   saveEdit(formData: any) {
     if (!this.editingLearningfields) return;
@@ -129,11 +133,15 @@ export class ManageLearnfields implements OnInit {
   }
 
   saveLearningfields(formData: any) {
-    console.log("form",formData);
+    console.log('form', formData);
+    if (!Number.isInteger(Number(formData.weight)) || formData.weight < 0 || formData.weight > 99) {
+      alert('Gewichtung muss eine ganze Zahl zwischen 0 und 99 sein.');
+      return;
+    }
     const dto = {
-        name: formData.learningFieldText,
-        description: formData.description,
-        weighting: formData.weight
+      name: formData.learningFieldText,
+      description: formData.description,
+      weighting: formData.weight,
     };
     console.log(dto);
 
@@ -149,16 +157,16 @@ export class ManageLearnfields implements OnInit {
   }
 
   deleteLearningField() {
-  if (!this.toDeleteLearnField) return;
+    if (!this.toDeleteLearnField) return;
 
-  const idToDelete = this.toDeleteLearnField.id;
-    
-  this.learningfieldService.deleteLearnField(this.toDeleteLearnField).subscribe({
-    next: () => {
-      this.learnfields = this.learnfields.filter(s => s.id !== idToDelete);
-      this.toDeleteLearnField = null;
-    },
-    error: (err) => console.error('Fehler beim Löschen', err)
-  });
-}
+    const idToDelete = this.toDeleteLearnField.id;
+
+    this.learningfieldService.deleteLearnField(this.toDeleteLearnField).subscribe({
+      next: () => {
+        this.learnfields = this.learnfields.filter((s) => s.id !== idToDelete);
+        this.toDeleteLearnField = null;
+      },
+      error: (err) => console.error('Fehler beim Löschen', err),
+    });
+  }
 }
