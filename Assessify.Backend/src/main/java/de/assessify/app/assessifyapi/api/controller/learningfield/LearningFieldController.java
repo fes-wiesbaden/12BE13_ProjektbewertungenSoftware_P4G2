@@ -47,6 +47,25 @@ public class LearningFieldController {
         return ResponseEntity.ok(modules);
     }
 
+    @GetMapping("/user/{userId}/training-modules")
+    public ResponseEntity<List<TrainingModuleSummaryDto>> getAllTrainingModulesByUserId(
+            @PathVariable UUID userId) {
+
+        User user = entityFinderService.findUser(userId);
+
+        var modules = user.getTrainingModules()
+                .stream()
+                .map(module -> new TrainingModuleSummaryDto(
+                        module.getId(),
+                        module.getName(),
+                        module.getDescription(),
+                        module.getWeighting()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(modules);
+    }
+
     @PostMapping("/training-modules")
     public ResponseEntity<TrainingModuleSummaryDto> createTrainingModule(
             @RequestBody AddTrainingModuleDto dto) {

@@ -31,33 +31,6 @@ public class GradeController {
         this.gradeCalculationService = gradeCalculationService;
     }
 
-    @GetMapping("/user/{userId}/training-modules")
-    public ResponseEntity<List<TrainingModuleWithGradesDto>> getAllTrainingModulesByUserId(
-            @PathVariable UUID userId) {
-
-        User user = entityFinderService.findUser(userId);
-
-        var modules = user.getTrainingModules()
-                .stream()
-                .map(module -> new TrainingModuleWithGradesDto(
-                        module.getId(),
-                        module.getName(),
-                        module.getDescription(),
-                        module.getWeighting(),
-                        module.getGrades().stream()
-                                .map(g -> new GradeDto(
-                                        g.getId(),
-                                        g.getValue(),
-                                        g.getGradeWeighting(),
-                                        g.getDate()
-                                ))
-                                .toList()
-                ))
-                .toList();
-
-        return ResponseEntity.ok(modules);
-    }
-
     @GetMapping("/user/{userId}/training-modules/{trainingModulesId}/grades")
     public ResponseEntity<TrainingModuleWithGradesDto> getGradesForLearningField(
             @PathVariable UUID userId,
