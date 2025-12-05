@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 
 export type FormFieldType = 'text' | 'password' | 'email' | 'number' | 'select' | 'textarea';
 
@@ -20,7 +21,7 @@ export interface FormField {
 @Component({
   selector: 'app-form-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatSelectModule],
   templateUrl: './form-modal.html',
 })
 export class FormModalComponent implements OnChanges {

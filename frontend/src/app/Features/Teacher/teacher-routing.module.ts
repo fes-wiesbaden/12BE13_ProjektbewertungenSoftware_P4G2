@@ -3,7 +3,6 @@ import { TeacherDashboard } from './teacher-dashboard/teacher-dashboard';
 import { MyStudents } from './my-students/my-students';
 import { MyClasses } from './my-classes/my-classes';
 import { MyProfile } from './my-profile/my-profile';
-import { StudentExport } from "./student-export/student-export";
 import { StudentGroups } from "./student-groups/student-groups";
 import { ManageGrades } from "./manage-grades/manage-grades";
 import { Projects } from "./projects/projects";
@@ -21,7 +20,7 @@ export const TeacherRoutes: Routes = [
     component: MyProfile
   },
   {
-    path: 'my-students',
+    path: 'my-students/:classId',
     component: MyStudents
   },
   {
@@ -31,10 +30,6 @@ export const TeacherRoutes: Routes = [
     {
     path: 'manage-grades',
     component: ManageGrades
-  },
-  {
-    path: 'export',
-    component: StudentExport
   },
   {
     path: 'groups',

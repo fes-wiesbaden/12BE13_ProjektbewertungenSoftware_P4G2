@@ -1,80 +1,59 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MatIconModule } from "@angular/material/icon";
-import { RouterLink } from '@angular/router';
-
-export interface Student {
-  id: number,
-  name: string,
-  avatar: string,
-  role: string,
-
-}
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
+import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
+import { TableColumn, TableColumnComponent } from '../../../Shared/Components/table-column/table-column';
+import { User } from '../../../Interfaces/user.interface';
+import { MyStudentsService } from './my-students.service';
 
 @Component({
   selector: 'app-my-students',
-  imports: [MatIconModule, RouterLink],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatIconModule,
+    PageHeaderComponents,
+    TableColumnComponent,
+  ],
   templateUrl: './my-students.html',
-  styleUrl: './my-students.css'
 })
 export class MyStudents implements OnInit {
-    students: Student[] = [];
+  classId!: string;
+  students: User[] = [];
+  loading = true;
 
-    selectedStudent: Student | null = null;
+  columns: TableColumn<User>[] = [
+    { key: 'firstName', label: 'Vorname' },
+    { key: 'lastName', label: 'Nachname' },
+    { key: 'username', label: 'Benutzername' },
+    { key: 'roleName', label: 'Rolle' },
+  ];
 
+  constructor(private route: ActivatedRoute, private studentService: MyStudentsService) {}
 
-    // toggles
-    showEditModel: boolean = false;
-    showAddModel: boolean = false;
-    showDeleteModel: boolean = false;
-    ngOnInit(): void {
+  ngOnInit(): void {
+    const classIdParam = this.route.snapshot.paramMap.get('classId');
+    if (!classIdParam) {
+      console.error("Missing or invalid 'classId' route parameter.");
+      this.loading = false;
+      return;
+    }
+    this.classId = classIdParam;
     this.loadStudents();
   }
+
   loadStudents() {
-    this.students = [
-      {
-        id: 1,
-        name: 'John Doe',
-        avatar: 'https://flowbite.com/docs/images/people/profile-picture-5.jpg',
-        role: 'Student'
+    this.studentService.getStudents(this.classId).subscribe({
+      next: (data) => {
+        this.students = data;
+        this.loading = false;
       },
-      {
-        id: 2,
-        name: 'Jack Miller',
-        avatar: 'https://flowbite.com/docs/images/people/profile-picture-5.jpg',
-        role: 'Student'
+      error: (err) => {
+        console.error('Fehler beim Laden der Schüler', err);
+        this.loading = false;
       },
-      {
-        id: 3,
-        name: 'Jamie Jons',
-        avatar: 'https://flowbite.com/docs/images/people/profile-picture-5.jpg',
-        role: 'Student'
-      },
-    ];
-  }
-
-
-  openEditModel(student: Student): void {
-    this.selectedStudent = student;
-    this.showEditModel = true;
-  }
-
-  closeEditModel(): void {
-    this.showEditModel = false;
-  }
-
-  openAddModel(): void {
-    this.showAddModel = true;
-  }
-
-  closeAddModel(): void {
-    this.showAddModel = false;
-  }
-  
-  openDeleteModel(): void {
-    this.showDeleteModel = true;
-  }
-
-  closeDeleteModel(): void {
-    this.showDeleteModel = false;
+    });
   }
 }
