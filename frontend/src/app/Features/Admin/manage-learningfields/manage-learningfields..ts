@@ -133,7 +133,6 @@ export class ManageLearnfields implements OnInit {
   }
 
   saveLearningfields(formData: any) {
-    console.log('form', formData);
     if (!Number.isInteger(Number(formData.weight)) || formData.weight < 0 || formData.weight > 99) {
       alert('Gewichtung muss eine ganze Zahl zwischen 0 und 99 sein.');
       return;
@@ -143,7 +142,6 @@ export class ManageLearnfields implements OnInit {
       description: formData.description,
       weighting: formData.weight,
     };
-    console.log(dto);
 
     this.learningfieldService.createLearningfields(dto).subscribe({
       next: (learnfield) => {
