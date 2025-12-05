@@ -34,7 +34,7 @@ export class ManageLearnfields implements OnInit {
   showDeleteModal : boolean = false;
   selectedLearnfield: LearningField | null = null;
 
-  columns: TableColumn<LearningField>[] = [{ key: 'name', label: 'Lernfeld' },{ key: 'description', label: 'Beschreibung' }, { key: 'weighting', label: 'Gewichtung' } ];
+  columns: TableColumn<LearningField>[] = [{ key: 'name', label: 'Lernfeld' },{ key: 'description', label: 'Beschreibung' }, { key: 'weighting', label: 'Gewichtung in %' } ];
 
   fields: FormField[] = [
     {
