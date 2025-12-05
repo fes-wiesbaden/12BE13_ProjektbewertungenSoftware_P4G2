@@ -7,6 +7,7 @@ import { ManageGrades } from "./manage-grades/manage-grades";
 import { Projects } from "./projects/projects";
 import { Project } from "./project/project";
 import { Group } from "./group/group";
+import { ManageLearningField } from "./manage-learning-field/manage-learning-field";
 
 
 export const TeacherRoutes: Routes = [
@@ -21,6 +22,10 @@ export const TeacherRoutes: Routes = [
   {
     path: 'my-students/:classId',
     component: MyStudents
+  },
+  {
+    path: 'manage-learning-fields/:studentId',
+    component: ManageLearningField
   },
   {
     path: 'manage-grades',

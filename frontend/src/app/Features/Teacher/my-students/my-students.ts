@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import { TableColumn, TableColumnComponent } from '../../../Shared/Components/table-column/table-column';
 import { User } from '../../../Interfaces/user.interface';
@@ -31,7 +31,12 @@ export class MyStudents implements OnInit {
     { key: 'roleName', label: 'Rolle' },
   ];
 
-  constructor(private route: ActivatedRoute, private studentService: MyStudentsService) {}
+  constructor(private route: ActivatedRoute, private studentService: MyStudentsService, private router: Router) {}
+
+  openStudentDetail(item: any) {
+    const studentId = item.id;
+    this.router.navigate(['/teacher/manage-learning-fields', studentId]);
+  }
 
   ngOnInit(): void {
     const classIdParam = this.route.snapshot.paramMap.get('classId');
