@@ -58,6 +58,7 @@ export class Sidebar implements OnInit {
         },
         { icon: 'groups', label: 'Klassen', route: '/admin/manage-classes' },
         { icon: 'help_outlined', label: 'Fragen', route: '/admin/manage-questions' },
+        { icon: 'school', label: 'Lernfelder', route: '/admin/manage-learningfields' },
       ],
       teacher: [
         { icon: 'dashboard', label: 'Übersicht', route: '/teacher/dashboard' },

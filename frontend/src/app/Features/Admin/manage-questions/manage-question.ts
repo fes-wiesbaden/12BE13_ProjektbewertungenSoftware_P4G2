@@ -64,15 +64,6 @@ export class ManageQuestions implements OnInit {
     this.editingQuestions = null;
   }
 
-  openEditModel(question: Question): void {
-    this.selectedQuestion = question;
-    this.showEditModel = true;
-  }
-
-  closeEditModel(): void {
-    this.showEditModel = false;
-  }
-
   openAddModel(): void {
     this.showAddModel = true;
   }
@@ -117,8 +108,6 @@ export class ManageQuestions implements OnInit {
     const dto = {
       questionText: formData.questionText,
     };
-
-    console.log(dto);
 
     this.questionService.createQuestion(dto).subscribe({
       next: (question) => {

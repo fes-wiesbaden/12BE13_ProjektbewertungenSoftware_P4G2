@@ -5,6 +5,7 @@ import { ManageTeachers } from './manage-teachers/manage-teachers';
 import { ManageClasses } from './manage-classes/manage-classes';
 import { ManageQuestions } from './manage-questions/manage-question';
 import { ManageAdmins } from './manage-admin/manage-admin';
+import { ManageLearnfields } from './manage-learningfields/manage-learningfields';
 
 export const AdminRoutes: Routes = [
   {
@@ -30,5 +31,9 @@ export const AdminRoutes: Routes = [
   {
     path: 'manage-questions',
     component: ManageQuestions,
+  },
+  {
+    path: 'manage-learningfields',
+    component: ManageLearnfields,
   },
 ];
