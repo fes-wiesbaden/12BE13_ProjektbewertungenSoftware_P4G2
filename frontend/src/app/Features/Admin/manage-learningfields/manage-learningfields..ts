@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { LearningField } from '../../../Interfaces/learningfields.interface';
-import { learningfieldService } from './learningfields.service';
+import { LearningFieldService } from './learningfields.service';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import {
   TableColumn,
@@ -70,7 +70,7 @@ export class ManageLearnfields implements OnInit {
 
   learningfieldtext = '';
 
-  constructor(private learningfieldService: learningfieldService) {}
+  constructor(private learningfieldService: LearningFieldService) {}
 
   ngOnInit(): void {
     this.loadLearningfields();

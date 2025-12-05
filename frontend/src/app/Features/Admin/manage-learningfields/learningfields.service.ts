@@ -6,7 +6,7 @@ import { AddLearningfield, LearningField } from '../../../Interfaces/learningfie
 @Injectable({
   providedIn: 'root',
 })
-export class learningfieldService {
+export class LearningFieldService {
   private apiUrl = 'http://localhost:4100/api/training-modules';
 
   constructor(private http: HttpClient) {}
