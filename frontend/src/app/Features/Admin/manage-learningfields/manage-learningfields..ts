@@ -13,7 +13,7 @@ import { FormField, FormModalComponent } from '../../../Shared/Components/form-m
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 
 @Component({
-  selector: 'app-question',
+  selector: 'app-learnfield',
   standalone: true,
   imports: [
     CommonModule,
