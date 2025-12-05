@@ -2,7 +2,7 @@
   [hidden]="!showModal"
   class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-gray-900/50 dark:bg-gray-900/60 backdrop-blur-sm p-4"
 >
-  <div class="relative w-full max-w-2xl">
+  <div class="relative w-full max-w-4xl">
     <div class="relative bg-white rounded-lg shadow dark:bg-gray-800 max-h-[80vh] overflow-y-auto">
       <div
         class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700 border-gray-200"
@@ -34,12 +34,20 @@
               </div>
 
               <div class="col-span-6 sm:col-span-3 flex flex-col">
-                <label class="block mb-1 text-sm font-medium dark:text-white">Note</label>
-                <div class="flex gap-2">
+                <label class="block mb-1 text-sm font-medium dark:text-white"
+                  >Note & Gewichtung</label
+                >
+                <div class="flex gap-2 items-center">
                   <input
                     formControlName="value"
                     type="text"
                     class="flex-1 p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:text-white"
+                  />
+                  <input
+                    formControlName="gradeWeighting"
+                    type="text"
+                    class="w-20 p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:text-white"
+                    placeholder="Gew."
                   />
                   <button
                     type="button"
