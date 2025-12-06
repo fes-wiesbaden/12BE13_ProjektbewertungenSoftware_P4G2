@@ -29,4 +29,8 @@ export class ManageLearningFieldService {
       { headers: { 'Content-Type': 'application/json' } }
     );
   }
+
+  updateGrade(studentId: string, learningFieldId: string, gradeId: string, grade: Grade) {
+  return this.http.put(`${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grade/${gradeId}`, grade);
+}
 }

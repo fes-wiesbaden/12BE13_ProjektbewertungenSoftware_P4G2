@@ -54,20 +54,29 @@ export class ManageLearningField {
     this.isAddModalVisible = false;
   }
 
-  onSaveGrades(grades: any[]) {
-    console.log('Neue Noten', grades);
+  onSaveGrades({ newGrades, updatedGrades }: { newGrades: Grade[], updatedGrades: Grade[] }) {
+  // Neue Noten speichern (POST)
+  newGrades.forEach(grade => {
+    this.manageLearningFieldService
+      .addGrade(this.studentId, this.currentLearningFieldId, grade)
+      .subscribe({
+        next: res => console.log('Neue Note gespeichert', res),
+        error: err => console.error('Fehler beim Speichern neuer Note', err)
+      });
+  });
 
-    grades.forEach((grade) => {
-      this.manageLearningFieldService
-        .addGrade(this.studentId, this.currentLearningFieldId, grade)
-        .subscribe({
-          next: (res) => console.log('Note gespeichert', res),
-          error: (err) => console.error('Fehler beim Speichern', err),
-        });
-    });
+  // Bearbeitete Noten updaten (PUT)
+  updatedGrades.forEach(grade => {
+    this.manageLearningFieldService
+      .updateGrade(this.studentId, this.currentLearningFieldId, grade.id, grade)
+      .subscribe({
+        next: res => console.log('Note aktualisiert', res),
+        error: err => console.error('Fehler beim Aktualisieren der Note', err)
+      });
+  });
 
-    this.isAddModalVisible = false;
-  }
+  this.isAddModalVisible = false;
+}
 
   ngOnInit(): void {
     const studentIdParam = this.route.snapshot.paramMap.get('studentId');

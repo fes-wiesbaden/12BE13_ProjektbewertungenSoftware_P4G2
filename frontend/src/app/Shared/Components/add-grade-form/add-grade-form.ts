@@ -30,7 +30,7 @@ export class AddGradeForm implements OnInit {
   @Input() title = 'Noten bearbeiten';
   @Input() initialData: Grade[] = [];
 
-  @Output() save = new EventEmitter<Grade[]>();
+  @Output() save = new EventEmitter<{ newGrades: Grade[]; updatedGrades: Grade[] }>();
   @Output() close = new EventEmitter<void>();
 
   form!: FormGroup;
@@ -55,21 +55,23 @@ export class AddGradeForm implements OnInit {
 
   private loadInitialData() {
     this.grades.clear();
-    this.initialData.forEach((d) => this.addRow(d, true));
+    this.initialData.forEach((d) => this.addRow(d));
   }
 
-  addRow(data?: any, disabled: boolean = false) {
-    const isLoaded = !!data;
+  addRow(data?: any) {
+  const isLoaded = !!data;
 
-    const group = this.fb.group({
-      gradeName: [{ value: data?.gradeName || '', disabled }, Validators.required],
-      value: [{ value: data?.value || '', disabled }, Validators.required],
-      gradeWeighting: [{ value: data?.gradeWeighting || '', disabled }, Validators.required],
-      isLoaded: [isLoaded],
-      editing: [!disabled],
-    });
-    this.grades.push(group);
-  }
+  const group = this.fb.group({
+    id: [data?.id || null], // neue Zeilen haben null
+    gradeName: [{ value: data?.gradeName || '', disabled: !!data }, Validators.required],
+    value: [{ value: data?.value || '', disabled: !!data }, Validators.required],
+    gradeWeighting: [{ value: data?.gradeWeighting || '', disabled: !!data }, Validators.required],
+    isLoaded: [isLoaded],
+    editing: [!data],
+  });
+
+  this.grades.push(group);
+}
 
   toggleEdit(index: number) {
     const row = this.grades.at(index);
@@ -86,11 +88,13 @@ export class AddGradeForm implements OnInit {
   }
 
   onSave() {
-    const newGrades = this.grades.controls
-      .filter((c) => !c.get('gradeName')?.disabled)
-      .map((c) => c.value);
-    this.save.emit(newGrades);
-  }
+  const allGrades = this.grades.controls.map(c => c.value);
+
+  const newGrades = allGrades.filter(g => !g.id); // keine ID → neu
+  const updatedGrades = allGrades.filter(g => g.id && !g.isLoaded); // ID vorhanden & bearbeitet
+
+  this.save.emit({ newGrades, updatedGrades });
+}
 
   onClose() {
     this.close.emit();
