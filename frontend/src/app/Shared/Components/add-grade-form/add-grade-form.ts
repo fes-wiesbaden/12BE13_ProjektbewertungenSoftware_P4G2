@@ -3,7 +3,6 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
   SimpleChanges,
@@ -30,7 +29,11 @@ export class AddGradeForm implements OnInit {
   @Input() title = 'Noten bearbeiten';
   @Input() initialData: Grade[] = [];
 
-  @Output() save = new EventEmitter<{ newGrades: Grade[]; updatedGrades: Grade[]; deletedGrades: Grade[];}>();
+  @Output() save = new EventEmitter<{
+    newGrades: Grade[];
+    updatedGrades: Grade[];
+    deletedGrades: Grade[];
+  }>();
   @Output() close = new EventEmitter<void>();
   @Output() delete = new EventEmitter<Grade>();
 
@@ -60,20 +63,23 @@ export class AddGradeForm implements OnInit {
   }
 
   addRow(data?: any) {
-  const isLoaded = !!data;
+    const isLoaded = !!data;
 
-  const group = this.fb.group({
-    id: [data?.id || null], // neue Zeilen haben null
-    gradeName: [{ value: data?.gradeName || '', disabled: !!data }, Validators.required],
-    value: [{ value: data?.value || '', disabled: !!data }, Validators.required],
-    gradeWeighting: [{ value: data?.gradeWeighting || '', disabled: !!data }, Validators.required],
-    isLoaded: [isLoaded],
-    editing: [!data],
-    deleted: [false],
-  });
+    const group = this.fb.group({
+      id: [data?.id || null],
+      gradeName: [{ value: data?.gradeName || '', disabled: !!data }, Validators.required],
+      value: [{ value: data?.value || '', disabled: !!data }, Validators.required],
+      gradeWeighting: [
+        { value: data?.gradeWeighting || '', disabled: !!data },
+        Validators.required,
+      ],
+      isLoaded: [isLoaded],
+      editing: [!data],
+      deleted: [false],
+    });
 
-  this.grades.push(group);
-}
+    this.grades.push(group);
+  }
 
   toggleEdit(index: number) {
     const row = this.grades.at(index);
@@ -86,24 +92,24 @@ export class AddGradeForm implements OnInit {
   }
 
   removeRow(index: number) {
-  const row = this.grades.at(index);
-  if (row.get('id')?.value) {
-    row.get('deleted')?.setValue(true);
-    row.disable();
-  } else {
-    this.grades.removeAt(index);
+    const row = this.grades.at(index);
+    if (row.get('id')?.value) {
+      row.get('deleted')?.setValue(true);
+      row.disable();
+    } else {
+      this.grades.removeAt(index);
+    }
   }
-}
 
   onSave() {
-  const allGrades = this.grades.controls.map(c => c.value);
+    const allGrades = this.grades.controls.map((c) => c.value);
 
-  const newGrades = allGrades.filter(g => !g.id && !g.deleted);
-  const updatedGrades = allGrades.filter(g => g.id && !g.isLoaded && !g.deleted);
-  const deletedGrades = allGrades.filter(g => g.id && g.deleted);
+    const newGrades = allGrades.filter((g) => !g.id && !g.deleted);
+    const updatedGrades = allGrades.filter((g) => g.id && !g.isLoaded && !g.deleted);
+    const deletedGrades = allGrades.filter((g) => g.id && g.deleted);
 
-  this.save.emit({ newGrades, updatedGrades, deletedGrades });
-}
+    this.save.emit({ newGrades, updatedGrades, deletedGrades });
+  }
 
   onClose() {
     this.close.emit();

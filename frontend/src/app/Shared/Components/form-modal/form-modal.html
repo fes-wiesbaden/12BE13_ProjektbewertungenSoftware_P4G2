@@ -42,10 +42,7 @@
                   }
                 </mat-select>
               </mat-form-field>
-              }
-
-              <!-- Textarea -->
-              @if (field.type === 'textarea') {
+              } @if (field.type === 'textarea') {
               <textarea
                 [(ngModel)]="formData[field.key]"
                 [name]="field.key"
@@ -54,9 +51,7 @@
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
               </textarea>
-              }
-              <!-- Input -->
-              @if (field.type !== 'textarea' && field.type !== 'select') {
+              } @if (field.type !== 'textarea' && field.type !== 'select') {
               <input
                 [(ngModel)]="formData[field.key]"
                 [name]="field.key"

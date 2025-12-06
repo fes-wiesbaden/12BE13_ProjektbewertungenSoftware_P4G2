@@ -32,7 +32,6 @@ export class TeacherDashboardService {
     });
   }
 
-  // optional für später:
   deleteClass(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }

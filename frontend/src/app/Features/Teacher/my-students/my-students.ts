@@ -4,19 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
-import { TableColumn, TableColumnComponent } from '../../../Shared/Components/table-column/table-column';
+import {
+  TableColumn,
+  TableColumnComponent,
+} from '../../../Shared/Components/table-column/table-column';
 import { User } from '../../../Interfaces/user.interface';
 import { MyStudentsService } from './my-students.service';
 
 @Component({
   selector: 'app-my-students',
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatIconModule,
-    PageHeaderComponents,
-    TableColumnComponent,
-  ],
+  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponents, TableColumnComponent],
   templateUrl: './my-students.html',
 })
 export class MyStudents implements OnInit {
@@ -31,7 +28,11 @@ export class MyStudents implements OnInit {
     { key: 'roleName', label: 'Rolle' },
   ];
 
-  constructor(private route: ActivatedRoute, private studentService: MyStudentsService, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private studentService: MyStudentsService,
+    private router: Router
+  ) {}
 
   openStudentDetail(item: any) {
     const studentId = item.id;
