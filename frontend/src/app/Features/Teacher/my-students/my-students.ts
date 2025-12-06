@@ -10,6 +10,7 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { User } from '../../../Interfaces/user.interface';
 import { MyStudentsService } from './my-students.service';
+import { Student } from '../student-groups/student-groups';
 
 @Component({
   selector: 'app-my-students',
@@ -34,7 +35,7 @@ export class MyStudents implements OnInit {
     private router: Router
   ) {}
 
-  openStudentDetail(item: any) {
+  openStudentDetail(item: User) {
     const studentId = item.id;
     this.router.navigate(['/teacher/manage-learning-fields', studentId]);
   }
