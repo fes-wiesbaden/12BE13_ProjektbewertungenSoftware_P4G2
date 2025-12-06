@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ManageLearningFieldService } from './manage-learning-field.service';
 import { LearningField } from '../../../Interfaces/learning-field.interface';
@@ -15,7 +15,7 @@ import { Grade } from '../../../Interfaces/grade.interface';
   imports: [PageHeaderComponents, TableColumnComponent, AddGradeForm],
   templateUrl: './manage-learning-field.html',
 })
-export class ManageLearningField {
+export class ManageLearningField implements OnInit {
   studentId!: string;
   currentLearningFieldId!: string;
   learningFields: LearningField[] = [];
@@ -38,7 +38,6 @@ export class ManageLearningField {
     this.manageLearningFieldService.getGrades(item.id, this.studentId).subscribe({
       next: (data) => {
         this.grades = data;
-        console.log(this.grades);
         this.loading = false;
         this.currentLearningFieldId = item.id;
         this.isAddModalVisible = true;

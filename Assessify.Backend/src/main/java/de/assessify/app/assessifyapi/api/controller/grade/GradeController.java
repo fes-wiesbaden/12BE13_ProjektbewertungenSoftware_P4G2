@@ -43,8 +43,7 @@ public class GradeController {
         if (!user.getTrainingModules().contains(trainingModule)) {
             throw new RuntimeException("User is not enrolled in this Training Module");
         }
-
-        // Filter grades, die zum User und zum TrainingModule gehören
+        
         List<GradeDto> dtos = trainingModule.getGrades().stream()
                 .filter(grade -> grade.getUser().getId().equals(userId))
                 .map(g -> new GradeDto(
