@@ -61,7 +61,7 @@ export class Sidebar implements OnInit {
         { icon: 'school', label: 'Lernfelder', route: '/admin/manage-learningfields' },
       ],
       teacher: [
-        { icon: 'dashboard', label: 'Übersicht', route: '/teacher/dashboard' },
+        { icon: 'groups', label: 'Übersicht', route: '/teacher/dashboard' },
         {
           icon: 'manage_accounts',
           label: 'Verwaltung',
@@ -72,8 +72,6 @@ export class Sidebar implements OnInit {
             { icon: 'assignment', label: 'Projekte', route: '/teacher/projects' },
           ],
         },
-        { icon: 'groups', label: 'Meine Klassen', route: '/teacher/my-classes' },
-        { icon: 'mode_heat', label: 'Notenverwaltung', route: '/teacher/manage-grades' },
       ],
       student: [
         { icon: 'dashboard', label: 'Übersicht', route: '/student/dashboard' },

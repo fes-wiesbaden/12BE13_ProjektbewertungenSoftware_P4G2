@@ -1,0 +1,18 @@
+<app-add-grade-form
+  [showModal]="isAddModalVisible"
+  [title]="'Neue Note hinzufügen'"
+  [initialData]="grades"
+  (save)="onSaveGrades($event)"
+  (close)="closeAddModal()"
+  (delete)="onDeleteGrade($event)"
+></app-add-grade-form>
+
+<app-page-header title="Note"></app-page-header>
+
+<app-table-column
+  [items]="learningFields"
+  [columns]="columns"
+  (view)="openAddModal($event)"
+  [showViewButton]="true"
+>
+</app-table-column>

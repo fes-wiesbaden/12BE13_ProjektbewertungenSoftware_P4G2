@@ -1,14 +1,12 @@
-import { Routes } from "@angular/router";
+import { Routes } from '@angular/router';
 import { TeacherDashboard } from './teacher-dashboard/teacher-dashboard';
 import { MyStudents } from './my-students/my-students';
-import { MyClasses } from './my-classes/my-classes';
 import { MyProfile } from './my-profile/my-profile';
-import { StudentGroups } from "./student-groups/student-groups";
-import { ManageGrades } from "./manage-grades/manage-grades";
-import { Projects } from "./projects/projects";
-import { Project } from "./project/project";
-import { Group } from "./group/group";
-
+import { StudentGroups } from './student-groups/student-groups';
+import { Projects } from './projects/projects';
+import { Project } from './project/project';
+import { Group } from './group/group';
+import { ManageLearningField } from './manage-learning-field/manage-learning-field';
 
 export const TeacherRoutes: Routes = [
   {
@@ -17,34 +15,30 @@ export const TeacherRoutes: Routes = [
   },
   {
     path: 'my-profile',
-    component: MyProfile
+    component: MyProfile,
   },
   {
     path: 'my-students/:classId',
-    component: MyStudents
+    component: MyStudents,
   },
   {
-    path: 'my-classes',
-    component: MyClasses
-  },
-    {
-    path: 'manage-grades',
-    component: ManageGrades
+    path: 'manage-learning-fields/:studentId',
+    component: ManageLearningField,
   },
   {
     path: 'groups',
-    component: StudentGroups
+    component: StudentGroups,
   },
   {
     path: 'groups/:groupId',
-    component: Group
+    component: Group,
   },
   {
     path: 'projects',
-    component: Projects
+    component: Projects,
   },
   {
     path: 'projects/:projectId',
-    component: Project
-  }
+    component: Project,
+  },
 ];

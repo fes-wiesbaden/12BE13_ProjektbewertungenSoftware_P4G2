@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 export interface TableColumn<T> {
-  key: keyof T;         
-  label: string;        
+  key: keyof T;
+  label: string;
   type?: 'text' | 'image';
 }
 
@@ -12,7 +12,7 @@ export interface TableColumn<T> {
   selector: 'app-table-column',
   standalone: true,
   imports: [MatIconModule, CommonModule],
-  templateUrl: './table-column.html'
+  templateUrl: './table-column.html',
 })
 export class TableColumnComponent<T extends { id?: any } = any> {
   @Input() items: T[] = [];

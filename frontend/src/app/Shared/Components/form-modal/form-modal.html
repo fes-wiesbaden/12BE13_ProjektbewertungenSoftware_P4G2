@@ -20,7 +20,12 @@
         <div class="p-6 space-y-6">
           <div class="grid grid-cols-6 gap-6">
             @for (field of fields; track $index) {
-            <div [class]="'col-span-6 sm:col-span-' + (field.colSpan || 6)">
+            <div
+              [ngClass]="{
+                'col-span-6': field.colSpan === 6,
+                'sm:col-span-3': field.colSpan === 3
+              }"
+            >
               <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
                 field.label
               }}</label>
@@ -37,10 +42,7 @@
                   }
                 </mat-select>
               </mat-form-field>
-              }
-
-              <!-- Textarea -->
-              @if (field.type === 'textarea') {
+              } @if (field.type === 'textarea') {
               <textarea
                 [(ngModel)]="formData[field.key]"
                 [name]="field.key"
@@ -49,9 +51,7 @@
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
               </textarea>
-              }
-              <!-- Input -->
-              @if (field.type !== 'textarea' && field.type !== 'select') {
+              } @if (field.type !== 'textarea' && field.type !== 'select') {
               <input
                 [(ngModel)]="formData[field.key]"
                 [name]="field.key"

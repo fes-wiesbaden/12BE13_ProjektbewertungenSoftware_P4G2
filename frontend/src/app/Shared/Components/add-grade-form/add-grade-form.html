@@ -1,0 +1,100 @@
+<div
+  [hidden]="!showModal"
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-gray-900/50 dark:bg-gray-900/60 backdrop-blur-sm p-4"
+>
+  <div class="relative w-full max-w-4xl">
+    <div class="relative bg-white rounded-lg shadow dark:bg-gray-800 max-h-[80vh] overflow-y-auto">
+      <div
+        class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700 border-gray-200"
+      >
+        <h3 class="text-xl font-semibold dark:text-white">{{ title }}</h3>
+        <button
+          (click)="onClose()"
+          class="text-gray-400 hover:bg-gray-200 rounded-lg p-1.5 dark:hover:bg-gray-700"
+        >
+          <mat-icon class="w-5 h-5">close</mat-icon>
+        </button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSave()">
+        <div class="p-6 space-y-4">
+          <div formArrayName="grades" class="space-y-4">
+            <div
+              *ngFor="let grade of grades.controls; let i = index"
+              [formGroupName]="i"
+              class="grid grid-cols-6 gap-4 border-b pb-2 items-end"
+            >
+              <ng-container *ngIf="!grade.get('deleted')?.value">
+                <div class="col-span-6 sm:col-span-2">
+                  <label class="block mb-1 text-sm font-medium dark:text-white">Name</label>
+                  <input
+                    formControlName="gradeName"
+                    type="text"
+                    class="w-full p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-1 flex flex-col">
+                  <label class="block mb-1 text-sm font-medium dark:text-white">Note</label>
+                  <input
+                    formControlName="value"
+                    type="text"
+                    class="w-full p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-1 flex flex-col">
+                  <label class="block mb-1 text-sm font-medium dark:text-white">Gewichtung</label>
+                  <input
+                    formControlName="gradeWeighting"
+                    type="text"
+                    class="w-full p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:text-white"
+                    placeholder="Gew."
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-2 flex gap-2">
+                  <button
+                    type="button"
+                    (click)="removeRow(i)"
+                    class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg shadow-md transition-all duration-200"
+                    title="Zeile löschen"
+                  >
+                    Löschen
+                  </button>
+                  <button
+                    *ngIf="grade.get('isLoaded')?.value"
+                    type="button"
+                    (click)="toggleEdit(i)"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-4 py-2 rounded-lg shadow-md transition-all duration-200"
+                  >
+                    Bearbeiten
+                  </button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            (click)="addRow()"
+            class="text-blue-600 hover:text-blue-800 font-semibold"
+          >
+            + Neue Note
+          </button>
+        </div>
+
+        <div
+          class="flex items-center justify-end p-5 border-t dark:border-gray-700 border-gray-200"
+        >
+          <button
+            type="submit"
+            class="bg-blue-700 text-white rounded-lg px-5 py-2.5 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700"
+          >
+            Speichern
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
