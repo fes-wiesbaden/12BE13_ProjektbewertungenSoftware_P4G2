@@ -5,7 +5,7 @@ import {
   TableColumn,
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
-import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
+import { FormField } from '../../../Shared/Components/form-modal/form-modal';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
@@ -14,18 +14,11 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-teacher-dashboard',
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatIconModule,
-    PageHeaderComponents,
-    TableColumnComponent,
-    FormModalComponent,
-  ],
+  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponents, TableColumnComponent],
   templateUrl: './teacher-dashboard.html',
 })
 export class TeacherDashboard {
-  classes: Class[] = [];
+  classes: { label: string; value: any }[] = [];
   myClasses: Class[] = [];
   loading = true;
 
@@ -107,11 +100,16 @@ export class TeacherDashboard {
   loadAllClasses() {
     this.classService.getClasses().subscribe({
       next: (data) => {
-        this.classes = data;
+        const formatted = data.map((c) => ({
+          label: c.courseName,
+          value: c.id,
+        }));
+
+        this.classes = formatted;
 
         const courseField = this.fields.find((f) => f.key === 'courseName');
         if (courseField) {
-          courseField.options = data.map((c) => c.courseName);
+          courseField.options = formatted;
         }
 
         this.loading = false;
@@ -120,28 +118,6 @@ export class TeacherDashboard {
         console.error('Fehler beim Laden der Klassen', err);
         this.loading = false;
       },
-    });
-  }
-
-  joinClass(formData: any) {
-    const selectedName = formData.courseName;
-
-    const selectedClass = this.classes.find((c) => c.courseName === selectedName);
-
-    if (!selectedClass) {
-      console.error('Keine Klasse mit dem Namen gefunden:', selectedName);
-      return;
-    }
-
-    const dto = { id: selectedClass.id };
-
-    this.classService.connectClass(dto).subscribe({
-      next: () => {
-        console.log('User erfolgreich zur Klasse hinzugefügt');
-        this.loadAllClasses();
-        this.closeAddModal();
-      },
-      error: (err) => console.error('Fehler beim Hinzufügen zur Klasse', err),
     });
   }
 }

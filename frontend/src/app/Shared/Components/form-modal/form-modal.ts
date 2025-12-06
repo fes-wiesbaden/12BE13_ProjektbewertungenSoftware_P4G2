@@ -6,13 +6,18 @@ import { MatSelectModule } from '@angular/material/select';
 
 export type FormFieldType = 'text' | 'password' | 'email' | 'number' | 'select' | 'textarea';
 
+export interface FormFieldOption {
+  label: string;
+  value: any;
+}
+
 export interface FormField {
   key: string;
   label: string;
   type: FormFieldType;
   placeholder?: string;
   required?: boolean;
-  options?: string[];
+  options?: FormFieldOption[];
   value?: any;
   readonly?: boolean;
   colSpan?: number;
