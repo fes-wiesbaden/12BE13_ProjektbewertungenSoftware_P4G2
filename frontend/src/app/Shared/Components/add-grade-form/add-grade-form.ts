@@ -59,20 +59,33 @@ export class AddGradeForm implements OnInit {
   }
 
   addRow(data?: any, disabled: boolean = false) {
-  const group = this.fb.group({
-    gradeName: [{ value: data?.gradeName || '', disabled }, Validators.required],
-    value: [{ value: data?.value || '', disabled }, Validators.required],
-    gradeWeighting: [{ value: data?.gradeWeighting || '', disabled }, Validators.required],
-  });
-  this.grades.push(group);
-}
+    const isLoaded = !!data;
+
+    const group = this.fb.group({
+      gradeName: [{ value: data?.gradeName || '', disabled }, Validators.required],
+      value: [{ value: data?.value || '', disabled }, Validators.required],
+      gradeWeighting: [{ value: data?.gradeWeighting || '', disabled }, Validators.required],
+      isLoaded: [isLoaded],
+      editing: [!disabled],
+    });
+    this.grades.push(group);
+  }
+
+  toggleEdit(index: number) {
+    const row = this.grades.at(index);
+
+    row.get('gradeName')?.enable();
+    row.get('value')?.enable();
+    row.get('gradeWeighting')?.enable();
+
+    row.get('isLoaded')?.setValue(false);
+  }
 
   removeRow(index: number) {
     this.grades.removeAt(index);
   }
 
   onSave() {
-    // nur die neuen (nicht-disabled) Noten zurückgeben
     const newGrades = this.grades.controls
       .filter((c) => !c.get('gradeName')?.disabled)
       .map((c) => c.value);

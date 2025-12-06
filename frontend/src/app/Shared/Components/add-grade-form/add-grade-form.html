@@ -57,6 +57,14 @@
                   >
                     Löschen
                   </button>
+                  <button
+                    *ngIf="grade.get('isLoaded')?.value"
+                    type="button"
+                    (click)="toggleEdit(i)"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-4 py-2 rounded-lg shadow-md transition-all duration-200"
+                  >
+                    Bearbeiten
+                  </button>
                 </div>
               </div>
             </div>
