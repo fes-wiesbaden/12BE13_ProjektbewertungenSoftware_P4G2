@@ -135,6 +135,7 @@ public class GradeController {
         entityFinderService.validateUserTrainingModuleAndGrade(userId, trainingModulesId, gradeId);
 
         if (dto.value() != null) grade.setValue(dto.value());
+        if (dto.gradeName() != null) grade.setGradeName(dto.gradeName());
         if (dto.gradeWeighting() != null) grade.setGradeWeighting(dto.gradeWeighting());
         if (dto.date() != null) grade.setDate(dto.date());
 
