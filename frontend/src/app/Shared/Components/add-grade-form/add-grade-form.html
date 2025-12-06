@@ -24,7 +24,7 @@
               [formGroupName]="i"
               class="grid grid-cols-6 gap-4 border-b pb-2 items-end"
             >
-              <div class="col-span-6 sm:col-span-3">
+              <div class="col-span-6 sm:col-span-2">
                 <label class="block mb-1 text-sm font-medium dark:text-white">Name</label>
                 <input
                   formControlName="gradeName"
@@ -33,39 +33,42 @@
                 />
               </div>
 
-              <div class="col-span-6 sm:col-span-3 flex flex-col">
-                <label class="block mb-1 text-sm font-medium dark:text-white"
-                  >Note & Gewichtung</label
+              <div class="col-span-6 sm:col-span-1 flex flex-col">
+                <label class="block mb-1 text-sm font-medium dark:text-white">Note</label>
+                <input
+                  formControlName="value"
+                  type="text"
+                  class="w-full p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div class="col-span-6 sm:col-span-1 flex flex-col">
+                <label class="block mb-1 text-sm font-medium dark:text-white">Gewichtung</label>
+                <input
+                  formControlName="gradeWeighting"
+                  type="text"
+                  class="w-full p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:text-white"
+                  placeholder="Gew."
+                />
+              </div>
+
+              <div class="col-span-6 sm:col-span-2 flex gap-2">
+                <button
+                  type="button"
+                  (click)="removeRow(i)"
+                  class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg shadow-md transition-all duration-200"
+                  title="Zeile löschen"
                 >
-                <div class="flex gap-2 items-center">
-                  <input
-                    formControlName="value"
-                    type="text"
-                    class="flex-1 p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:text-white"
-                  />
-                  <input
-                    formControlName="gradeWeighting"
-                    type="text"
-                    class="w-20 p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:text-white"
-                    placeholder="Gew."
-                  />
-                  <button
-                    type="button"
-                    (click)="removeRow(i)"
-                    class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg shadow-md transition-all duration-200"
-                    title="Zeile löschen"
-                  >
-                    Löschen
-                  </button>
-                  <button
-                    *ngIf="grade.get('isLoaded')?.value"
-                    type="button"
-                    (click)="toggleEdit(i)"
-                    class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-4 py-2 rounded-lg shadow-md transition-all duration-200"
-                  >
-                    Bearbeiten
-                  </button>
-                </div>
+                  Löschen
+                </button>
+                <button
+                  *ngIf="grade.get('isLoaded')?.value"
+                  type="button"
+                  (click)="toggleEdit(i)"
+                  class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-4 py-2 rounded-lg shadow-md transition-all duration-200"
+                >
+                  Bearbeiten
+                </button>
               </div>
             </div>
           </div>
