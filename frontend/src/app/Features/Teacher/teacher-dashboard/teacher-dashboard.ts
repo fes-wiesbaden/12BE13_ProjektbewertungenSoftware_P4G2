@@ -20,12 +20,11 @@ import { Router } from '@angular/router';
     MatIconModule,
     PageHeaderComponents,
     TableColumnComponent,
-    FormModalComponent,
   ],
   templateUrl: './teacher-dashboard.html',
 })
 export class TeacherDashboard {
-  classes: Class[] = [];
+  classes: { label: string; value: any }[] = [];
   myClasses: Class[] = [];
   loading = true;
 
@@ -107,41 +106,15 @@ export class TeacherDashboard {
   loadAllClasses() {
     this.classService.getClasses().subscribe({
       next: (data) => {
-        this.classes = data;
-
-        const courseField = this.fields.find((f) => f.key === 'courseName');
-        if (courseField) {
-          courseField.options = data.map((c) => c.courseName);
-        }
-
-        this.loading = false;
+      this.classes = data.map(c => ({ label: c.courseName, value: c.id }));
+      // Dropdown-Feld setzen
+      const courseField = this.fields.find(f => f.key === 'coursename');
+      if (courseField) courseField.options = this.classes;
       },
       error: (err) => {
         console.error('Fehler beim Laden der Klassen', err);
         this.loading = false;
       },
-    });
-  }
-
-  joinClass(formData: any) {
-    const selectedName = formData.courseName;
-
-    const selectedClass = this.classes.find((c) => c.courseName === selectedName);
-
-    if (!selectedClass) {
-      console.error('Keine Klasse mit dem Namen gefunden:', selectedName);
-      return;
-    }
-
-    const dto = { id: selectedClass.id };
-
-    this.classService.connectClass(dto).subscribe({
-      next: () => {
-        console.log('User erfolgreich zur Klasse hinzugefügt');
-        this.loadAllClasses();
-        this.closeAddModal();
-      },
-      error: (err) => console.error('Fehler beim Hinzufügen zur Klasse', err),
     });
   }
 }

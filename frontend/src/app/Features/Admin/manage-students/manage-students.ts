@@ -10,7 +10,8 @@ import {
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
-import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
+import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { Class } from '../../../Interfaces/class.interface';
 
 @Component({
   selector: 'app-manage-students',
@@ -22,12 +23,13 @@ import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-    DeleteButtonComponent
-],
+    DeleteButtonComponent,
+  ],
   templateUrl: './manage-students.html',
 })
 export class ManageStudents implements OnInit {
   students: User[] = [];
+  classes: Class[] = [];
   loading = true;
 
   columns: TableColumn<User>[] = [
@@ -63,12 +65,12 @@ export class ManageStudents implements OnInit {
       placeholder: 'Benutzername',
     },
     {
-      key: 'position',
-      label: 'Position',
-      type: 'text',
-      readonly: true,
-      value: 'STUDENT',
+      key: 'coursename',
+      label: 'Kursname',
+      type: 'select',
+      required: true,
       colSpan: 3,
+      options: [],
     },
     {
       key: 'password',
@@ -129,7 +131,7 @@ export class ManageStudents implements OnInit {
   role = '';
 
   tempPassword: string | null = null;
-delete: any;
+  delete: any;
 
   constructor(private studentService: StudentService) {}
 
@@ -181,6 +183,26 @@ delete: any;
     });
   }
 
+  loadClasses() {
+    this.studentService.getClasses().subscribe({
+      next: (data) => {
+        this.classes = data;
+        const courseField = this.fields.find((f) => f.key === 'coursename');
+        if (courseField) {
+          courseField.options = this.classes.map((c) => ({
+            label: c.courseName,
+            value: c.id,
+          }));
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Klassen', err);
+        this.loading = false;
+      },
+    });
+  }
+
   loadStudents() {
     this.studentService.getStudent().subscribe({
       next: (data) => {
@@ -220,15 +242,15 @@ delete: any;
   }
 
   deleteStudent() {
-  if (!this.deletingStudent) return;
-    
-  this.studentService.deleteStudent(this.deletingStudent).subscribe({
-    next: () => {
-      this.students = this.students.filter(s => s.id !== this.deletingStudent!.id);
-    },
-    error: (err) => console.error('Fehler beim Löschen', err)
-  });
-}
+    if (!this.deletingStudent) return;
+
+    this.studentService.deleteStudent(this.deletingStudent).subscribe({
+      next: () => {
+        this.students = this.students.filter((s) => s.id !== this.deletingStudent!.id);
+      },
+      error: (err) => console.error('Fehler beim Löschen', err),
+    });
+  }
 
   onResetPassword(student: User) {
     if (!confirm(`Passwort für ${student.firstName} ${student.lastName} wirklich zurücksetzen?`)) {
