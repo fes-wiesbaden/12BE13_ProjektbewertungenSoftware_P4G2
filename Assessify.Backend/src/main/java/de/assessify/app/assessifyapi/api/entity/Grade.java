@@ -20,6 +20,9 @@ public class Grade {
     @Column(name = "grade_id", nullable = false, unique = true)
     private UUID id;
 
+    @Column(name = "gradeName")
+    private String gradeName;
+
     @Column(name = "value", nullable = false)
     private float value;
 

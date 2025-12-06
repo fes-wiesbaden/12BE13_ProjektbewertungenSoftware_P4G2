@@ -49,6 +49,7 @@ public class GradeController {
                 .filter(grade -> grade.getUser().getId().equals(userId))
                 .map(g -> new GradeDto(
                         g.getId(),
+                        g.getGradeName(),
                         g.getValue(),
                         g.getGradeWeighting(),
                         g.getDate()
@@ -74,6 +75,7 @@ public class GradeController {
                         field.getGrades().stream()
                                 .map(g -> new GradeDto(
                                         g.getId(),
+                                        g.getGradeName(),
                                         g.getValue(),
                                         g.getGradeWeighting(),
                                         g.getDate()
@@ -99,8 +101,9 @@ public class GradeController {
         }
 
         Grade grade = new Grade();
+        grade.setGradeName(dto.gradeName());
         grade.setValue(dto.value());
-        grade.setGradeWeighting(dto.weighting());
+        grade.setGradeWeighting(dto.gradeWeighting());
         grade.setDate(new Date());
         grade.setTrainingModules(trainingModule);
         grade.setUser(user);
@@ -109,6 +112,7 @@ public class GradeController {
 
         GradeDto response = new GradeDto(
                 savedGrade.getId(),
+                savedGrade.getGradeName(),
                 savedGrade.getValue(),
                 savedGrade.getGradeWeighting(),
                 savedGrade.getDate()
@@ -138,6 +142,7 @@ public class GradeController {
 
         GradeDto response = new GradeDto(
                 updated.getId(),
+                updated.getGradeName(),
                 updated.getValue(),
                 updated.getGradeWeighting(),
                 updated.getDate()
