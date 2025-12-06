@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -102,6 +95,11 @@ export class AddGradeForm implements OnInit {
   }
 
   onSave() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
     const allGrades = this.grades.controls.map((c) => c.value);
 
     const newGrades = allGrades.filter((g) => !g.id && !g.deleted);
