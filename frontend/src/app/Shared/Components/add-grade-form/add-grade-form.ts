@@ -62,7 +62,7 @@ export class AddGradeForm implements OnInit {
     this.initialData.forEach((d) => this.addRow(d));
   }
 
-  addRow(data?: any) {
+  addRow(data?: Grade) {
     const isLoaded = !!data;
 
     const group = this.fb.group({
