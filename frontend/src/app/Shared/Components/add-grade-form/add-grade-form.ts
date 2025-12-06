@@ -30,8 +30,9 @@ export class AddGradeForm implements OnInit {
   @Input() title = 'Noten bearbeiten';
   @Input() initialData: Grade[] = [];
 
-  @Output() save = new EventEmitter<{ newGrades: Grade[]; updatedGrades: Grade[] }>();
+  @Output() save = new EventEmitter<{ newGrades: Grade[]; updatedGrades: Grade[]; deletedGrades: Grade[];}>();
   @Output() close = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<Grade>();
 
   form!: FormGroup;
 
@@ -68,6 +69,7 @@ export class AddGradeForm implements OnInit {
     gradeWeighting: [{ value: data?.gradeWeighting || '', disabled: !!data }, Validators.required],
     isLoaded: [isLoaded],
     editing: [!data],
+    deleted: [false],
   });
 
   this.grades.push(group);
@@ -84,16 +86,23 @@ export class AddGradeForm implements OnInit {
   }
 
   removeRow(index: number) {
+  const row = this.grades.at(index);
+  if (row.get('id')?.value) {
+    row.get('deleted')?.setValue(true);
+    row.disable();
+  } else {
     this.grades.removeAt(index);
   }
+}
 
   onSave() {
   const allGrades = this.grades.controls.map(c => c.value);
 
-  const newGrades = allGrades.filter(g => !g.id); // keine ID → neu
-  const updatedGrades = allGrades.filter(g => g.id && !g.isLoaded); // ID vorhanden & bearbeitet
+  const newGrades = allGrades.filter(g => !g.id && !g.deleted);
+  const updatedGrades = allGrades.filter(g => g.id && !g.isLoaded && !g.deleted);
+  const deletedGrades = allGrades.filter(g => g.id && g.deleted);
 
-  this.save.emit({ newGrades, updatedGrades });
+  this.save.emit({ newGrades, updatedGrades, deletedGrades });
 }
 
   onClose() {

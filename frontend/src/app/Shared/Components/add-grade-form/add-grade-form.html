@@ -23,7 +23,8 @@
               *ngFor="let grade of grades.controls; let i = index"
               [formGroupName]="i"
               class="grid grid-cols-6 gap-4 border-b pb-2 items-end"
-            >
+              >
+              <ng-container *ngIf="!grade.get('deleted')?.value">
               <div class="col-span-6 sm:col-span-2">
                 <label class="block mb-1 text-sm font-medium dark:text-white">Name</label>
                 <input
@@ -70,6 +71,7 @@
                   Bearbeiten
                 </button>
               </div>
+              </ng-container>
             </div>
           </div>
 

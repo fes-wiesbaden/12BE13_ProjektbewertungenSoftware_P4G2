@@ -33,4 +33,8 @@ export class ManageLearningFieldService {
   updateGrade(studentId: string, learningFieldId: string, gradeId: string, grade: Grade) {
   return this.http.put(`${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grade/${gradeId}`, grade);
 }
+
+deleteGrade(studentId: string, learningFieldId: string, gradeId: string) {
+  return this.http.delete(`${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grade/${gradeId}`);
+}
 }

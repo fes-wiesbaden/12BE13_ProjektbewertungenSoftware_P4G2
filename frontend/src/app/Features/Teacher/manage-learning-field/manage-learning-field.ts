@@ -38,7 +38,7 @@ export class ManageLearningField {
     this.manageLearningFieldService.getGrades(item.id, this.studentId).subscribe({
       next: (data) => {
         this.grades = data;
-        console.log(this.grades)
+        console.log(this.grades);
         this.loading = false;
         this.currentLearningFieldId = item.id;
         this.isAddModalVisible = true;
@@ -50,33 +50,48 @@ export class ManageLearningField {
     });
   }
 
+  onDeleteGrade(grade: Grade) {
+    this.manageLearningFieldService
+      .deleteGrade(this.studentId, this.currentLearningFieldId, grade.id)
+      .subscribe({
+        next: (res) => console.log('Note gelöscht', res),
+        error: (err) => console.error('Fehler beim Löschen der Note', err),
+      });
+  }
+
   closeAddModal() {
     this.isAddModalVisible = false;
   }
 
-  onSaveGrades({ newGrades, updatedGrades }: { newGrades: Grade[], updatedGrades: Grade[] }) {
-  // Neue Noten speichern (POST)
-  newGrades.forEach(grade => {
-    this.manageLearningFieldService
-      .addGrade(this.studentId, this.currentLearningFieldId, grade)
-      .subscribe({
-        next: res => console.log('Neue Note gespeichert', res),
-        error: err => console.error('Fehler beim Speichern neuer Note', err)
-      });
-  });
+  onSaveGrades({
+    newGrades,
+    updatedGrades,
+    deletedGrades,
+  }: {
+    newGrades: Grade[];
+    updatedGrades: Grade[];
+    deletedGrades: Grade[];
+  }) {
+    newGrades.forEach((grade) => {
+      this.manageLearningFieldService
+        .addGrade(this.studentId, this.currentLearningFieldId, grade)
+        .subscribe();
+    });
 
-  // Bearbeitete Noten updaten (PUT)
-  updatedGrades.forEach(grade => {
-    this.manageLearningFieldService
-      .updateGrade(this.studentId, this.currentLearningFieldId, grade.id, grade)
-      .subscribe({
-        next: res => console.log('Note aktualisiert', res),
-        error: err => console.error('Fehler beim Aktualisieren der Note', err)
-      });
-  });
+    updatedGrades.forEach((grade) => {
+      this.manageLearningFieldService
+        .updateGrade(this.studentId, this.currentLearningFieldId, grade.id, grade)
+        .subscribe();
+    });
 
-  this.isAddModalVisible = false;
-}
+    deletedGrades.forEach((grade) => {
+      this.manageLearningFieldService
+        .deleteGrade(this.studentId, this.currentLearningFieldId, grade.id)
+        .subscribe();
+    });
+
+    this.isAddModalVisible = false;
+  }
 
   ngOnInit(): void {
     const studentIdParam = this.route.snapshot.paramMap.get('studentId');
