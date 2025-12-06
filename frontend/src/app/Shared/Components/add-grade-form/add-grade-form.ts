@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -17,7 +17,7 @@ import { Grade } from '../../../Interfaces/grade.interface';
   imports: [CommonModule, FormsModule, MatIconModule, MatSelectModule, ReactiveFormsModule],
   templateUrl: './add-grade-form.html',
 })
-export class AddGradeForm implements OnInit {
+export class AddGradeForm implements OnInit, OnChanges {
   @Input() showModal = false;
   @Input() title = 'Noten bearbeiten';
   @Input() initialData: Grade[] = [];
