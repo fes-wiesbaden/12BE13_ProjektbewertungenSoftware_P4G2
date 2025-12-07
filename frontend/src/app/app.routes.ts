@@ -60,21 +60,6 @@ export const routes: Routes = [
     ],
   },
 
-{
-    path: '',
-    component: MainLayout,
-    children: [
-      {
-        path: 'change-password',
-        loadComponent: () =>
-          import('./Features/Shared/change-password/change-password').then(
-            (c) => c.ChangePasswordComponent
-          ),
-        canMatch: [AuthGuard],
-      },
-    ],
-  },
-
   {
     path: '',
     component: AuthLayout,
