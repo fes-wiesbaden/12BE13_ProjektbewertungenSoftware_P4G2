@@ -199,16 +199,9 @@
 
 @if (showChangePasswordModal) {
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 dark:bg-gray-900/60">
-  <div
-    class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full max-w-lg"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="changePasswordModalTitle"
-    tabindex="0"
-    (keydown)="onModalKeydown($event)"
-  >
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full max-w-lg">
     <div class="flex items-start justify-between mb-4">
-      <h2 id="changePasswordModalTitle" class="text-lg font-semibold text-gray-900 dark:text-white">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
         Passwort ändern
       </h2>
       <button

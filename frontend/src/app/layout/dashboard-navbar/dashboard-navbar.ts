@@ -135,7 +135,7 @@ export class DashboardNavbar implements OnInit {
         this.successMessage = 'Passwort wurde erfolgreich geändert.';
         this.loading = false;
         form.resetForm();
-        setTimeout(() => this.closeChangePasswordModal(), 2000);
+        this.closeChangePasswordModal();
       },
       error: (err) => {
         console.error(err);
