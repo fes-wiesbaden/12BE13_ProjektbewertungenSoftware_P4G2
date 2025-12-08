@@ -16,6 +16,10 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   changePassword(username: string, dto: ChangePasswordRequestDto): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${username}/change-password`, dto);
+    return this.http.post<void>(
+      `${this.apiUrl}/${encodeURIComponent(username)}/change-password`,
+      dto
+    );
   }
 }
+

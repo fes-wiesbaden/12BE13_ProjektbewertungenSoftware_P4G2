@@ -13,17 +13,18 @@
         >
           @if (sidebarStatus === 'close') {
           <svg class="size-6" si-bars-3-icon></svg>
-          } @if(sidebarStatus === 'open'){
+          } @if (sidebarStatus === 'open') {
           <svg class="size-6" si-x-mark-icon></svg>
           }
         </button>
         <a href="/" class="flex ml-2 md:mr-24">
           <span
             class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white"
-            >Friedrich Ebert Schule</span
+          >Friedrich Ebert Schule</span
           >
         </a>
       </div>
+
       <div class="flex items-center">
         <!-- Notifications -->
         <div class="relative">
@@ -33,7 +34,6 @@
             class="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
           >
             <span class="sr-only">View notifications</span>
-            <!-- Bell icon -->
             <svg
               class="w-6 h-6"
               fill="currentColor"
@@ -45,7 +45,7 @@
               ></path>
             </svg>
           </button>
-          <!-- Dropdown menu -->
+
           @if (notificationMenuOpen) {
           <div
             class="absolute right-0 z-50 max-w-sm my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:divide-gray-600 dark:bg-gray-700"
@@ -57,7 +57,6 @@
               Notifications
             </div>
             <div>
-              <!-- notifation example -->
               <a
                 href="#"
                 class="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
@@ -98,7 +97,6 @@
                 </div>
               </a>
             </div>
-            <!-- see all button for notifications -->
             <a
               href="#"
               class="block py-2 text-base font-normal text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:underline"
@@ -127,7 +125,6 @@
         <!-- Theme Toggle -->
         <button
           id="theme-toggle"
-          data-tooltip-target="tooltip-toggle"
           type="button"
           class="text-gray-500 flex items-center dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
           (click)="changeTheme()"
@@ -152,7 +149,7 @@
               />
             </button>
           </div>
-          <!-- Dropdown menu -->
+
           @if (profileMenuOpen) {
           <div
             class="absolute right-0 top-10 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
@@ -170,29 +167,22 @@
               <li>
                 <a
                   href="#"
+                  (click)="openChangePasswordModal(); $event.preventDefault()"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   role="menuitem"
-                  >Settings</a
                 >
-              </li>
-              <li>
-                <button
-                  type="button"
-                  (click)="goToChangePassword()"
-                  class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100
-                 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                  role="menuitem"
-                > Passwort ändern
-                </button>
+                  Passwort ändern
+                </a>
               </li>
               <li>
                 <a
                   href="#"
-                  (click)="signOut()"
+                  (click)="signOut(); $event.preventDefault()"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   role="menuitem"
-                  >Sign out</a
                 >
+                  Sign out
+                </a>
               </li>
             </ul>
           </div>
@@ -203,7 +193,131 @@
   </div>
 </nav>
 
-<!-- Overlay to close menus when clicking outside -->
 @if (notificationMenuOpen || profileMenuOpen) {
 <div (click)="closeMenus()" class="fixed inset-0 z-20"></div>
+}
+
+@if (showChangePasswordModal) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 dark:bg-gray-900/60">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full max-w-lg"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="changePasswordModalTitle"
+    tabindex="0"
+    (keydown)="onModalKeydown($event)"
+  >
+    <div class="flex items-start justify-between mb-4">
+      <h2 id="changePasswordModalTitle" class="text-lg font-semibold text-gray-900 dark:text-white">
+        Passwort ändern
+      </h2>
+      <button
+        type="button"
+        (click)="closeChangePasswordModal()"
+        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900
+               rounded-lg text-sm p-1.5 inline-flex items-center
+               dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        <mat-icon class="w-5 h-5">close</mat-icon>
+      </button>
+    </div>
+
+    <form #changePwdForm="ngForm" (ngSubmit)="submitChangePassword(changePwdForm)" class="space-y-4">
+      <!-- Altes Passwort -->
+      <div>
+        <label
+          for="oldPassword"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Altes Passwort</label
+        >
+        <input
+          type="password"
+          id="oldPassword"
+          name="oldPassword"
+          [(ngModel)]="oldPassword"
+          required
+          class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
+                 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label
+          for="newPassword"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Neues Passwort</label
+        >
+        <input
+          type="password"
+          id="newPassword"
+          name="newPassword"
+          [(ngModel)]="newPassword"
+          required
+          minlength="8"
+          class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
+                 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        />
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          Mindestens 8 Zeichen empfohlen.
+        </p>
+      </div>
+      <div>
+        <label
+          for="confirmPassword"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Neues Passwort wiederholen</label
+        >
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          required
+          minlength="8"
+          class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
+                 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        />
+      </div>
+
+      <!-- Fehlermeldung -->
+      <p *ngIf="errorMessage" class="text-sm text-red-600 dark:text-red-400">
+        {{ errorMessage }}
+      </p>
+
+      <!-- Erfolgsmeldung -->
+      <p *ngIf="successMessage" class="text-sm text-green-600 dark:text-green-400">
+        {{ successMessage }}
+      </p>
+
+      <!-- Buttons -->
+      <div class="flex justify-end gap-3 pt-2">
+        <button
+          type="button"
+          (click)="closeChangePasswordModal()"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg
+                 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+        >
+          Abbrechen
+        </button>
+        <button
+          type="submit"
+          [disabled]="changePwdForm.invalid || loading"
+          class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white
+                 bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300
+                 disabled:opacity-50 disabled:cursor-not-allowed
+                 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          <mat-icon class="w-4 h-4 mr-2">lock</mat-icon>
+          <span *ngIf="!loading">Passwort speichern</span>
+          <span *ngIf="loading">Speichern...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 }
