@@ -30,9 +30,9 @@ public class UserProjectGroup {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    //@ManyToOne(optional = false)
+    //@JoinColumn(name = "group_id", nullable = false)
+    //private Group group;
 
 
 
