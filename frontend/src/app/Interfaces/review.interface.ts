@@ -3,7 +3,7 @@ export interface Review {
   projectId: string;
   userId: string;
   date: string;
-  review: ReviewJson;
+  review: ReviewJson[];
 }
 export interface ReviewJson {
   questionID: number;
