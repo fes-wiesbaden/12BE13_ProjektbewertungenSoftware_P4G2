@@ -3,7 +3,7 @@ import { AdminService } from './admin.service';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { User } from '../../../Interfaces/user.interface';
+import { AddUser, User } from '../../../Interfaces/user.interface';
 import { AuthService } from '../../../core/auth/auth.service';
 import {
   TableColumn,
@@ -11,7 +11,7 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
-import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
+import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 
 @Component({
   selector: 'app-manage-admin',
@@ -23,12 +23,13 @@ import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-    DeleteButtonComponent
-],
+    DeleteButtonComponent,
+  ],
   templateUrl: './manage-admin.html',
 })
 export class ManageAdmins implements OnInit {
   admins: User[] = [];
+  classes: { label: string; value: any }[] = [];
   loading = true;
 
   showAddModel: boolean = false;
@@ -68,12 +69,12 @@ export class ManageAdmins implements OnInit {
       placeholder: 'Benutzername',
     },
     {
-      key: 'position',
-      label: 'Position',
-      type: 'text',
+      key: 'courseId',
+      label: 'Kursname',
+      type: 'select',
       readonly: true,
-      value: 'ADMIN',
       colSpan: 3,
+      options: [],
     },
     {
       key: 'password',
@@ -130,13 +131,11 @@ export class ManageAdmins implements OnInit {
   editingAdmin: User | null = null;
   deletingAdmin: User | null = null;
 
-  constructor(
-    private adminService: AdminService,
-    private authService: AuthService,
-  ) {}
+  constructor(private adminService: AdminService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadAdmin();
+    this.loadAllClasses();
   }
 
   openAddModel(): void {
@@ -200,19 +199,30 @@ export class ManageAdmins implements OnInit {
   }
 
   saveAdmin(formData: any) {
-    const dto = {
+    let courseIds: any[] = [];
+    if (Array.isArray(formData.courseId)) {
+      courseIds = formData.courseId;
+    } else if (formData.courseId) {
+      if (typeof formData.courseId === 'object' && 'value' in formData.courseId) {
+        courseIds = [formData.courseId.value];
+      } else {
+        courseIds = [formData.courseId];
+      }
+    }
+
+    const dto: AddUser = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       username: formData.username,
       password: formData.password,
       role: 3,
+      courseId: courseIds,
     };
 
     this.adminService.createAdmin(dto).subscribe({
       next: (adminUser) => {
-        this.admins.push(adminUser); // direkt zur Liste hinzufügen
+        this.admins.push(adminUser);
         this.closeAddModel();
-        // Reset Form
         this.firstName = '';
         this.lastName = '';
         this.username = '';
@@ -225,12 +235,36 @@ export class ManageAdmins implements OnInit {
 
   deleteAdmin() {
     if (!this.deletingAdmin) return;
-    
-  this.adminService.deleteAdmin(this.deletingAdmin).subscribe({
-    next: () => {
-      this.admins = this.admins.filter(s => s.id !== this.deletingAdmin!.id);
-    },
-    error: (err) => console.error('Fehler beim Löschen', err)
-  });
-}
+
+    this.adminService.deleteAdmin(this.deletingAdmin).subscribe({
+      next: () => {
+        this.admins = this.admins.filter((s) => s.id !== this.deletingAdmin!.id);
+      },
+      error: (err) => console.error('Fehler beim Löschen', err),
+    });
+  }
+
+  loadAllClasses() {
+    this.adminService.getClasses().subscribe({
+      next: (data) => {
+        const formatted = data.map((c) => ({
+          label: c.courseName,
+          value: c.id,
+        }));
+
+        this.classes = formatted;
+
+        const courseField = this.fields.find((f) => f.key === 'courseId');
+        if (courseField) {
+          courseField.options = formatted;
+        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Klassen', err);
+        this.loading = false;
+      },
+    });
+  }
 }
