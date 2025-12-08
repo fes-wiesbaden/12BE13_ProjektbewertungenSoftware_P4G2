@@ -35,7 +35,7 @@ export class ManageStudents implements OnInit {
     { key: 'firstName', label: 'First Name' },
     { key: 'lastName', label: 'Last Name' },
     { key: 'username', label: 'Username' },
-    { key: 'roleName', label: 'Role' },
+    { key: 'roleName', label: 'Rollen Name' },
   ];
 
   fields: FormField[] = [
@@ -198,19 +198,30 @@ export class ManageStudents implements OnInit {
   }
 
   saveStudent(formData: any) {
-    const dto = {
+    let courseIds: any[] = [];
+    if (Array.isArray(formData.courseId)) {
+      courseIds = formData.courseId;
+    } else if (formData.courseId) {
+      if (typeof formData.courseId === 'object' && 'value' in formData.courseId) {
+        courseIds = [formData.courseId.value];
+      } else {
+        courseIds = [formData.courseId];
+      }
+    }
+
+    const dto: AddUser = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       username: formData.username,
       password: formData.password,
       role: 2,
+      courseId: courseIds,
     };
 
     this.studentService.createStudent(dto).subscribe({
       next: (student) => {
         this.students.push(student); // direkt zur Liste hinzufügen
         this.closeAddModel();
-        // Reset Form
         this.firstName = '';
         this.lastName = '';
         this.username = '';
