@@ -2,6 +2,7 @@ package de.assessify.app.assessifyapi.api.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import de.assessify.app.assessifyapi.api.entity.Role;
 import de.assessify.app.assessifyapi.api.entity.User;
 import de.assessify.app.assessifyapi.api.repository.RoleRepository;
@@ -40,5 +41,16 @@ public class JwtService {
                 .withIssuedAt(now)
                 .withExpiresAt(expiresAt)
                 .sign(algorithm);
+    }
+
+    public DecodedJWT verifyToken(String token) {
+        return JWT.require(algorithm)
+                .build()
+                .verify(token);
+    }
+
+    public String getUsernameFromToken(String token) {
+        DecodedJWT decoded = verifyToken(token);
+        return decoded.getClaim("username").asString();
     }
 }
