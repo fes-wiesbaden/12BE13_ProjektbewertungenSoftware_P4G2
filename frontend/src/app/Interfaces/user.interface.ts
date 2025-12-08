@@ -15,7 +15,7 @@ export interface AddUser {
     username: string;
     password: string;
     role: number;
-    courseId: Class[];
+    courseId: String[];
 }
 
 export interface UpdateUser {
