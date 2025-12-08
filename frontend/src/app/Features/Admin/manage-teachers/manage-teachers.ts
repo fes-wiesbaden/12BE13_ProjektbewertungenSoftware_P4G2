@@ -193,12 +193,24 @@ export class ManageTeachers implements OnInit {
   }
 
   saveTeacher(formData: any) {
+    let courseIds: any[] = [];
+    if (Array.isArray(formData.courseId)) {
+      courseIds = formData.courseId;
+    } else if (formData.courseId) {
+      if (typeof formData.courseId === 'object' && 'value' in formData.courseId) {
+        courseIds = [formData.courseId.value];
+      } else {
+        courseIds = [formData.courseId];
+      }
+    }
+
     const dto = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       username: formData.username,
       password: formData.password,
       role: 1,
+      courseId: courseIds,
     };
 
     this.teacherService.createTeacher(dto).subscribe({
