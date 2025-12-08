@@ -71,7 +71,7 @@ export class ManageLearnfields implements OnInit {
   editingLearningfields: LearningField | null = null;
   toDeleteLearnField: LearningField | null = null;
 
-  learningfieldtext = '';
+  // learningfieldtext = '';
 
   constructor(private learningfieldService: LearningFieldService) {}
 
@@ -109,12 +109,20 @@ export class ManageLearnfields implements OnInit {
   saveEdit(formData: any) {
     if (!this.editingLearningfields) return;
 
-    const updatedLearningfields = { ...this.editingLearningfields, ...formData };
+    const dto = {
+      id: this.editingLearningfields.id,
+      name: formData.learningFieldText,
+      description: formData.description,
+      weighting: formData.weight,
+    };
 
-    this.learningfieldService.updateLearningfields(updatedLearningfields).subscribe({
+    this.learningfieldService.updateLearningfields(dto).subscribe({
       next: (res: LearningField) => {
-        const index = this.learnfields.findIndex((s) => s.id === updatedLearningfields.id);
-        if (index !== -1) this.learnfields[index] = res;
+        const index = this.learnfields.findIndex((s) => s.id === dto.id);
+        if (index !== -1) {
+          this.learnfields[index] = res;
+          this.learnfields[index];
+        }
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),

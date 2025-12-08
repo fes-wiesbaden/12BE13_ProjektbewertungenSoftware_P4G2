@@ -77,9 +77,6 @@ export class ManageQuestions implements OnInit {
 
     const updatedQuestion = { ...this.editingQuestions, ...formData };
 
-    console.log(formData);
-    console.log(updatedQuestion.id);
-
     this.questionService.updateQuestion(updatedQuestion).subscribe({
       next: (res: Question) => {
         const index = this.questions.findIndex((s) => s.id === updatedQuestion.id);
