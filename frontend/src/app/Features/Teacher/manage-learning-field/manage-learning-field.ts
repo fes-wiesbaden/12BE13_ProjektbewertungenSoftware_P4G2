@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ManageLearningFieldService } from './manage-learning-field.service';
-import { LearningField } from '../../../Interfaces/learning-field.interface';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import {
   TableColumn,
@@ -9,6 +8,7 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { AddGradeForm } from '../../../Shared/Components/add-grade-form/add-grade-form';
 import { Grade } from '../../../Interfaces/grade.interface';
+import { LearningField } from '../../../Shared/models/learning-fields.interface';
 
 @Component({
   selector: 'app-manage-learning-field',

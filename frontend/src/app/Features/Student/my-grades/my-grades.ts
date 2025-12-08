@@ -12,7 +12,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 @Component({
   selector: 'app-my-grades',
   imports: [PageHeaderComponents, TableColumnComponent],
-  templateUrl: './my-grades.html',
+  templateUrl: './my-grades.html'
 })
 export class MyGrades {
   userId!: string;
@@ -31,6 +31,7 @@ export class MyGrades {
 
   ngOnInit(): void {
     this.userId = this.authService.getUserId();
+    console.log(this.userId);
     this.loadLearningFields();
   }
 
