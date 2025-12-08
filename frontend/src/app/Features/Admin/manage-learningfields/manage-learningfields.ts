@@ -47,6 +47,7 @@ export class ManageLearnfields implements OnInit {
       type: 'text',
       required: true,
       placeholder: 'Dein Lernfeld...',
+      colSpan: 6,
     },
     {
       key: 'description',
@@ -54,6 +55,7 @@ export class ManageLearnfields implements OnInit {
       type: 'textarea',
       required: true,
       placeholder: 'Beschreibung',
+      colSpan: 6,
     },
     {
       key: 'weight',
@@ -62,6 +64,7 @@ export class ManageLearnfields implements OnInit {
       required: true,
       placeholder: 'Gewichtung 0 - 99',
       max: 99,
+      colSpan: 6,
     },
   ];
 
