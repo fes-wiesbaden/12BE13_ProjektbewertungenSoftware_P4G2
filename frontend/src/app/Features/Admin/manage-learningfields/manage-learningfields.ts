@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { LearningField } from '../../../Interfaces/learningfields.interface';
-import { LearningFieldService } from './learningfields.service';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import {
   TableColumn,
@@ -11,6 +9,8 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { LearningField } from '../../../Shared/models/learning-fields.interface';
+import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
 
 @Component({
   selector: 'app-learnfield',
@@ -71,7 +71,7 @@ export class ManageLearnfields implements OnInit {
   editingLearningfields: LearningField | null = null;
   toDeleteLearnField: LearningField | null = null;
 
-  constructor(private learningfieldService: LearningFieldService) {}
+  constructor(private learningFieldService: LearningFieldService) {}
 
   ngOnInit(): void {
     this.loadLearningfields();
@@ -114,7 +114,7 @@ export class ManageLearnfields implements OnInit {
       weighting: formData.weight,
     };
 
-    this.learningfieldService.updateLearningfields(dto).subscribe({
+    this.learningFieldService.updateLearningField(dto).subscribe({
       next: (res: LearningField) => {
         const index = this.learnfields.findIndex((s) => s.id === dto.id);
         if (index !== -1) {
@@ -127,7 +127,7 @@ export class ManageLearnfields implements OnInit {
   }
 
   loadLearningfields() {
-    this.learningfieldService.getLearningfields().subscribe({
+    this.learningFieldService.getAllLearningFields().subscribe({
       next: (data) => {
         console.log('API Data:', data);
         this.learnfields = data;
@@ -151,7 +151,7 @@ export class ManageLearnfields implements OnInit {
       weighting: formData.weight,
     };
 
-    this.learningfieldService.createLearningfields(dto).subscribe({
+    this.learningFieldService.createLearningField(dto).subscribe({
       next: (learnfield) => {
         this.learnfields.push(learnfield); // direkt zur Liste hinzufügen
         this.closeAddModel();
@@ -165,7 +165,7 @@ export class ManageLearnfields implements OnInit {
 
     const idToDelete = this.toDeleteLearnField.id;
 
-    this.learningfieldService.deleteLearnField(this.toDeleteLearnField).subscribe({
+    this.learningFieldService.deleteLearnField(this.toDeleteLearnField).subscribe({
       next: () => {
         this.learnfields = this.learnfields.filter((s) => s.id !== idToDelete);
         this.toDeleteLearnField = null;

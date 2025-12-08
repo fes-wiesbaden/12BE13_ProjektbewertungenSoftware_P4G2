@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { ClassService } from './class.service';
-import { Class } from '../../../Interfaces/class.interface';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import {
   TableColumn,
@@ -13,6 +11,8 @@ import {
   FormField,
   FormModalComponent,
 } from '../../../Shared/Components/form-modal/form-modal';
+import { CourseService } from '../../../Shared/Services/course.service';
+import { Course } from '../../../Shared/models/course.interface';
 
 @Component({
   selector: 'app-manage-classes',
@@ -28,11 +28,11 @@ import {
   templateUrl: './manage-classes.html',
 })
 export class ManageClasses implements OnInit {
-  classes: Class[] = [];
+  classes: Course[] = [];
   loading = true;
 
   // Tabellen-Spalten: keys müssen zum Interface "Class" passen
-  columns: TableColumn<Class>[] = [
+  columns: TableColumn<Course>[] = [
     { key: 'courseName', label: 'Kursname' },
     { key: 'className', label: 'Klassenname' },
   ];
@@ -63,9 +63,9 @@ export class ManageClasses implements OnInit {
 
   showAddModel = false;
   showEditModal = false;
-  editingClass: Class | null = null;
+  editingClass: Course | null = null;
 
-  constructor(private classService: ClassService) {}
+  constructor(private courceService: CourseService) {}
 
   ngOnInit(): void {
     this.loadClasses();
@@ -79,7 +79,7 @@ export class ManageClasses implements OnInit {
     this.showAddModel = false;
   }
 
-  openEditModal(schoolClass: Class) {
+  openEditModal(schoolClass: Course) {
     this.editingClass = schoolClass;
     this.showEditModal = true;
   }
@@ -90,7 +90,7 @@ export class ManageClasses implements OnInit {
   }
 
   loadClasses() {
-    this.classService.getClasses().subscribe({
+    this.courceService.getAllCourses().subscribe({
       next: (data) => {
         this.classes = data;
         this.loading = false;
@@ -109,7 +109,7 @@ export class ManageClasses implements OnInit {
       name: formData.courseName, // Backend erwartet Feld "name"
     };
 
-    this.classService.createClass(dto).subscribe({
+    this.courceService.createCource(dto).subscribe({
       next: (schoolclass) => {
         this.classes.push(schoolclass);
         this.closeAddModel();
@@ -127,8 +127,8 @@ export class ManageClasses implements OnInit {
       name: formData.courseName, // wieder Mapping zum Backend-DTO
     };
 
-    this.classService.updateClass(dto).subscribe({
-      next: (res: Class) => {
+    this.courceService.updateCource(dto).subscribe({
+      next: (res: Course) => {
         const index = this.classes.findIndex((s) => s.id === res.id);
         if (index !== -1) this.classes[index] = res;
         this.closeEditModal();

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Class } from '../../../Interfaces/class.interface';
 import {
   TableColumn,
   TableColumnComponent,
@@ -9,8 +8,9 @@ import { FormField } from '../../../Shared/Components/form-modal/form-modal';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
-import { TeacherDashboardService } from './teacher-dashboard.service';
 import { Router } from '@angular/router';
+import { CourseService } from '../../../Shared/Services/course.service';
+import { Course } from '../../../Shared/models/course.interface';
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -19,10 +19,10 @@ import { Router } from '@angular/router';
 })
 export class TeacherDashboard {
   classes: { label: string; value: any }[] = [];
-  myClasses: Class[] = [];
+  myClasses: Course[] = [];
   loading = true;
 
-  columns: TableColumn<Class>[] = [
+  columns: TableColumn<Course>[] = [
     { key: 'courseName', label: 'Kursname' },
     { key: 'className', label: 'Klassenname' },
   ];
@@ -51,10 +51,10 @@ export class TeacherDashboard {
 
   showAddModal = false;
   showEditModal = false;
-  editingClass: Class | null = null;
-  addClass: Class | null = null;
+  editingClass: Course | null = null;
+  addClass: Course | null = null;
 
-  constructor(private classService: TeacherDashboardService, private router: Router) {}
+  constructor(private router: Router, private courseService: CourseService) {}
 
   ngOnInit(): void {
     this.loadMyClasses();
@@ -69,7 +69,7 @@ export class TeacherDashboard {
     this.showAddModal = false;
   }
 
-  openEditModal(schoolClass: Class) {
+  openEditModal(schoolClass: Course) {
     this.editingClass = schoolClass;
     this.showEditModal = true;
   }
@@ -85,7 +85,7 @@ export class TeacherDashboard {
   }
 
   loadMyClasses() {
-    this.classService.getMyClasses().subscribe({
+    this.courseService.getCoursesByUser().subscribe({
       next: (data) => {
         this.myClasses = data;
         this.loading = false;
@@ -98,7 +98,7 @@ export class TeacherDashboard {
   }
 
   loadAllClasses() {
-    this.classService.getClasses().subscribe({
+    this.courseService.getAvailableCourses().subscribe({
       next: (data) => {
         const formatted = data.map((c) => ({
           label: c.courseName,

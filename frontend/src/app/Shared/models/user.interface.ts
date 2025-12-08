@@ -1,11 +1,8 @@
-import { Class } from "./class.interface";
-
 export interface User {
   id: string;
   firstName: string;
   lastName: string;
   username: string;
-  avatarUrl?: string;
   roleName: string;
 }
 

@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { TeacherService } from './teacher.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { User } from '../../../Interfaces/user.interface';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import {
   TableColumn,
@@ -11,6 +9,8 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { UserService } from '../../../Shared/Services/user.service';
+import { User } from '../../../Shared/models/user.interface';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -128,7 +128,7 @@ export class ManageTeachers implements OnInit {
   password = '';
   role = '';
 
-  constructor(private teacherService: TeacherService) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
     this.loadTeachers();
@@ -168,7 +168,7 @@ export class ManageTeachers implements OnInit {
     console.log(formData);
     console.log(updatedTeacher.id);
 
-    this.teacherService.updateTeacher(updatedTeacher).subscribe({
+    this.userService.updateUser(updatedTeacher).subscribe({
       next: (res: User) => {
         const index = this.teachers.findIndex((s) => s.id === updatedTeacher.id);
         if (index !== -1) this.teachers[index] = res;
@@ -179,7 +179,7 @@ export class ManageTeachers implements OnInit {
   }
 
   loadTeachers() {
-    this.teacherService.getTeachers().subscribe({
+    this.userService.getUsersByRoleId(1).subscribe({
       next: (data) => {
         console.log('API Data:', data);
         this.teachers = data;
@@ -213,7 +213,7 @@ export class ManageTeachers implements OnInit {
       courseId: courseIds,
     };
 
-    this.teacherService.createTeacher(dto).subscribe({
+    this.userService.createUserByRoleId(1, dto).subscribe({
       next: (teacher) => {
         this.teachers.push(teacher); // direkt zur Liste hinzufügen
         this.closeAddModel();
@@ -231,7 +231,7 @@ export class ManageTeachers implements OnInit {
   deleteTeacher() {
     if (!this.deletingTeacher) return;
 
-    this.teacherService.deleteTeacher(this.deletingTeacher).subscribe({
+    this.userService.deleteUser(this.deletingTeacher).subscribe({
       next: () => {
         this.teachers = this.teachers.filter((s) => s.id !== this.deletingTeacher!.id);
       },
