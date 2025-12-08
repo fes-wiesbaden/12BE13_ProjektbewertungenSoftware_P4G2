@@ -17,7 +17,7 @@ export class StudentService {
   private apiUrlClasses = 'http://localhost:4100/api/school-class';
 
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient) {}
 
   getStudent(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/role/2`);
