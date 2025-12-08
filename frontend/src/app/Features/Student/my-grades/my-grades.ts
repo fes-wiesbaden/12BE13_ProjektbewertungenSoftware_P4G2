@@ -31,7 +31,6 @@ export class MyGrades {
 
   ngOnInit(): void {
     this.userId = this.authService.getUserId();
-    console.log(this.userId);
     this.loadLearningFields();
   }
 

@@ -8,6 +8,6 @@ export interface Course {
   className: string;
 }
 
-export interface ConnectCource {
+export interface ConnectCourse {
   id: string;
 }

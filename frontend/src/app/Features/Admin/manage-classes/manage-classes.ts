@@ -65,7 +65,7 @@ export class ManageClasses implements OnInit {
   showEditModal = false;
   editingClass: Course | null = null;
 
-  constructor(private courceService: CourseService) {}
+  constructor(private courseService: CourseService) {}
 
   ngOnInit(): void {
     this.loadClasses();
@@ -90,7 +90,7 @@ export class ManageClasses implements OnInit {
   }
 
   loadClasses() {
-    this.courceService.getAllCourses().subscribe({
+    this.courseService.getAllCourses().subscribe({
       next: (data) => {
         this.classes = data;
         this.loading = false;
@@ -109,7 +109,7 @@ export class ManageClasses implements OnInit {
       name: formData.courseName, // Backend erwartet Feld "name"
     };
 
-    this.courceService.createCource(dto).subscribe({
+    this.courseService.createCourse(dto).subscribe({
       next: (schoolclass) => {
         this.classes.push(schoolclass);
         this.closeAddModel();
@@ -127,7 +127,7 @@ export class ManageClasses implements OnInit {
       name: formData.courseName, // wieder Mapping zum Backend-DTO
     };
 
-    this.courceService.updateCource(dto).subscribe({
+    this.courseService.updateCourse(dto).subscribe({
       next: (res: Course) => {
         const index = this.classes.findIndex((s) => s.id === res.id);
         if (index !== -1) this.classes[index] = res;
