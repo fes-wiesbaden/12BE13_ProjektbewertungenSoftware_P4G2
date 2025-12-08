@@ -10,7 +10,7 @@ import {
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
-import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
+import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -22,8 +22,8 @@ import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-    DeleteButtonComponent
-],
+    DeleteButtonComponent,
+  ],
   templateUrl: './manage-teachers.html',
 })
 export class ManageTeachers implements OnInit {
@@ -230,12 +230,12 @@ export class ManageTeachers implements OnInit {
 
   deleteTeacher() {
     if (!this.deletingTeacher) return;
-    
-  this.teacherService.deleteTeacher(this.deletingTeacher).subscribe({
-    next: () => {
-      this.teachers = this.teachers.filter(s => s.id !== this.deletingTeacher!.id);
-    },
-    error: (err) => console.error('Fehler beim Löschen', err)
-  });
-}
+
+    this.teacherService.deleteTeacher(this.deletingTeacher).subscribe({
+      next: () => {
+        this.teachers = this.teachers.filter((s) => s.id !== this.deletingTeacher!.id);
+      },
+      error: (err) => console.error('Fehler beim Löschen', err),
+    });
+  }
 }
