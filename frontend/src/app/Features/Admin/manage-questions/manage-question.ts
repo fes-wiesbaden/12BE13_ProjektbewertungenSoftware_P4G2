@@ -2,14 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { Question } from '../../../Interfaces/question.interface';
-import { QuestionService } from './question.service';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import {
   TableColumn,
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
+import { Question } from '../../../Shared/models/question.interface';
+import { QuestionService } from '../../../Shared/Services/question.service';
 
 @Component({
   selector: 'app-question',
@@ -89,7 +89,7 @@ export class ManageQuestions implements OnInit {
   }
 
   loadQuestions() {
-    this.questionService.getQuestions().subscribe({
+    this.questionService.getAllQuestions().subscribe({
       next: (data) => {
         console.log('API Data:', data);
         this.questions = data;

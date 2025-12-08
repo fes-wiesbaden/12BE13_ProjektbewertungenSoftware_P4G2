@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon";
-import { User } from '../../../Interfaces/user.interface';
 
 @Component({
   selector: 'app-delete-button',

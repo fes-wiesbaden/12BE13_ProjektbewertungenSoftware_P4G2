@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from './admin.service';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AddUser, User } from '../../../Interfaces/user.interface';
 import { AuthService } from '../../../core/auth/auth.service';
 import {
   TableColumn,
@@ -12,6 +10,8 @@ import {
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { User, AddUser } from '../../../Shared/models/user.interface';
+import { UserService } from '../../../Shared/Services/user.service';
 
 @Component({
   selector: 'app-manage-admin',
@@ -131,7 +131,7 @@ export class ManageAdmins implements OnInit {
   editingAdmin: User | null = null;
   deletingAdmin: User | null = null;
 
-  constructor(private adminService: AdminService, private authService: AuthService) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
     this.loadAdmin();
@@ -173,7 +173,7 @@ export class ManageAdmins implements OnInit {
     console.log(formData);
     console.log(updatedAdmin.id);
 
-    this.adminService.updateAdmin(updatedAdmin).subscribe({
+    this.userService.updateUser(updatedAdmin).subscribe({
       next: (res: User) => {
         const index = this.admins.findIndex((s) => s.id === updatedAdmin.id);
         if (index !== -1) this.admins[index] = res;
@@ -184,7 +184,7 @@ export class ManageAdmins implements OnInit {
   }
 
   loadAdmin() {
-    this.adminService.getAdmins().subscribe({
+    this.userService.getUsersByRoleId(3).subscribe({
       next: (data) => {
         console.log('API Data:', data);
         this.admins = data;
@@ -218,7 +218,7 @@ export class ManageAdmins implements OnInit {
       courseId: courseIds,
     };
 
-    this.adminService.createAdmin(dto).subscribe({
+    this.userService.createUserByRoleId(3, dto).subscribe({
       next: (adminUser) => {
         this.admins.push(adminUser);
         this.closeAddModel();
@@ -235,7 +235,7 @@ export class ManageAdmins implements OnInit {
   deleteAdmin() {
     if (!this.deletingAdmin) return;
 
-    this.adminService.deleteAdmin(this.deletingAdmin).subscribe({
+    this.userService.deleteUser(this.deletingAdmin).subscribe({
       next: () => {
         this.admins = this.admins.filter((s) => s.id !== this.deletingAdmin!.id);
       },

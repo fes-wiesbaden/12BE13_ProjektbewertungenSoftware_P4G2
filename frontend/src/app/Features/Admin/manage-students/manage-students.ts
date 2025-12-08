@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AddUser, User } from '../../../Interfaces/user.interface';
-import { StudentService } from './student.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +9,9 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { UserService } from '../../../Shared/Services/user.service';
+import { CourseService } from '../../../Shared/Services/course.service';
+import { AddUser, User } from '../../../Shared/models/user.interface';
 
 @Component({
   selector: 'app-manage-students',
@@ -132,7 +133,7 @@ export class ManageStudents implements OnInit {
   tempPassword: string | null = null;
   delete: any;
 
-  constructor(private studentService: StudentService) {}
+  constructor(private userService: UserService, private courseService: CourseService) {}
 
   ngOnInit(): void {
     this.loadStudents();
@@ -173,7 +174,7 @@ export class ManageStudents implements OnInit {
     console.log(formData);
     console.log(updatedStudent.id);
 
-    this.studentService.updateStudent(updatedStudent).subscribe({
+    this.userService.updateUser(updatedStudent).subscribe({
       next: (res: User) => {
         const index = this.students.findIndex((s) => s.id === updatedStudent.id);
         if (index !== -1) this.students[index] = res;
@@ -184,7 +185,7 @@ export class ManageStudents implements OnInit {
   }
 
   loadStudents() {
-    this.studentService.getStudent().subscribe({
+    this.userService.getUsersByRoleId(2).subscribe({
       next: (data) => {
         console.log('API Data:', data);
         this.students = data;
@@ -218,7 +219,7 @@ export class ManageStudents implements OnInit {
       courseId: courseIds,
     };
 
-    this.studentService.createStudent(dto).subscribe({
+    this.userService.createUserByRoleId(2, dto).subscribe({
       next: (student) => {
         this.students.push(student); // direkt zur Liste hinzufügen
         this.closeAddModel();
@@ -235,7 +236,7 @@ export class ManageStudents implements OnInit {
   deleteStudent() {
     if (!this.deletingStudent) return;
 
-    this.studentService.deleteStudent(this.deletingStudent).subscribe({
+    this.userService.deleteUser(this.deletingStudent).subscribe({
       next: () => {
         this.students = this.students.filter((s) => s.id !== this.deletingStudent!.id);
       },
@@ -248,7 +249,7 @@ export class ManageStudents implements OnInit {
       return;
     }
 
-    this.studentService.resetPassword(student.id).subscribe({
+    this.userService.resetPassword(student.id).subscribe({
       next: (res) => {
         console.log('Neues temporäres Passwort:', res.temporaryPassword);
         this.tempPassword = res.temporaryPassword;
@@ -261,7 +262,7 @@ export class ManageStudents implements OnInit {
   }
 
   loadAllClasses() {
-    this.studentService.getClasses().subscribe({
+    this.courseService.getAllCourses().subscribe({
       next: (data) => {
         const formatted = data.map((c) => ({
           label: c.courseName,

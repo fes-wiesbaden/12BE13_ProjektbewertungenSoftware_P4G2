@@ -8,8 +8,8 @@ import {
   TableColumn,
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
-import { User } from '../../../Interfaces/user.interface';
 import { MyStudentsService } from './my-students.service';
+import { User } from '../../../Shared/models/user.interface';
 
 @Component({
   selector: 'app-my-students',
