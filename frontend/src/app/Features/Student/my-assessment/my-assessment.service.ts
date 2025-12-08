@@ -11,7 +11,7 @@ export class MyAssessmentService {
 
   constructor(private http: HttpClient) {}
 
-  postSelbstFremd(dto: Review): Observable<Review> {
+  createSelbstFremd(dto: Review): Observable<Review> {
       return this.http.post<Review>(`${this.apiUrl}/user/${dto.userId}/project/${dto.projectId}/review`, dto);
     }
 }
