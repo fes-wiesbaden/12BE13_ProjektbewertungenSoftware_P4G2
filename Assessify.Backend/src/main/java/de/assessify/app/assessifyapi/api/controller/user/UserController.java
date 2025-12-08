@@ -1,9 +1,11 @@
 package de.assessify.app.assessifyapi.api.controller.user;
 
-import de.assessify.app.assessifyapi.api.dtos.request.AddUserDto;
+import de.assessify.app.assessifyapi.api.dtos.request.AddUserWithCourseDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateUserDto;
 import de.assessify.app.assessifyapi.api.dtos.response.UserDto;
+import de.assessify.app.assessifyapi.api.entity.SchoolClass;
 import de.assessify.app.assessifyapi.api.repository.RoleRepository;
+import de.assessify.app.assessifyapi.api.repository.SchoolClassRepository;
 import de.assessify.app.assessifyapi.api.repository.UserRepository;
 import de.assessify.app.assessifyapi.api.entity.User;
 import org.springframework.http.HttpStatus;
@@ -12,12 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import de.assessify.app.assessifyapi.api.dtos.request.ChangePasswordRequestDto;
-import java.security.Principal;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import de.assessify.app.assessifyapi.api.dtos.response.ResetPasswordResponseDto;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import java.util.List;
@@ -28,12 +28,14 @@ public class UserController {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final SchoolClassRepository schoolClassRepository;
 
     public UserController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
-            RoleRepository roleRepository) {
+                          RoleRepository roleRepository, SchoolClassRepository schoolClassRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.schoolClassRepository = schoolClassRepository;
     }
 
     @GetMapping("/role/{roleId}")
@@ -80,7 +82,10 @@ public class UserController {
     }
 
     @PostMapping("/role/{roleId}")
-    public ResponseEntity<UserDto> createUserByRoleId(@RequestBody AddUserDto dto, @PathVariable Integer roleId) {
+    public ResponseEntity<UserDto> createUserByRole(
+            @RequestBody AddUserWithCourseDto dto,
+            @PathVariable Integer roleId) {
+
         User user = new User();
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
@@ -88,10 +93,19 @@ public class UserController {
         user.setUsername(dto.username());
         user.setRoleId(roleId);
 
+        if (dto.courseId() != null && !dto.courseId().isEmpty()) {
+            List<SchoolClass> classesToAssign = new ArrayList<>();
+            for (UUID classId : dto.courseId()) {
+                SchoolClass schoolClass = schoolClassRepository.findById(classId)
+                        .orElseThrow(() -> new RuntimeException("Klasse nicht gefunden: " + classId));
+                classesToAssign.add(schoolClass);
+            }
+            user.setSchoolClasses(classesToAssign);
+        }
+
         User savedUser = userRepository.save(user);
 
-        var role = roleRepository.findById(savedUser.getRoleId())
-                .orElse(null);
+        var role = roleRepository.findById(savedUser.getRoleId()).orElse(null);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new UserDto(
@@ -100,7 +114,8 @@ public class UserController {
                         savedUser.getLastName(),
                         savedUser.getUsername(),
                         savedUser.getCreatedAt(),
-                        role != null ? role.getName() : null));
+                        role != null ? role.getName() : null
+                ));
     }
 
     @DeleteMapping("/{userId}")
