@@ -10,7 +10,7 @@ import {
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
-import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/delete-button";
+import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 
 @Component({
   selector: 'app-manage-students',
@@ -22,19 +22,20 @@ import { DeleteButtonComponent } from "../../../Shared/Components/delete-button/
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
-    DeleteButtonComponent
-],
+    DeleteButtonComponent,
+  ],
   templateUrl: './manage-students.html',
 })
 export class ManageStudents implements OnInit {
   students: User[] = [];
+  classes: { label: string; value: any }[] = [];
   loading = true;
 
   columns: TableColumn<User>[] = [
     { key: 'firstName', label: 'First Name' },
     { key: 'lastName', label: 'Last Name' },
     { key: 'username', label: 'Username' },
-    { key: 'roleName', label: 'Role' },
+    { key: 'roleName', label: 'Rollen Name' },
   ];
 
   fields: FormField[] = [
@@ -63,12 +64,12 @@ export class ManageStudents implements OnInit {
       placeholder: 'Benutzername',
     },
     {
-      key: 'position',
-      label: 'Position',
-      type: 'text',
-      readonly: true,
-      value: 'STUDENT',
+      key: 'courseId',
+      label: 'Kursname',
+      type: 'select',
+      required: true,
       colSpan: 3,
+      options: [],
     },
     {
       key: 'password',
@@ -129,12 +130,13 @@ export class ManageStudents implements OnInit {
   role = '';
 
   tempPassword: string | null = null;
-delete: any;
+  delete: any;
 
   constructor(private studentService: StudentService) {}
 
   ngOnInit(): void {
     this.loadStudents();
+    this.loadAllClasses();
   }
 
   openEditModal(student: User) {
@@ -166,14 +168,14 @@ delete: any;
   saveEdit(formData: any) {
     if (!this.editingStudent) return;
 
-    const updatedTeacher = { ...this.editingStudent, ...formData };
+    const updatedStudent = { ...this.editingStudent, ...formData };
 
     console.log(formData);
-    console.log(updatedTeacher.id);
+    console.log(updatedStudent.id);
 
-    this.studentService.updateStudent(updatedTeacher).subscribe({
+    this.studentService.updateStudent(updatedStudent).subscribe({
       next: (res: User) => {
-        const index = this.students.findIndex((s) => s.id === updatedTeacher.id);
+        const index = this.students.findIndex((s) => s.id === updatedStudent.id);
         if (index !== -1) this.students[index] = res;
         this.closeEditModal();
       },
@@ -196,19 +198,30 @@ delete: any;
   }
 
   saveStudent(formData: any) {
-    const dto = {
+    let courseIds: any[] = [];
+    if (Array.isArray(formData.courseId)) {
+      courseIds = formData.courseId;
+    } else if (formData.courseId) {
+      if (typeof formData.courseId === 'object' && 'value' in formData.courseId) {
+        courseIds = [formData.courseId.value];
+      } else {
+        courseIds = [formData.courseId];
+      }
+    }
+
+    const dto: AddUser = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       username: formData.username,
       password: formData.password,
       role: 2,
+      courseId: courseIds,
     };
 
     this.studentService.createStudent(dto).subscribe({
       next: (student) => {
         this.students.push(student); // direkt zur Liste hinzufügen
         this.closeAddModel();
-        // Reset Form
         this.firstName = '';
         this.lastName = '';
         this.username = '';
@@ -220,15 +233,15 @@ delete: any;
   }
 
   deleteStudent() {
-  if (!this.deletingStudent) return;
-    
-  this.studentService.deleteStudent(this.deletingStudent).subscribe({
-    next: () => {
-      this.students = this.students.filter(s => s.id !== this.deletingStudent!.id);
-    },
-    error: (err) => console.error('Fehler beim Löschen', err)
-  });
-}
+    if (!this.deletingStudent) return;
+
+    this.studentService.deleteStudent(this.deletingStudent).subscribe({
+      next: () => {
+        this.students = this.students.filter((s) => s.id !== this.deletingStudent!.id);
+      },
+      error: (err) => console.error('Fehler beim Löschen', err),
+    });
+  }
 
   onResetPassword(student: User) {
     if (!confirm(`Passwort für ${student.firstName} ${student.lastName} wirklich zurücksetzen?`)) {
@@ -243,6 +256,30 @@ delete: any;
       error: (err) => {
         console.error('Fehler beim Zurücksetzen des Passworts', err);
         alert('Passwort konnte nicht zurückgesetzt werden.');
+      },
+    });
+  }
+
+  loadAllClasses() {
+    this.studentService.getClasses().subscribe({
+      next: (data) => {
+        const formatted = data.map((c) => ({
+          label: c.courseName,
+          value: c.id,
+        }));
+
+        this.classes = formatted;
+
+        const courseField = this.fields.find((f) => f.key === 'courseId');
+        if (courseField) {
+          courseField.options = formatted;
+        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Klassen', err);
+        this.loading = false;
       },
     });
   }

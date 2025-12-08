@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User, AddUser, UpdateUser } from '../../../Interfaces/user.interface';
+import { Class } from '../../../Interfaces/class.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminService {
   private apiUrl = 'http://localhost:4100/api/users';
+  private apiUrlClasses = 'http://localhost:4100/api/school-class';
 
   constructor(private http: HttpClient) {}
 

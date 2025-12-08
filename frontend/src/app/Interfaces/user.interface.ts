@@ -1,3 +1,5 @@
+import { Class } from "./class.interface";
+
 export interface User {
   id: string;
   firstName: string;
@@ -13,6 +15,7 @@ export interface AddUser {
     username: string;
     password: string;
     role: number;
+    courseId: String[];
 }
 
 export interface UpdateUser {

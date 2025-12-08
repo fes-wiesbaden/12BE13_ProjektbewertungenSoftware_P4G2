@@ -1,13 +1,4 @@
-<app-form-modal
-  [showModal]="showAddModal"
-  [title]="'Kurs beitreten'"
-  [fields]="fields"
-  (close)="closeAddModal()"
-  (save)="joinClass($event)"
->
-</app-form-modal>
-
-<app-page-header title="Kurs" [showAddButton]="true" (addClick)="openAddModal()"> </app-page-header>
+<app-page-header title="Kurs" [showAddButton]="false"> </app-page-header>
 
 <app-table-column
   [items]="myClasses"
