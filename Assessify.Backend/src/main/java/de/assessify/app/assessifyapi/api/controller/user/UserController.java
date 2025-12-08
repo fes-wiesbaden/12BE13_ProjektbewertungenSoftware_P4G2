@@ -97,7 +97,7 @@ public class UserController {
             List<SchoolClass> classesToAssign = new ArrayList<>();
             for (UUID classId : dto.courseId()) {
                 SchoolClass schoolClass = schoolClassRepository.findById(classId)
-                        .orElseThrow(() -> new RuntimeException("Klasse nicht gefunden: " + classId));
+                        .orElseThrow(() -> new RuntimeException("Course not found: " + classId));
                 classesToAssign.add(schoolClass);
             }
             user.setSchoolClasses(classesToAssign);
