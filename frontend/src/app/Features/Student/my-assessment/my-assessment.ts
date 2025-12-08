@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { Review, ReviewJson } from '../../../Interfaces/review.interface';
 import { MyAssessmentService } from './my-assessment.service';
 import { AuthService } from '../../../core/auth/auth.service';
+
 @Component({
   selector: 'app-my-results',
   imports: [ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, CommonModule],
@@ -29,62 +30,7 @@ export class MyAssessment {
   form: FormGroup;
   reviewJson: ReviewJson[] = [];
 
-  questions = [
-    {
-      id: 0,
-      question: 'Wie schätzen Sie das Engagement im Projekt ein?',
-    },
-
-    {
-      id: 1,
-      question: 'Wie zielgerichtet wurde an der Aufgabenstellung gearbeitet?',
-    },
-
-    // {
-    //   id: 2,
-    //   question: 'Wie beurteilen Sie die Zusammenarbeit mit den anderen Gruppenmitgliedern?'
-    // },
-
-    // {
-    //   id: 3,
-    //   question: 'Wie beurteilen Sie das Arbeitsverhalten?'
-    // },
-
-    // {
-    //   id: 4,
-    //   question: 'Wie beurteilen Sie das Engagement hinsichtlich der Aufgabenbearbeitung am Arduino mit Sensoren/Aktoren?'
-    // },
-
-    // {
-    //   id: 5,
-    //   question: 'Beurteilen Sie das Engagement bei der Realisierung der Netzwerk-Funktionalität (MQTT/Vernetzung)?'
-    // },
-
-    // {
-    //   id: 6,
-    //   question: 'Wie war das Engagement bei der Umsetzung der Datenbank?'
-    // },
-
-    // {
-    //   id: 7,
-    //   question: 'Wie war das Engagement bei der Gestaltung und Entwicklung der Benutzerschnittstellen?'
-    // },
-
-    // {
-    //   id: 8,
-    //   question: 'Beurteilen Sie das Engagement bei der Realisierung der Funktionalität (Java-Backend/Vernetzung)?'
-    // },
-
-    // {
-    //   id: 9,
-    //   question: 'Beurteilen Sie die Mitarbeit bei der Erstellung des Werbeflyers?'
-    // },
-
-    // {
-    //   id: 10,
-    //   question: 'Welche Gesamtnote würden Sie der jeweiligen Person für Ihren Beitrag zum Gelingen des Projektes geben?'
-    // }
-  ];
+  questions: { id: string; questionText: string }[] = [];
 
   frage = 0;
 
@@ -97,6 +43,12 @@ export class MyAssessment {
   ];
 
   ratings: number[] = this.members.map((_) => 0);
+
+  ngOnInit(): void {
+    this.reviewService.getQuestions().subscribe((data) => {
+      this.questions = data;
+    });
+  }
 
   setRating(memberId: number, value: number) {
     this.ratings[memberId] = value;
@@ -116,26 +68,6 @@ export class MyAssessment {
 
     const missing = this.members.filter((m) => this.ratings[m.id] === 0).map((m) => m.name);
 
-    // this.members.forEach((m) => {
-    //   const ctrl = this.ratings[m.id];
-    //   if (ctrl === 0) {
-    //     missing.push(m.name);
-    //   }
-    // });
-
-    // if (missing.length > 0) {
-    //   alert(`❌ Folgende Mitglieder fehlen noch: ${missing.join(', ')}`);
-    //   this.form.markAllAsTouched();
-    // } else {
-    //   this.bewertung.set(this.questions[this.frage].question, this.ratings);
-    //   if (this.reviewJson.length < this.questions.length) {
-    //     this.createJson(this.questions[this.frage].id, this.members, this.ratings);
-    //   }
-    //   this.ratings = [0, 0, 0, 0, 0];
-    //   if (this.frage < this.questions.length - 1) {
-    //     this.frage++;
-    //   }
-    // }
     if (missing.length > 0) {
       alert(`❌ Folgende Mitglieder fehlen noch: ${missing.join(', ')}`);
     } else {
@@ -148,16 +80,16 @@ export class MyAssessment {
     }
   }
 
-  // createJson(currentQuestion: number, members: { id: number; name: string }[], ratings: number[]) {
-  createJson(currentQuestionId: number) {
+  createJson(currentQuestionId: string) {
     const students = this.members.map((m) => ({
       studentID: m.id,
       grade: this.ratings[m.id],
     }));
+    const question = this.questions.find((q) => q.id === currentQuestionId);
 
     const json: ReviewJson = {
       questionID: currentQuestionId,
-      questionText: this.questions[currentQuestionId].question,
+      questionText: question?.questionText ?? '',
       students: students,
     };
 
@@ -165,17 +97,13 @@ export class MyAssessment {
   }
 
   submitRating() {
-    console.log('submitRating');
-    console.log(this.reviewJson);
-
     const reviewPayload: Review = {
-      id: '',
-      projectId: this.projectId,
+      questionId: '',
+      projectId: '1', //this.projectId,
       userId: this.authService.getUserId(),
       date: new Date().toISOString(),
       review: this.reviewJson,
     };
-    console.log(reviewPayload);
 
     this.reviewService.createSelbstFremd(reviewPayload).subscribe((res) => {
       console.log('Gespeichert:', res);

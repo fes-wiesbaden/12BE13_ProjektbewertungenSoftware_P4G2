@@ -1,12 +1,12 @@
 export interface Review {
-  id: string;
+  questionId: string;
   projectId: string;
   userId: string;
   date: string;
   review: ReviewJson[];
 }
 export interface ReviewJson {
-  questionID: number;
+  questionID: string;
   questionText: string;
   students: Array<{ studentID: number; grade: number }>;
 }

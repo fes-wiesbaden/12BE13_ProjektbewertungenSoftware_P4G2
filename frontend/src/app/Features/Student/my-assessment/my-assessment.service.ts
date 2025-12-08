@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Review } from '../../../Interfaces/review.interface';
+import { Question } from '../../../Interfaces/question.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,13 @@ export class MyAssessmentService {
   constructor(private http: HttpClient) {}
 
   createSelbstFremd(dto: Review): Observable<Review> {
-      return this.http.post<Review>(`${this.apiUrl}/user/${dto.userId}/project/${dto.projectId}/review`, dto);
-    }
+    return this.http.post<Review>(
+      `${this.apiUrl}/user/${dto.userId}/project/${dto.projectId}/review`,
+      dto
+    );
+  }
+
+  getQuestions(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/question`);
+  }
 }
