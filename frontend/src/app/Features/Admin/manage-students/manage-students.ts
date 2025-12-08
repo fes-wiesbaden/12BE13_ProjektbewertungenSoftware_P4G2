@@ -168,14 +168,14 @@ export class ManageStudents implements OnInit {
   saveEdit(formData: any) {
     if (!this.editingStudent) return;
 
-    const updatedTeacher = { ...this.editingStudent, ...formData };
+    const updatedStudent = { ...this.editingStudent, ...formData };
 
     console.log(formData);
-    console.log(updatedTeacher.id);
+    console.log(updatedStudent.id);
 
-    this.studentService.updateStudent(updatedTeacher).subscribe({
+    this.studentService.updateStudent(updatedStudent).subscribe({
       next: (res: User) => {
-        const index = this.students.findIndex((s) => s.id === updatedTeacher.id);
+        const index = this.students.findIndex((s) => s.id === updatedStudent.id);
         if (index !== -1) this.students[index] = res;
         this.closeEditModal();
       },
