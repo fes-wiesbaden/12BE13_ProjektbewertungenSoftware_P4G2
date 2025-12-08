@@ -21,4 +21,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByUsernameIgnoreCase(String username);
     List<User> findByRoleId(Integer roleId);
     boolean existsByUsername(String username);
+    long countByRoleId(Integer roleId);
 }
