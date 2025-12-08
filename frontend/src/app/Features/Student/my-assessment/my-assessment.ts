@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { Review, ReviewJson } from '../../../Interfaces/review.interface';
 import { MyAssessmentService } from './my-assessment.service';
 import { AuthService } from '../../../core/auth/auth.service';
+
 @Component({
   selector: 'app-my-results',
   imports: [ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, CommonModule],
@@ -67,26 +68,6 @@ export class MyAssessment {
 
     const missing = this.members.filter((m) => this.ratings[m.id] === 0).map((m) => m.name);
 
-    // this.members.forEach((m) => {
-    //   const ctrl = this.ratings[m.id];
-    //   if (ctrl === 0) {
-    //     missing.push(m.name);
-    //   }
-    // });
-
-    // if (missing.length > 0) {
-    //   alert(`❌ Folgende Mitglieder fehlen noch: ${missing.join(', ')}`);
-    //   this.form.markAllAsTouched();
-    // } else {
-    //   this.bewertung.set(this.questions[this.frage].question, this.ratings);
-    //   if (this.reviewJson.length < this.questions.length) {
-    //     this.createJson(this.questions[this.frage].id, this.members, this.ratings);
-    //   }
-    //   this.ratings = [0, 0, 0, 0, 0];
-    //   if (this.frage < this.questions.length - 1) {
-    //     this.frage++;
-    //   }
-    // }
     if (missing.length > 0) {
       alert(`❌ Folgende Mitglieder fehlen noch: ${missing.join(', ')}`);
     } else {
