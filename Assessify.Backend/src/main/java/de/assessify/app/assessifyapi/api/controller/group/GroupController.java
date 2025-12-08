@@ -39,7 +39,8 @@ public class GroupController{
         
         GroupDto response = new GroupDto(
                 group.getId(),
-                group.getName()
+                group.getName(),
+                group.getProject().getId()
         );
         
         return ResponseEntity.ok(response);
@@ -51,7 +52,8 @@ public class GroupController{
                 .stream()
                 .map(group -> new GroupDto(
                         group.getId(),
-                        group.getName()
+                        group.getName(),
+                        group.getProject().getId()
                 ))
                 .toList();
         
@@ -71,12 +73,14 @@ public class GroupController{
         
         GroupDto response = new GroupDto(
                 updated.getId(),
-                updated.getName()
+                updated.getName(),
+                group.getProject().getId()
         );
         
         return ResponseEntity.ok(response);
     }
 
+    // delete a group with
     @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> deleteOneGroup(@PathVariable UUID groupId) {
         Group group = entityFinderService.findGroup(groupId);
@@ -109,7 +113,6 @@ public class GroupController{
             upg.getUser().getId(),
             upg.getUser().getFirstName() + " " + upg.getUser().getLastName(),
             upg.getProject().getId(),
-            upg.getProject().getProjectName(),
             upg.getGroup().getId(),
             upg.getGroup().getName(),
             upg.getRole()
@@ -129,7 +132,6 @@ public class GroupController{
                 upg.getUser().getId(),
                 upg.getUser().getFirstName() + " " + upg.getUser().getLastName(),
                 upg.getProject().getId(),
-                upg.getProject().getProjectName(),
                 upg.getGroup().getId(),
                 upg.getGroup().getName(),
                 upg.getRole()

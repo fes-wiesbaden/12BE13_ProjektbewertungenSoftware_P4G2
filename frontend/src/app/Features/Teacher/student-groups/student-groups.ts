@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatIcon } from "@angular/material/icon";
-import { IGroup, IProject } from '../project/project';
+import { IGroup } from '../../../Interfaces/IGroup';
+import { IProject } from '../../../Interfaces/IProject';
 import { RouterLink } from "@angular/router";
 
 export interface Student{

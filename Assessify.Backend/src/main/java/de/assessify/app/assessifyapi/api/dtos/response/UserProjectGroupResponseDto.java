@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.dtos.response;
+    package de.assessify.app.assessifyapi.api.dtos.response;
 
 import java.util.UUID;
 
@@ -7,7 +7,6 @@ public record UserProjectGroupResponseDto(
     UUID userId,
     String userName,
     UUID projectId,
-    String projectName,
     UUID groupId,
     String groupName,
     String role

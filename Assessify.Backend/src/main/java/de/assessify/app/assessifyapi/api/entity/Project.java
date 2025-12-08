@@ -12,34 +12,41 @@ import java.util.UUID;
 @Data
 @Table(name = "project")
 public class Project {
+
     @Id
     @UuidGenerator
-    @Column(name = "project_id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false, unique = true)
     private UUID id;
 
-    @Column(name = "project_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String ProjectName;
 
-    @Column(name = "project_description", nullable = false)
+    @Column(name = "description", nullable = false)
     private String ProjectDescription;
+
+    @Column(name = "status", nullable = false)
+    private String Status;
+
+    @Column(name = "deadline", nullable = false)
+    private String Deadline;
 
     public UUID getId() {
         return id;
     }
 
-    public String getProjectName (){
+    public String getProjectName() {
         return ProjectName;
     }
 
-    public void setProjectName(String name){
+    public void setProjectName(String name) {
         this.ProjectName = name;
     }
 
-    public String getProjectDescription(){
+    public String getProjectDescription() {
         return ProjectDescription;
     }
 
-    public void setProjectDescription(String description){
+    public void setProjectDescription(String description) {
         this.ProjectDescription = description;
     }
 
@@ -73,4 +80,20 @@ public class Project {
     }
     @OneToMany(mappedBy = "project")
     private List<UserProjectGroup> userProjectGroups = new ArrayList<>();
+
+    public String getDeadline() {
+        return Deadline;
+    }
+
+    public void setDeadline(String Deadline) {
+        this.Deadline = Deadline;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String Status) {
+        this.Status = Status;
+    }
 }

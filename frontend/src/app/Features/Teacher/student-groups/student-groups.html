@@ -1,118 +1,118 @@
-<div class="p-4">
-  <div
-    class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800 flex justify-between"
-  >
-    <span class="font-bold text-3xl">Groups</span>
-    <button
-      type="button"
-      (click)="openAddGroupModal()"
-      data-modal-target="add-user-modal"
-      data-modal-toggle="add-user-modal"
-      class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-    >
-      <mat-icon class="w-5 h-5 mr-2 -ml-1">add</mat-icon>
-      Create Group
-    </button>
-  </div>
-  
-    <!-- Groups Section -->
-    <div class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800">
-      <h2 class="text-2xl font-bold dark:text-white mb-4 flex items-center">
-        <mat-icon class="mr-2">groups</mat-icon>
-        Working Groups
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        @for (group of groups; track group.id) {
-          <div routerLink="{{group.id}}" 
-          class="bg-white shadow rounded-lg p-4 dark:bg-gray-700 hover:shadow-lg transition-shadow border-l-4 border-blue-500 cursor-pointer hover:ring-2 hover:ring-blue-500">
-            <div class="flex justify-between items-start mb-3">
-              <div class="flex-1">
-                <h3 class="text-lg font-semibold dark:text-white">
-                  {{ group.name }}
-                </h3>
-              </div>
-              
-              <button
-                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white transition-colors"
-                [attr.aria-label]="'Options for ' + group.name"
-                type="button">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-            </div>
-            
-            <!-- Members -->
-            <div class="space-y-2">
-              <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                <mat-icon class="mr-1 text-base">person</mat-icon>
-                <span class="font-medium">{{ group.members.length }} member{{ group.members.length !== 1 ? 's' : '' }}</span>
-              </div>
-              
-              <div class="flex flex-wrap gap-1">
-                @for (member of group.members; track member) {
-                  <span class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-xs dark:text-gray-200">
-                    {{ member }}
-                  </span>
-                }
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
+<!--<div class="p-4">-->
+<!--  <div-->
+<!--    class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800 flex justify-between"-->
+<!--  >-->
+<!--    <span class="font-bold text-3xl">Groups</span>-->
+<!--    <button-->
+<!--      type="button"-->
+<!--      (click)="openAddGroupModal()"-->
+<!--      data-modal-target="add-user-modal"-->
+<!--      data-modal-toggle="add-user-modal"-->
+<!--      class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"-->
+<!--    >-->
+<!--      <mat-icon class="w-5 h-5 mr-2 -ml-1">add</mat-icon>-->
+<!--      Create Group-->
+<!--    </button>-->
+<!--  </div>-->
+<!--  -->
+<!--    -->
+<!--    <div class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800">-->
+<!--      <h2 class="text-2xl font-bold dark:text-white mb-4 flex items-center">-->
+<!--        <mat-icon class="mr-2">groups</mat-icon>-->
+<!--        Working Groups-->
+<!--      </h2>-->
+<!--      -->
+<!--      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">-->
+<!--        @for (group of groups; track group.id) {-->
+<!--          <div routerLink="{{group.id}}" -->
+<!--          class="bg-white shadow rounded-lg p-4 dark:bg-gray-700 hover:shadow-lg transition-shadow border-l-4 border-blue-500 cursor-pointer hover:ring-2 hover:ring-blue-500">-->
+<!--            <div class="flex justify-between items-start mb-3">-->
+<!--              <div class="flex-1">-->
+<!--                <h3 class="text-lg font-semibold dark:text-white">-->
+<!--                  {{ group.name }}-->
+<!--                </h3>-->
+<!--              </div>-->
+<!--              -->
+<!--              <button-->
+<!--                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white transition-colors"-->
+<!--                [attr.aria-label]="'Options for ' + group.name"-->
+<!--                type="button">-->
+<!--                <mat-icon>more_vert</mat-icon>-->
+<!--              </button>-->
+<!--            </div>-->
+<!--            -->
+<!--            -->
+<!--            <div class="space-y-2">-->
+<!--              <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">-->
+<!--                <mat-icon class="mr-1 text-base">person</mat-icon>-->
+<!--                <span class="font-medium">{{ group.members.length }} member{{ group.members.length !== 1 ? 's' : '' }}</span>-->
+<!--              </div>-->
+<!--              -->
+<!--              <div class="flex flex-wrap gap-1">-->
+<!--                @for (member of group.members; track member) {-->
+<!--                  <span class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-xs dark:text-gray-200">-->
+<!--                    {{ member }}-->
+<!--                  </span>-->
+<!--                }-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        }-->
+<!--      </div>-->
+<!--    </div>-->
 
-</div>
+<!--</div>-->
 
-<div
-  id="add-user-modal"
-  [hidden]="!showAddGroupModal"
-  class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-gray-900/50 dark:bg-gray-900/60 backdrop-blur-sm"
->
-  <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
-    <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
-      <div
-        class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700 border-gray-200"
-      >
-        <h3 class="text-xl font-semibold dark:text-white">New Group</h3>
-        <button
-          (click)="closeAddGroupModal()"
-          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
-        >
-          <mat-icon class="w-5 h-5">close</mat-icon>
-        </button>
-      </div>
-      <!-- Modal body -->
-      <div class="p-6 space-y-6">
-        <form action="">
-          <div class="grid gap-6">
-            <div class="">
-              <label
-                for="group-name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >Group Name</label
-              >
-              <input
-                type="text"
-                name="group-name"
-                id="group-name"
-                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Group 1"
-                required
-              />
-            </div>
-          </div>
-        </form>
-      </div>
-      <div
-        class="flex items-end justify-between p-5 border-t rounded-b dark:border-gray-700 border-gray-200"
-      >
-        <button
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          type="submit"
-        >
-          Next
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<!--<div-->
+<!--  id="add-user-modal"-->
+<!--  [hidden]="!showAddGroupModal"-->
+<!--  class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-gray-900/50 dark:bg-gray-900/60 backdrop-blur-sm"-->
+<!--&gt;-->
+<!--  <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">-->
+<!--    <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">-->
+<!--      <div-->
+<!--        class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700 border-gray-200"-->
+<!--      >-->
+<!--        <h3 class="text-xl font-semibold dark:text-white">New Group</h3>-->
+<!--        <button-->
+<!--          (click)="closeAddGroupModal()"-->
+<!--          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"-->
+<!--        >-->
+<!--          <mat-icon class="w-5 h-5">close</mat-icon>-->
+<!--        </button>-->
+<!--      </div>-->
+<!--      -->
+<!--      <div class="p-6 space-y-6">-->
+<!--        <form action="">-->
+<!--          <div class="grid gap-6">-->
+<!--            <div class="">-->
+<!--              <label-->
+<!--                for="group-name"-->
+<!--                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"-->
+<!--                >Group Name</label-->
+<!--              >-->
+<!--              <input-->
+<!--                type="text"-->
+<!--                name="group-name"-->
+<!--                id="group-name"-->
+<!--                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"-->
+<!--                placeholder="Group 1"-->
+<!--                required-->
+<!--              />-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--      <div-->
+<!--        class="flex items-end justify-between p-5 border-t rounded-b dark:border-gray-700 border-gray-200"-->
+<!--      >-->
+<!--        <button-->
+<!--          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"-->
+<!--          type="submit"-->
+<!--        >-->
+<!--          Next-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->

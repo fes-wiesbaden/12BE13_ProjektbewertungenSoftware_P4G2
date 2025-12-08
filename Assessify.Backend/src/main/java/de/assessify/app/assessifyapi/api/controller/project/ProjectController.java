@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import de.assessify.app.assessifyapi.api.dtos.response.ProjectDtoResponse;
+import de.assessify.app.assessifyapi.api.dtos.response.ProjectGroupDto;
+
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
@@ -43,26 +46,27 @@ public class ProjectController {
     public ResponseEntity<Project> createProject(@RequestBody AddProjectDto request) {
         Project project = projectService.createProject(request);
         return new ResponseEntity<>(project, HttpStatus.CREATED);
-    }
+    }  
 
     // Get all projects
     @GetMapping
-    public ResponseEntity<List<Project>> getAllProjects() {
+    public ResponseEntity<List<ProjectDto>> getAllProjects() {
         return ResponseEntity.ok(projectService.getAllProjects());
     }
 
     // Get project by ID
     @GetMapping("/{projectId}")
-    public ResponseEntity<Project> getProject(@PathVariable UUID projectId) {
+    public ResponseEntity<ProjectDtoResponse> getProject(@PathVariable UUID projectId) {
         return ResponseEntity.ok(projectService.getProjectById(projectId));
     }
 
     // Get all groups in a project
     @GetMapping("/{projectId}/groups")
-    public ResponseEntity<List<Group>> getProjectGroups(@PathVariable UUID projectId) {
+    public ResponseEntity<List<ProjectGroupDto>> getProjectGroups(@PathVariable UUID projectId) {
         return ResponseEntity.ok(projectService.getProjectGroups(projectId));
     }
 
+    // add a learnfield to a project
     @PostMapping("project/{projectId}/connect/training-module/{trainingModulesId}")
     public ResponseEntity<ProjectWithTrainingModulesDto> addProjectToTrainingModule(
             @PathVariable UUID projectId,
@@ -95,7 +99,8 @@ public class ProjectController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/project/{projectId}")
+    // update a project with id
+    @PutMapping("/{projectId}")
     public ResponseEntity<ProjectDto> updateProject(
             @PathVariable UUID projectId,
             @RequestBody UpdateProjectDto dto) {
@@ -114,13 +119,16 @@ public class ProjectController {
         ProjectDto response = new ProjectDto(
                 updated.getId(),
                 updated.getProjectName(),
-                updated.getProjectDescription()
+                updated.getProjectDescription(),
+                updated.getDeadline(),
+                updated.getStatus()
         );
 
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/project/{projectId}")
+    // Delete a project with id
+    @DeleteMapping("/{projectId}")
     public ResponseEntity<Void> deleteProject(
             @PathVariable UUID projectId) {
 

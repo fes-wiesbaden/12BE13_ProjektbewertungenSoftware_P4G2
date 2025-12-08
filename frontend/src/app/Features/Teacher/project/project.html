@@ -1,119 +1,204 @@
-<div class="p-4">
-  <!-- Project Header -->
-  @if (currentProject(); as project) {
-    <div class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800">
-      <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
-        <div class="flex-1">
-          <h1 class="font-bold text-3xl dark:text-white">{{ project.title }}</h1>
-          @if (project.description) {
-            <p class="text-gray-600 dark:text-gray-400 mt-2">{{ project.description }}</p>
-          }
-          
-          <!-- Project Stats -->
-          <div class="flex flex-wrap gap-4 mt-4">
-            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-              <mat-icon class="mr-1 text-base">groups</mat-icon>
-              <span>{{ project.groups.length }} team{{ project.groups.length !== 1 ? 's' : '' }}</span>
-            </div>
-            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-              <mat-icon class="mr-1 text-base">person</mat-icon>
-              <span>{{ totalMembers() }} member{{ totalMembers() !== 1 ? 's' : '' }}</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="flex flex-col items-start lg:items-end gap-2">
-          <!-- Status Badge -->
-          @if (project.status) {
-            <span 
-              class="px-3 py-1 rounded-full text-sm font-medium"
-              [ngClass]="{
-                'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100': project.status === 'active',
-                'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100': project.status === 'pending',
-                'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-100': project.status === 'completed',
-                'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100': project.status === 'overdue'
-              }">
-              {{ project.status | titlecase }}
-            </span>
-          }
-          
-          <!-- Deadline -->
-          <div class="flex items-center gap-2">
-            <div 
-              class="flex items-center px-3 py-1 rounded-lg text-sm"
-              [ngClass]="{
-                'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300': isOverdue(),
-                'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300': isDeadlineApproaching(),
-                'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300': !isOverdue() && !isDeadlineApproaching()
-              }">
-              <mat-icon class="mr-1 text-base">event</mat-icon>
-              <div class="flex flex-col">
-                <span class="font-medium">{{ project.deadline | date:'MMM d, yyyy' }}</span>
-                <span class="text-xs">{{ getDeadlineText(daysUntilDeadline()) }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Groups Section -->
-    <div class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800">
-      <h2 class="text-2xl font-bold dark:text-white mb-4 flex items-center">
-        <mat-icon class="mr-2">groups</mat-icon>
-        Working Groups
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        @for (group of project.groups; track group.id) {
-          <div 
-              [routerLink]="['/teacher/groups', group.id]" 
-          class="bg-white shadow rounded-lg p-4 dark:bg-gray-700 hover:shadow-lg transition-shadow border-l-4 border-blue-500 hover:ring-2 hover:ring-blue-500 cursor-pointer">
-            <div class="flex justify-between items-start mb-3">
-              <div class="flex-1">
-                <h3 class="text-lg font-semibold dark:text-white">
-                  {{ group.name }}
-                </h3>
-              </div>
-              
-              <button
-                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white transition-colors"
-                [attr.aria-label]="'Options for ' + group.name"
-                type="button">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-            </div>
-            
-            <!-- Members -->
-            <div class="space-y-2">
-              <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                <mat-icon class="mr-1 text-base">person</mat-icon>
-                <span class="font-medium">{{ group.members.length }} member{{ group.members.length !== 1 ? 's' : '' }}</span>
-              </div>
-              
-              <div class="flex flex-wrap gap-1">
-                @for (member of group.members; track member) {
-                  <span class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-xs dark:text-gray-200">
-                    {{ member }}
-                  </span>
-                }
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-
-
-  } @else {
-    <!-- Error State -->
-    <div class="bg-red-50 border border-red-200 rounded-lg p-4 my-4 dark:bg-red-900/20 dark:border-red-800">
-      <div class="flex items-center">
-        <mat-icon class="text-red-600 dark:text-red-400 mr-2">error</mat-icon>
-        <p class="text-red-800 dark:text-red-200">
-          Project with ID "{{ projectId() }}" not found
-        </p>
-      </div>
-    </div>
-  }
+<div>
+  {{projectId()}}
 </div>
+
+
+
+
+
+<!--<div class="p-4">-->
+<!--  -->
+<!--  @if (loading()) {-->
+<!--    <div class="bg-white shadow rounded-lg p-8 my-4 dark:bg-gray-800">-->
+<!--      <div class="flex flex-col items-center justify-center">-->
+<!--        <mat-icon class="animate-spin text-4xl text-blue-500">refresh</mat-icon>-->
+<!--        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading project...</p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  }-->
+
+<!--  -->
+<!--  @if (error()) {-->
+<!--    <div class="bg-red-50 border border-red-200 rounded-lg p-4 my-4 dark:bg-red-900/20 dark:border-red-800">-->
+<!--      <div class="flex items-center justify-between">-->
+<!--        <div class="flex items-center">-->
+<!--          <mat-icon class="text-red-600 dark:text-red-400 mr-2">error</mat-icon>-->
+<!--          <p class="text-red-800 dark:text-red-200">{{ error() }}</p>-->
+<!--        </div>-->
+<!--        <button-->
+<!--          (click)="refreshProject()"-->
+<!--          class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">-->
+<!--          Retry-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  }-->
+
+<!--  -->
+<!--  @if (currentProject(); as project) {-->
+<!--    <div class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800">-->
+<!--      -->
+<!--      <button-->
+<!--        (click)="goBack()"-->
+<!--        class="mb-4 flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">-->
+<!--        <mat-icon class="mr-1">arrow_back</mat-icon>-->
+<!--        <span>Back to Projects</span>-->
+<!--      </button>-->
+
+<!--      <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">-->
+<!--        <div class="flex-1">-->
+<!--          <h1 class="font-bold text-3xl dark:text-white">{{ project.projectName }}</h1>-->
+<!--          @if (project.projectDescription) {-->
+<!--            <p class="text-gray-600 dark:text-gray-400 mt-2">{{ project.projectDescription }}</p>-->
+<!--          }-->
+
+<!--          -->
+<!--          <div class="flex flex-wrap gap-4 mt-4">-->
+<!--            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">-->
+<!--              <mat-icon class="mr-1 text-base">groups</mat-icon>-->
+<!--              <span>{{ totalGroups() }} group{{ totalGroups() !== 1 ? 's' : '' }}</span>-->
+<!--            </div>-->
+<!--            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">-->
+<!--              <mat-icon class="mr-1 text-base">person</mat-icon>-->
+<!--              <span>{{ totalMembers() }} member{{ totalMembers() !== 1 ? 's' : '' }}</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="flex flex-col items-start lg:items-end gap-2">-->
+<!--          -->
+<!--          @if (project.status) {-->
+<!--            <span-->
+<!--              class="px-3 py-1 rounded-full text-sm font-medium"-->
+<!--              [ngClass]="{-->
+<!--                'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100': project.status === 'active',-->
+<!--                'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100': project.status === 'pending',-->
+<!--                'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-100': project.status === 'completed',-->
+<!--                'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100': project.status === 'overdue'-->
+<!--              }">-->
+<!--              {{ project.status | titlecase }}-->
+<!--            </span>-->
+<!--          }-->
+
+<!--          -->
+<!--          @if (project.deadline) {-->
+<!--            <div class="flex items-center gap-2">-->
+<!--              <div-->
+<!--                class="flex items-center px-3 py-1 rounded-lg text-sm"-->
+<!--                [ngClass]="{-->
+<!--                  'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300': isOverdue(),-->
+<!--                  'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300': isDeadlineApproaching(),-->
+<!--                  'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300': !isOverdue() && !isDeadlineApproaching()-->
+<!--                }">-->
+<!--                <mat-icon class="mr-1 text-base">event</mat-icon>-->
+<!--                <div class="flex flex-col">-->
+<!--                  <span class="font-medium">{{ project.deadline | date:'MMM d, yyyy' }}</span>-->
+<!--                  <span class="text-xs">{{ getDeadlineText(daysUntilDeadline()) }}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          }-->
+
+<!--          -->
+<!--          <div class="flex gap-2 mt-2">-->
+<!--            <button-->
+<!--              (click)="editProject()"-->
+<!--              class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center text-sm">-->
+<!--              <mat-icon class="mr-1 text-base">edit</mat-icon>-->
+<!--              Edit-->
+<!--            </button>-->
+<!--            <button-->
+<!--              (click)="deleteProject()"-->
+<!--              class="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center text-sm">-->
+<!--              <mat-icon class="mr-1 text-base">delete</mat-icon>-->
+<!--              Delete-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    -->
+<!--    <div class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800">-->
+<!--      <div class="flex justify-between items-center mb-4">-->
+<!--        <h2 class="text-2xl font-bold dark:text-white flex items-center">-->
+<!--          <mat-icon class="mr-2">groups</mat-icon>-->
+<!--          Working Groups-->
+<!--        </h2>-->
+<!--        <button-->
+<!--          (click)="createGroup()"-->
+<!--          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">-->
+<!--          <mat-icon class="mr-1">add</mat-icon>-->
+<!--          Create Group-->
+<!--        </button>-->
+<!--      </div>-->
+
+<!--      -->
+<!--      @if (projectGroups().length > 0) {-->
+<!--        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">-->
+<!--          @for (group of projectGroups(); track group.id) {-->
+<!--            <div-->
+<!--              [routerLink]="['/groups', group.id]"-->
+<!--              class="bg-white shadow rounded-lg p-4 dark:bg-gray-700 hover:shadow-lg transition-shadow border-l-4 border-blue-500 hover:ring-2 hover:ring-blue-500 cursor-pointer">-->
+<!--              <div class="flex justify-between items-start mb-3">-->
+<!--                <div class="flex-1">-->
+<!--                  <h3 class="text-lg font-semibold dark:text-white">-->
+<!--                    {{ group.name }}-->
+<!--                  </h3>-->
+<!--                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">-->
+<!--                    {{ group.projectName }}-->
+<!--                  </p>-->
+<!--                </div>-->
+
+<!--                <button-->
+<!--                  (click)="$event.stopPropagation()"-->
+<!--                  class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white transition-colors"-->
+<!--                  [attr.aria-label]="'Options for ' + group.name"-->
+<!--                  type="button">-->
+<!--                  <mat-icon>more_vert</mat-icon>-->
+<!--                </button>-->
+<!--              </div>-->
+
+<!--              -->
+<!--              <div class="space-y-2">-->
+<!--                <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">-->
+<!--                  <mat-icon class="mr-1 text-base">folder</mat-icon>-->
+<!--                  <span class="text-xs">ID: {{ group.id.substring(0, 8) }}...</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          }-->
+<!--        </div>-->
+<!--      } @else {-->
+<!--        -->
+<!--        <div class="text-center py-12 bg-gray-50 dark:bg-gray-700 rounded-lg">-->
+<!--          <mat-icon class="text-6xl text-gray-400 dark:text-gray-500 mb-4">group_off</mat-icon>-->
+<!--          <p class="text-gray-600 dark:text-gray-400 mb-4">No groups found in this project</p>-->
+<!--          <button-->
+<!--            (click)="createGroup()"-->
+<!--            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">-->
+<!--            <mat-icon class="mr-1">add</mat-icon>-->
+<!--            Create First Group-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      }-->
+<!--    </div>-->
+<!--  } @else if (projectNotFound()) {-->
+<!--    -->
+<!--    <div class="bg-white shadow rounded-lg p-8 my-4 dark:bg-gray-800">-->
+<!--      <div class="text-center">-->
+<!--        <mat-icon class="text-6xl text-gray-400 dark:text-gray-500 mb-4">search_off</mat-icon>-->
+<!--        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Project Not Found</h3>-->
+<!--        <p class="text-gray-600 dark:text-gray-400 mb-4">-->
+<!--          The project with ID "{{ projectId() }}" doesn't exist or has been deleted.-->
+<!--        </p>-->
+<!--        <button-->
+<!--          (click)="goBack()"-->
+<!--          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">-->
+<!--          <mat-icon class="mr-1">arrow_back</mat-icon>-->
+<!--          Back to Projects-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  }-->
+<!--</div>-->
