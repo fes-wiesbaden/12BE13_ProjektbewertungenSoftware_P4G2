@@ -74,7 +74,7 @@ export class ManageAdmins implements OnInit {
       type: 'text',
       readonly: true,
       colSpan: 3,
-      value: "ADMIN"
+      value: "Administrator"
     },
     {
       key: 'password',
