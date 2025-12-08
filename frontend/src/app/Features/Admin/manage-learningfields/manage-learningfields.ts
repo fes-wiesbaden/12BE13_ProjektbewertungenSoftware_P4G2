@@ -71,8 +71,6 @@ export class ManageLearnfields implements OnInit {
   editingLearningfields: LearningField | null = null;
   toDeleteLearnField: LearningField | null = null;
 
-  // learningfieldtext = '';
-
   constructor(private learningfieldService: LearningFieldService) {}
 
   ngOnInit(): void {
@@ -121,7 +119,6 @@ export class ManageLearnfields implements OnInit {
         const index = this.learnfields.findIndex((s) => s.id === dto.id);
         if (index !== -1) {
           this.learnfields[index] = res;
-          this.learnfields[index];
         }
         this.closeEditModal();
       },
