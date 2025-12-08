@@ -1,10 +1,8 @@
-<div
-  class="rating-card flex flex-col rounded-lg p-6 mb-4 dark:bg-gray-800"
->
+<div class="rating-card flex flex-col rounded-lg p-6 mb-4 dark:bg-gray-800">
   <!-- Header -->
   <div class="mb-4">
-    <h2 class="text-lg dark:text-white font-semibold">{{ questions[frage].question }}</h2>
-    <p class="text-sm dark:text-white ">Bitte wähle eine Bewertung</p>
+    <h2 class="text-lg dark:text-white font-semibold">{{ questions[frage]?.questionText }}</h2>
+    <p class="text-sm dark:text-white">Bitte wähle eine Bewertung</p>
   </div>
 
   <!-- Content -->
@@ -48,4 +46,4 @@
       Bewertung speichern
     </button>
   </div>
-  </div>
+</div>
