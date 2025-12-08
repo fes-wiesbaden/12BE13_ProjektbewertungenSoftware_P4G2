@@ -1,20 +1,21 @@
 import { Component } from '@angular/core';
-import { TableColumn, TableColumnComponent } from '../../../Shared/Components/table-column/table-column';
+import {
+  TableColumn,
+  TableColumnComponent,
+} from '../../../Shared/Components/table-column/table-column';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
-import { AddGradeForm } from '../../../Shared/Components/add-grade-form/add-grade-form';
-import { LearningField } from '../../../Interfaces/learningfields.interface';
 import { Grade } from '../../../Interfaces/grade.interface';
-import { ActivatedRoute } from '@angular/router';
-import { ManageLearningFieldService } from '../../Teacher/manage-learning-field/manage-learning-field.service';
-import { MyGradesService } from './my-grades.service';
+import { LearningField } from '../../../Shared/models/learning-fields.interface';
+import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-my-grades',
   imports: [PageHeaderComponents, TableColumnComponent],
-  templateUrl: './my-grades.html'
+  templateUrl: './my-grades.html',
 })
 export class MyGrades {
-  studentId!: string;
+  userId!: string;
   currentLearningFieldId!: string;
   learningFields: LearningField[] = [];
   grades: Grade[] = [];
@@ -26,16 +27,15 @@ export class MyGrades {
     { key: 'weighting', label: 'Gewichtung' },
   ];
 
-  constructor(
-    private myGradesService: MyGradesService
-  ) {}
+  constructor(private learningFieldService: LearningFieldService, private authService: AuthService) {}
 
   ngOnInit(): void {
+    this.userId = this.authService.getUserId();
     this.loadLearningFields();
   }
 
   loadLearningFields() {
-    this.myGradesService.getLearningField(this.studentId).subscribe({
+    this.learningFieldService.getAllLearningFieldsByUserId(this.userId).subscribe({
       next: (data) => {
         this.learningFields = data;
         this.loading = false;
