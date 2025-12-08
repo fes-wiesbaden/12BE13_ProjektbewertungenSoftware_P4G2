@@ -28,8 +28,4 @@ export class AdminService {
   updateAdmin(dto: UpdateUser): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/${dto.id}`, dto);
   }
-
-  getClasses(): Observable<Class[]> {
-    return this.http.get<Class[]>(`${this.apiUrlClasses}/all`);
-  }
 }

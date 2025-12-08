@@ -69,12 +69,12 @@ export class ManageAdmins implements OnInit {
       placeholder: 'Benutzername',
     },
     {
-      key: 'courseId',
-      label: 'Kursname',
-      type: 'select',
+      key: 'roleId',
+      label: 'Rolle',
+      type: 'text',
       readonly: true,
       colSpan: 3,
-      options: [],
+      value: "ADMIN"
     },
     {
       key: 'password',
@@ -135,7 +135,6 @@ export class ManageAdmins implements OnInit {
 
   ngOnInit(): void {
     this.loadAdmin();
-    this.loadAllClasses();
   }
 
   openAddModel(): void {
@@ -241,30 +240,6 @@ export class ManageAdmins implements OnInit {
         this.admins = this.admins.filter((s) => s.id !== this.deletingAdmin!.id);
       },
       error: (err) => console.error('Fehler beim Löschen', err),
-    });
-  }
-
-  loadAllClasses() {
-    this.adminService.getClasses().subscribe({
-      next: (data) => {
-        const formatted = data.map((c) => ({
-          label: c.courseName,
-          value: c.id,
-        }));
-
-        this.classes = formatted;
-
-        const courseField = this.fields.find((f) => f.key === 'courseId');
-        if (courseField) {
-          courseField.options = formatted;
-        }
-
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Fehler beim Laden der Klassen', err);
-        this.loading = false;
-      },
     });
   }
 }
