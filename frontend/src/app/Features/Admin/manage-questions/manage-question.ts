@@ -41,6 +41,7 @@ export class ManageQuestions implements OnInit {
       type: 'textarea',
       required: true,
       placeholder: 'Deine Frage...',
+      colSpan: 6,
     },
   ];
 
