@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../core/auth/auth.service';
 import {
   TableColumn,
   TableColumnComponent,
@@ -12,8 +11,9 @@ import { PageHeaderComponents } from '../../../Shared/Components/page-header/pag
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
-import { User, AddUser } from '../../../Shared/models/user.interface';
+import { User, AddUser, UserResetPassword } from '../../../Shared/models/user.interface';
 import { UserService } from '../../../Shared/Services/user.service';
+import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 
 @Component({
   selector: 'app-manage-admin',
@@ -28,6 +28,7 @@ import { UserService } from '../../../Shared/Services/user.service';
     DeleteButtonComponent,
     ImportModalComponent,
     ExportModalComponent,
+    ResetPassword,
   ],
   templateUrl: './manage-admin.html',
 })
@@ -43,6 +44,8 @@ export class ManageAdmins implements OnInit {
   showAddModel: boolean = false;
   showEditModal: boolean = false;
   showDeleteModal: boolean = false;
+  showResetModal = false;
+  tempPassword: string = '';
 
   columns: TableColumn<User>[] = [
     { key: 'firstName', label: 'First Name' },
@@ -82,7 +85,7 @@ export class ManageAdmins implements OnInit {
       type: 'text',
       readonly: true,
       colSpan: 3,
-      value: "Administrator"
+      value: 'Administrator',
     },
     {
       key: 'password',
@@ -129,13 +132,6 @@ export class ManageAdmins implements OnInit {
     },
   ];
 
-  firstName = '';
-  lastName = '';
-  username = '';
-  password = '';
-  confirmPassword = '';
-  role = '';
-
   editingAdmin: User | null = null;
   deletingAdmin: User | null = null;
 
@@ -151,6 +147,16 @@ export class ManageAdmins implements OnInit {
 
   closeAddModel(): void {
     this.showAddModel = false;
+  }
+
+  openResetModal(password: string) {
+    this.tempPassword = password;
+    this.showResetModal = true;
+  }
+
+  closeResetModel() {
+    this.showResetModal = false;
+    this.tempPassword = '';
   }
 
   openEditModal(admin: User) {
@@ -230,11 +236,6 @@ export class ManageAdmins implements OnInit {
       next: (adminUser) => {
         this.admins.push(adminUser);
         this.closeAddModel();
-        this.firstName = '';
-        this.lastName = '';
-        this.username = '';
-        this.password = '';
-        this.role = '';
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
@@ -249,5 +250,32 @@ export class ManageAdmins implements OnInit {
       },
       error: (err) => console.error('Fehler beim Löschen', err),
     });
+  }
+
+  onResetPassword(user: User) {
+    var userId = user.id;
+    this.tempPassword = this.generateTempPassword();
+
+    const dto: UserResetPassword = {
+      newPassword: this.tempPassword,
+    };
+
+    this.userService.resetPassword(userId, dto).subscribe({
+      next: () => {
+        console.log('Passwort erfolgreich zurückgesetzt');
+      },
+      error: (err) => {
+        console.error('Fehler beim Zurücksetzen des Passworts', err);
+      },
+    });
+  }
+
+  generateTempPassword(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let pass = '';
+    for (let i = 0; i < 12; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pass;
   }
 }

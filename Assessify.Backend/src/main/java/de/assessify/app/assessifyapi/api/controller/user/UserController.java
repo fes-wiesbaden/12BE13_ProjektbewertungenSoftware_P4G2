@@ -1,6 +1,7 @@
 package de.assessify.app.assessifyapi.api.controller.user;
 
 import de.assessify.app.assessifyapi.api.dtos.request.AddUserWithCourseDto;
+import de.assessify.app.assessifyapi.api.dtos.request.ResetPasswordDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateUserDto;
 import de.assessify.app.assessifyapi.api.dtos.response.UserDto;
 import de.assessify.app.assessifyapi.api.entity.SchoolClass;
@@ -13,14 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import de.assessify.app.assessifyapi.api.dtos.request.ChangePasswordRequestDto;
+import de.assessify.app.assessifyapi.api.dtos.request.ChangePasswordDto;
 
-import de.assessify.app.assessifyapi.api.dtos.response.ResetPasswordResponseDto;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/users")
@@ -37,6 +39,8 @@ public class UserController {
         this.roleRepository = roleRepository;
         this.schoolClassRepository = schoolClassRepository;
     }
+
+    private static final Logger logger = Logger.getLogger(UserController.class.getName());
 
     @GetMapping("/role/{roleId}")
     public ResponseEntity<List<UserDto>> getAllUsersById(@PathVariable Integer roleId) {
@@ -153,27 +157,25 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/reset-password")
-    public ResponseEntity<ResetPasswordResponseDto> resetPassword(@PathVariable UUID userId) {
-        var optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> resetPassword(@PathVariable UUID userId, @RequestBody ChangePasswordDto dto) {
+        try {
+            User existingUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
+
+            existingUser.setPassword(passwordEncoder.encode(dto.newPassword()));
+            userRepository.save(existingUser);
+
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error resetting passwords for current user", e);
+            return ResponseEntity.status(500).build();
         }
-
-        User user = optionalUser.get();
-
-        String tempPassword = generateTempPassword(10);
-
-        user.setPassword(passwordEncoder.encode(tempPassword));
-        userRepository.save(user);
-
-        return ResponseEntity.ok(new ResetPasswordResponseDto(tempPassword));
     }
-
 
     @PostMapping("/{username}/change-password")
     public ResponseEntity<Void> changePasswordByUsername(
             @PathVariable String username,
-            @RequestBody ChangePasswordRequestDto dto
+            @RequestBody ResetPasswordDto dto
     ) {
         User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -192,11 +194,11 @@ public class UserController {
     }
 
 
-@GetMapping("/role/{roleId}/amount")
-public ResponseEntity<Long> getUserRoleAmount(@PathVariable Integer roleId) {
-    long count = userRepository.countByRoleId(roleId);
-    return ResponseEntity.ok(count);
-} 
+    @GetMapping("/role/{roleId}/amount")
+    public ResponseEntity<Long> getUserRoleAmount(@PathVariable Integer roleId) {
+        long count = userRepository.countByRoleId(roleId);
+        return ResponseEntity.ok(count);
+    }
 
     private static final String PASSWORD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 

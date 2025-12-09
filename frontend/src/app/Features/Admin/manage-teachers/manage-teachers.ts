@@ -12,8 +12,9 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
 import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { UserService } from '../../../Shared/Services/user.service';
-import { User } from '../../../Shared/models/user.interface';
+import { User, UserResetPassword } from '../../../Shared/models/user.interface';
 import { CourseService } from '../../../Shared/Services/course.service';
+import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -28,12 +29,13 @@ import { CourseService } from '../../../Shared/Services/course.service';
     DeleteButtonComponent,
     ImportModalComponent,
     ExportModalComponent,
+    ResetPassword,
   ],
   templateUrl: './manage-teachers.html',
 })
 export class ManageTeachers implements OnInit {
   teachers: User[] = [];
-  courses: { label: string, value: number }[] = [];
+  courses: { label: string; value: number }[] = [];
   loading = true;
   showImportModal = false;
   showExportModal = false;
@@ -77,7 +79,7 @@ export class ManageTeachers implements OnInit {
       label: 'Kurs',
       type: 'multiselect',
       colSpan: 3,
-      options: []
+      options: [],
     },
     {
       key: 'password',
@@ -134,15 +136,11 @@ export class ManageTeachers implements OnInit {
   showAddModel: boolean = false;
   showEditModal: boolean = false;
   showDeleteModal: boolean = false;
+  showResetModal = false;
+  tempPassword: string = '';
 
   editingTeacher: User | null = null;
   deletingTeacher: User | null = null;
-
-  firstName = '';
-  lastName = '';
-  username = '';
-  password = '';
-  role = '';
 
   constructor(private userService: UserService, private courseService: CourseService) {}
 
@@ -160,6 +158,16 @@ export class ManageTeachers implements OnInit {
   closeEditModal() {
     this.showEditModal = false;
     this.editingTeacher = null;
+  }
+
+  openResetModal(password: string) {
+    this.tempPassword = password;
+    this.showResetModal = true;
+  }
+
+  closeResetModel() {
+    this.showResetModal = false;
+    this.tempPassword = '';
   }
 
   openAddModel(): void {
@@ -255,9 +263,9 @@ export class ManageTeachers implements OnInit {
   }
 
   loadCourses() {
-  this.courseService.getAllCourses().subscribe({
-    next: (data) => {
-      this.courses = data.map((c: any) => ({ label: c.courseName, value: c.id }));
+    this.courseService.getAllCourses().subscribe({
+      next: (data) => {
+        this.courses = data.map((c: any) => ({ label: c.courseName, value: c.id }));
 
       const courseField = this.fieldsNew.find(f => f.key === 'courseId');
       if (courseField) {

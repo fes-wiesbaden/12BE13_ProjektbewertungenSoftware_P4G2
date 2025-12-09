@@ -7,17 +7,26 @@ export interface User {
 }
 
 export interface AddUser {
-    firstName: string;
-    lastName: string;
-    username: string;
-    password: string;
-    role: number;
-    courseId: String[];
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+  role: number;
+  courseId: String[];
 }
 
 export interface UpdateUser {
-    id: string;
-    firstName: string;
-    lastName: string;
-    username: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+}
+
+export interface UserResetPassword {
+  newPassword: string;
+}
+
+export interface UserChangePassword {
+  oldPassword: string;
+  newPassword: string;
 }

@@ -20,109 +20,12 @@
         <a href="/" class="flex ml-2 md:mr-24">
           <span
             class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white"
-          >Friedrich Ebert Schule</span
+            >Friedrich Ebert Schule</span
           >
         </a>
       </div>
 
       <div class="flex items-center">
-        <!-- Notifications -->
-        <div class="relative">
-          <button
-            type="button"
-            (click)="toggleNotificationMenu()"
-            class="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
-          >
-            <span class="sr-only">View notifications</span>
-            <svg
-              class="w-6 h-6"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"
-              ></path>
-            </svg>
-          </button>
-
-          @if (notificationMenuOpen) {
-          <div
-            class="absolute right-0 z-50 max-w-sm my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:divide-gray-600 dark:bg-gray-700"
-            id="notification-dropdown"
-          >
-            <div
-              class="block px-4 py-2 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-            >
-              Notifications
-            </div>
-            <div>
-              <a
-                href="#"
-                class="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
-              >
-                <div class="shrink-0">
-                  <img
-                    class="rounded-full w-11 h-11"
-                    src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                    alt="Jese image"
-                  />
-                  <div
-                    class="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 border border-white rounded-full bg-primary-700 dark:border-gray-700"
-                  >
-                    <svg
-                      class="w-3 h-3 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"
-                      ></path>
-                      <path
-                        d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"
-                      ></path>
-                    </svg>
-                  </div>
-                </div>
-                <div class="w-full pl-3">
-                  <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400">
-                    New message from
-                    <span class="font-semibold text-gray-900 dark:text-white">Bonnie Green</span>:
-                    "Hey, what's up? All set for the presentation?"
-                  </div>
-                  <div class="text-xs font-medium text-primary-700 dark:text-primary-400">
-                    a few moments ago
-                  </div>
-                </div>
-              </a>
-            </div>
-            <a
-              href="#"
-              class="block py-2 text-base font-normal text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:underline"
-            >
-              <div class="inline-flex items-center">
-                <svg
-                  class="w-5 h-5 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                  <path
-                    fill-rule="evenodd"
-                    d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-                View all
-              </div>
-            </a>
-          </div>
-          }
-        </div>
-
-        <!-- Theme Toggle -->
         <button
           id="theme-toggle"
           type="button"
@@ -132,7 +35,6 @@
           <mat-icon class="h-5 w-5">{{ theme === 'dark' ? 'dark_mode' : 'light_mode' }}</mat-icon>
         </button>
 
-        <!-- Profile -->
         <div class="flex items-center ml-3 relative">
           <div>
             <button
@@ -142,11 +44,7 @@
               id="user-menu-button-2"
               [attr.aria-expanded]="profileMenuOpen"
             >
-              <img
-                class="w-8 h-8 rounded-full"
-                src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                alt="user photo"
-              />
+              <mat-icon class="w-8 h-8" style="color: white" aria-label="Benutzerprofil">person_outline</mat-icon>
             </button>
           </div>
 
@@ -181,7 +79,7 @@
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   role="menuitem"
                 >
-                  Sign out
+                  Ausloggen
                 </a>
               </li>
             </ul>
@@ -193,123 +91,113 @@
   </div>
 </nav>
 
-@if (notificationMenuOpen || profileMenuOpen) {
+@if (profileMenuOpen) {
 <div (click)="closeMenus()" class="fixed inset-0 z-20"></div>
-}
-
-@if (showChangePasswordModal) {
+} @if (showChangePasswordModal) {
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 dark:bg-gray-900/60">
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full max-w-lg">
     <div class="flex items-start justify-between mb-4">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-        Passwort ändern
-      </h2>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Passwort ändern</h2>
       <button
         type="button"
         (click)="closeChangePasswordModal()"
-        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900
-               rounded-lg text-sm p-1.5 inline-flex items-center
-               dark:hover:bg-gray-700 dark:hover:text-white"
+        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
       >
         <mat-icon class="w-5 h-5">close</mat-icon>
       </button>
     </div>
 
-    <form #changePwdForm="ngForm" (ngSubmit)="submitChangePassword(changePwdForm)" class="space-y-4">
-      <!-- Altes Passwort -->
+    <form [formGroup]="changePasswordForm" (ngSubmit)="submitChangePassword()" class="space-y-4">
       <div>
         <label
           for="oldPassword"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >Altes Passwort</label
+          class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+          >Altes Passwort</label
         >
         <input
-          type="password"
           id="oldPassword"
-          name="oldPassword"
-          [(ngModel)]="oldPassword"
-          required
-          class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
-                 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-                 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="password"
+          formControlName="oldPassword"
+          class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
         />
+        @if(changePasswordForm.get('oldPassword')?.touched &&
+        changePasswordForm.get('oldPassword')?.invalid) {
+        <p class="text-red-500 text-sm mt-1">Bitte altes Passwort eingeben</p>
+        }
       </div>
+
       <div>
         <label
           for="newPassword"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >Neues Passwort</label
+          class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+          >Neues Passwort</label
         >
         <input
-          type="password"
           id="newPassword"
-          name="newPassword"
-          [(ngModel)]="newPassword"
-          required
-          minlength="8"
-          class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
-                 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-                 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="password"
+          formControlName="newPassword"
+          class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
         />
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Mindestens 8 Zeichen empfohlen.
-        </p>
+        <div class="mt-1 space-y-1">
+          @if(changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['required']){
+          <p class="text-red-500 text-sm">Passwort ist erforderlich</p>
+          } @if (changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['minlength']) {
+          <p class="text-red-500 text-sm">Mindestens 8 Zeichen</p>
+          } @if(changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['pattern']) {
+          <p class="text-red-500 text-sm">
+            Muss Großbuchstaben, Kleinbuchstaben, Zahl und Sonderzeichen enthalten
+          </p>
+          }
+        </div>
       </div>
+
       <div>
         <label
           for="confirmPassword"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >Neues Passwort wiederholen</label
+          class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+          >Passwort wiederholen</label
         >
         <input
-          type="password"
           id="confirmPassword"
-          name="confirmPassword"
-          [(ngModel)]="confirmPassword"
-          required
-          minlength="8"
-          class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
-                 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-                 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-                 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="password"
+          formControlName="confirmPassword"
+          class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
         />
+        @if (changePasswordForm.errors?.['notMatching'] &&
+        changePasswordForm.get('confirmPassword')?.touched) {
+        <p class="text-red-500 text-sm mt-1">Passwörter stimmen nicht überein</p>
+        }
       </div>
 
-      <!-- Fehlermeldung -->
-      <p *ngIf="errorMessage" class="text-sm text-red-600 dark:text-red-400">
-        {{ errorMessage }}
-      </p>
-
-      <!-- Erfolgsmeldung -->
-      <p *ngIf="successMessage" class="text-sm text-green-600 dark:text-green-400">
-        {{ successMessage }}
-      </p>
-
-      <!-- Buttons -->
-      <div class="flex justify-end gap-3 pt-2">
+      <div class="flex justify-end gap-3 mt-2">
         <button
           type="button"
           (click)="closeChangePasswordModal()"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg
-                 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
         >
           Abbrechen
         </button>
         <button
           type="submit"
-          [disabled]="changePwdForm.invalid || loading"
-          class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white
-                 bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300
-                 disabled:opacity-50 disabled:cursor-not-allowed
-                 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          [disabled]="changePasswordForm.invalid || loading"
+          class="px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center"
         >
           <mat-icon class="w-4 h-4 mr-2">lock</mat-icon>
-          <span *ngIf="!loading">Passwort speichern</span>
-          <span *ngIf="loading">Speichern...</span>
+          @if (!loading) {
+          <span>Passwort speichern</span>
+          } @if (loading) {
+          <span>Speichern...</span>
+          }
         </button>
       </div>
+
+      @if (successMessage) {
+      <p class="text-green-600 dark:text-green-400 mt-2">
+        {{ successMessage }}
+      </p>
+      } @if (errorMessage) {
+      <p class="text-red-600 dark:text-red-400 mt-2">{{ errorMessage }}</p>
+      }
     </form>
   </div>
 </div>

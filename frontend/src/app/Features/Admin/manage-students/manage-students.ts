@@ -13,7 +13,8 @@ import { ImportModalComponent } from '../../../Shared/Components/import-modal/im
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { UserService } from '../../../Shared/Services/user.service';
 import { CourseService } from '../../../Shared/Services/course.service';
-import { AddUser, User } from '../../../Shared/models/user.interface';
+import { AddUser, User, UserResetPassword } from '../../../Shared/models/user.interface';
+import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 
 @Component({
   selector: 'app-manage-students',
@@ -28,6 +29,7 @@ import { AddUser, User } from '../../../Shared/models/user.interface';
     DeleteButtonComponent,
     ImportModalComponent,
     ExportModalComponent,
+    ResetPassword,
   ],
   templateUrl: './manage-students.html',
 })
@@ -136,17 +138,12 @@ export class ManageStudents implements OnInit {
   showAddModel: boolean = false;
   showEditModal: boolean = false;
   showDeleteModal: boolean = false;
+  showResetModal = false;
+  tempPassword: string = '';
 
   editingStudent: User | null = null;
   deletingStudent: User | null = null;
 
-  firstName = '';
-  lastName = '';
-  username = '';
-  password = '';
-  role = '';
-
-  tempPassword: string | null = null;
   delete: any;
 
   constructor(private userService: UserService, private courseService: CourseService) {}
@@ -164,6 +161,16 @@ export class ManageStudents implements OnInit {
   closeEditModal() {
     this.showEditModal = false;
     this.editingStudent = null;
+  }
+
+  openResetModal(password: string) {
+    this.tempPassword = password;
+    this.showResetModal = true;
+  }
+
+  closeResetModel() {
+    this.showResetModal = false;
+    this.tempPassword = '';
   }
 
   openAddModel(): void {
@@ -236,11 +243,6 @@ export class ManageStudents implements OnInit {
       next: (student) => {
         this.students.push(student); // direkt zur Liste hinzufügen
         this.closeAddModel();
-        this.firstName = '';
-        this.lastName = '';
-        this.username = '';
-        this.password = '';
-        this.role = '';
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
@@ -254,23 +256,6 @@ export class ManageStudents implements OnInit {
         this.students = this.students.filter((s) => s.id !== this.deletingStudent!.id);
       },
       error: (err) => console.error('Fehler beim Löschen', err),
-    });
-  }
-
-  onResetPassword(student: User) {
-    if (!confirm(`Passwort für ${student.firstName} ${student.lastName} wirklich zurücksetzen?`)) {
-      return;
-    }
-
-    this.userService.resetPassword(student.id).subscribe({
-      next: (res) => {
-        console.log('Neues temporäres Passwort:', res.temporaryPassword);
-        this.tempPassword = res.temporaryPassword;
-      },
-      error: (err) => {
-        console.error('Fehler beim Zurücksetzen des Passworts', err);
-        alert('Passwort konnte nicht zurückgesetzt werden.');
-      },
     });
   }
 
@@ -300,5 +285,32 @@ export class ManageStudents implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  onResetPassword(user: User) {
+    var userId = user.id;
+    this.tempPassword = this.generateTempPassword();
+
+    const dto: UserResetPassword = {
+      newPassword: this.tempPassword,
+    };
+
+    this.userService.resetPassword(userId, dto).subscribe({
+      next: () => {
+        console.log('Passwort erfolgreich zurückgesetzt');
+      },
+      error: (err) => {
+        console.error('Fehler beim Zurücksetzen des Passworts', err);
+      },
+    });
+  }
+
+  generateTempPassword(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let pass = '';
+    for (let i = 0; i < 12; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pass;
   }
 }
