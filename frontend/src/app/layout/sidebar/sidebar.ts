@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../core/auth/auth.service';
-import { SidebarItem } from '../../Shared/interfaces/sidebar-item.interface';
 import { ɵInternalFormsSharedModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { SidebarService } from '../../core/services/sidebar.service';
+import { MenuItem } from '../../Shared/models/sidebar.interface';
 
 @Component({
   selector: 'app-sidebar',
@@ -19,13 +19,9 @@ export class Sidebar implements OnInit {
   @Output() sidebarClose = new EventEmitter<void>();
 
   sidebarStatus: string = 'open';
-  menuItems: SidebarItem[] = [];
+  menuItems: MenuItem[] = [];
 
-  constructor(
-    private auth: AuthService,
-    private router: Router,
-    private sidebarService: SidebarService
-  ) {}
+  constructor(private auth: AuthService, private sidebarService: SidebarService) {}
 
   ngOnInit() {
     const role = this.auth.getRole();
@@ -42,8 +38,8 @@ export class Sidebar implements OnInit {
     this.isCollapsed = !this.isCollapsed;
   }
 
-  getMenuForRole(role: string): SidebarItem[] {
-    const menus: { [key: string]: SidebarItem[] } = {
+  getMenuForRole(role: string): MenuItem[] {
+    const menus: { [key: string]: MenuItem[] } = {
       admin: [
         { icon: 'dashboard', label: 'Übersicht', route: '/admin/dashboard' },
         {
