@@ -1,12 +1,24 @@
 <app-form-modal
   [showModal]="showAddModel"
   [title]="'Lehrer anlegen'"
-  [fields]="fields"
+  [fields]="fieldsNew"
+  [record]="null"
   (close)="closeAddModel()"
   (save)="saveTeacher($event)"
 >
 </app-form-modal>
 
+<app-form-modal
+  [showModal]="showEditModal"
+  [title]="'Lehrer Editieren'"
+  [fields]="fieldsEdit"
+  [record]="editingTeacher"
+  (close)="closeEditModal()"
+  (save)="saveEdit($event)"
+>
+</app-form-modal>
+
+<!-- ✅ PAGE HEADER MIT IMPORT / EXPORT -->
 <app-page-header
   title="Lehrer"
   [showAddButton]="true"
@@ -27,15 +39,7 @@
   (reset)="onResetPassword($event)"
 ></app-table-column>
 
-<app-form-modal
-  [showModal]="showEditModal"
-  [title]="'Lehrer Editieren'"
-  [fields]="fieldsEdit"
-  [record]="editingTeacher"
-  (close)="closeEditModal()"
-  (save)="saveEdit($event)"
->
-</app-form-modal>
+
 
 <app-delete-button
   [showModal]="showDeleteModal"

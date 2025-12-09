@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -41,23 +41,37 @@ export class FormModalComponent implements OnChanges {
   @Input() showModal = false;
   @Input() title = 'New Item';
   @Input() fields: FormField[] = [];
-  @Input() record: any = {};
+  @Input() record: any = null;
 
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
 
-  formData: Record<string, any> = {};
-
+  
+  formData: any = {};
   ngOnChanges() {
-    this.fields.forEach((f) => {
-      this.formData[f.key] = f.value || '';
-
-      if (f.type === 'multiselect') {
-        f.selected = f.options?.filter((o) => o.selected) || [];
-        f.open = false;
+  if(this.record === null){
+    console.log("Null true");
+    this.formData = {};
+     this.fields.forEach((f) => {
+    if (f.type === 'multiselect') {
+        f.selected = [];
+          f.options?.forEach(o => (o.selected = false));
       }
     });
   }
+  if(this.record !== null){
+    console.log("Null !true");
+    console.log("record", this.record);
+    this.formData = this.record;
+    this.fields.forEach((f) => {
+    if (f.type === 'multiselect') {
+        console.log(f); 
+          // f.options?.forEach(o => (o.selected = false));
+      }
+    });
+  }
+}
+
 
   onSave() {
     if (this.isFieldEmpty()) {

@@ -49,7 +49,7 @@ export class ManageTeachers implements OnInit {
     { key: 'roleName', label: 'Role' },
   ];
 
-  fields: FormField[] = [
+  fieldsNew: FormField[] = [
     {
       key: 'firstName',
       label: 'Vorname',
@@ -124,6 +124,13 @@ export class ManageTeachers implements OnInit {
       colSpan: 3,
       placeholder: 'Benutzername',
     },
+    {
+      key: 'courseId',
+      label: 'Kurs',
+      type: 'multiselect',
+      colSpan: 3,
+      options: [],
+    },
   ];
 
   showAddModel: boolean = false;
@@ -141,6 +148,7 @@ export class ManageTeachers implements OnInit {
     this.loadTeachers();
     this.loadCourses();
   }
+
 
   openEditModal(teacher: User) {
     this.editingTeacher = teacher;
@@ -182,9 +190,6 @@ export class ManageTeachers implements OnInit {
     if (!this.editingTeacher) return;
 
     const updatedTeacher = { ...this.editingTeacher, ...formData };
-
-    console.log(formData);
-    console.log(updatedTeacher.id);
 
     this.userService.updateUser(updatedTeacher).subscribe({
       next: (res: User) => {
@@ -235,6 +240,12 @@ export class ManageTeachers implements OnInit {
       next: (teacher) => {
         this.teachers.push(teacher);
         this.closeAddModel();
+        this.firstName = '';
+        this.lastName = '';
+        this.username = '';
+        this.password = '';
+        this.role = '';
+        console.log(teacher);
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
@@ -256,38 +267,16 @@ export class ManageTeachers implements OnInit {
       next: (data) => {
         this.courses = data.map((c: any) => ({ label: c.courseName, value: c.id }));
 
-        const courseField = this.fields.find((f) => f.key === 'courseId');
-        if (courseField) {
-          courseField.options = this.courses.map((c) => ({ ...c, selected: false }));
-        }
-      },
-      error: (err) => console.error('Fehler beim Laden der Kurse:', err),
-    });
-  }
-  onResetPassword(user: User) {
-    var userId = user.id;
-    this.tempPassword = this.generateTempPassword();
-
-    const dto: UserResetPassword = {
-      newPassword: this.tempPassword,
-    };
-
-    this.userService.resetPassword(userId, dto).subscribe({
-      next: () => {
-        console.log('Passwort erfolgreich zurückgesetzt');
-      },
-      error: (err) => {
-        console.error('Fehler beim Zurücksetzen des Passworts', err);
-      },
-    });
-  }
-
-  generateTempPassword(): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
-    let pass = '';
-    for (let i = 0; i < 12; i++) {
-      pass += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return pass;
-  }
+      const courseField = this.fieldsNew.find(f => f.key === 'courseId');
+      if (courseField) {
+        courseField.options = this.courses.map(c => ({ ...c, selected: false }));
+      }
+      const courseFieldEdit = this.fieldsEdit.find(f => f.key === 'courseId');
+      if (courseFieldEdit) {
+        courseFieldEdit.options = this.courses.map(c => ({ ...c, selected: false }));
+      }
+    },
+    error: (err) => console.error('Fehler beim Laden der Kurse:', err)
+  });
+}
 }
