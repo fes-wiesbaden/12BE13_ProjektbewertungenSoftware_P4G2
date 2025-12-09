@@ -38,6 +38,7 @@ export class Login {
     console.log('Form values:', this.loginForm.value);
 
     if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
       console.log('❌ Form is invalid');
       return;
     }
