@@ -19,35 +19,38 @@ public class Project {
     private UUID id;
 
     @Column(name = "name", nullable = false)
-    private String ProjectName;
+    private String projectName;
 
     @Column(name = "description", nullable = false)
-    private String ProjectDescription;
+    private String projectDescription;
 
     @Column(name = "status", nullable = false)
-    private String Status;
+    private String status;
 
     @Column(name = "deadline", nullable = false)
-    private String Deadline;
+    private String deadline;
+
+  @Column(name = "start_date", nullable = false)
+    private String StartDate;
 
     public UUID getId() {
         return id;
     }
 
     public String getProjectName() {
-        return ProjectName;
+        return projectName;
     }
 
     public void setProjectName(String name) {
-        this.ProjectName = name;
+        this.projectName = name;
     }
 
     public String getProjectDescription() {
-        return ProjectDescription;
+        return projectDescription;
     }
 
     public void setProjectDescription(String description) {
-        this.ProjectDescription = description;
+        this.projectDescription = description;
     }
 
     @ManyToMany
@@ -58,9 +61,6 @@ public class Project {
     )
     private final List<TrainingModule> trainingModules = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
-
     public List<TrainingModule> getTrainingModules() {
         return trainingModules;
     }
@@ -70,30 +70,31 @@ public class Project {
         this.trainingModules.addAll(trainingModules);
     }
 
-    public List<Review> getReviews() {
-        return reviews;
-    }
 
-    public void setReviews(List<Review> reviews) {
-        this.reviews.clear();
-        this.reviews.addAll(reviews);
-    }
     @OneToMany(mappedBy = "project")
     private List<UserProjectGroup> userProjectGroups = new ArrayList<>();
 
     public String getDeadline() {
-        return Deadline;
+        return deadline;
     }
 
     public void setDeadline(String Deadline) {
-        this.Deadline = Deadline;
+        this.deadline = Deadline;
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(String Status) {
-        this.Status = Status;
+        this.status = Status;
+    }
+
+    public void setStartDate(String StartDate) {
+        this.StartDate = StartDate;
+    }
+
+    public String getStartDate() {
+        return StartDate;
     }
 }

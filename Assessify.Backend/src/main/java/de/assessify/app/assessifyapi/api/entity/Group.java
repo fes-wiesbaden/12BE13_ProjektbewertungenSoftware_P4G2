@@ -25,6 +25,7 @@ public class Group {
     @OneToMany(mappedBy = "group")
     private List<UserProjectGroup> memberships = new ArrayList<>();
 
+
     public Group() {}
 
     public UUID getId() {
@@ -58,4 +59,6 @@ public class Group {
     public void setMemberships(List<UserProjectGroup> memberships) {
         this.memberships = memberships;
     }
+
+
 }

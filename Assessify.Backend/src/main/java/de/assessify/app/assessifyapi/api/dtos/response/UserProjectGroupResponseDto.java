@@ -8,6 +8,5 @@ public record UserProjectGroupResponseDto(
     String userName,
     UUID projectId,
     UUID groupId,
-    String groupName,
-    String role
+    String groupName
 ) {}

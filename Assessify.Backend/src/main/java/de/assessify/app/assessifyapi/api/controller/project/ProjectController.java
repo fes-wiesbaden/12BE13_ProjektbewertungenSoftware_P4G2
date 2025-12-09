@@ -60,12 +60,6 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjectById(projectId));
     }
 
-    // Get all groups in a project
-    @GetMapping("/{projectId}/groups")
-    public ResponseEntity<List<ProjectGroupDto>> getProjectGroups(@PathVariable UUID projectId) {
-        return ResponseEntity.ok(projectService.getProjectGroups(projectId));
-    }
-
     // add a learnfield to a project
     @PostMapping("project/{projectId}/connect/training-module/{trainingModulesId}")
     public ResponseEntity<ProjectWithTrainingModulesDto> addProjectToTrainingModule(

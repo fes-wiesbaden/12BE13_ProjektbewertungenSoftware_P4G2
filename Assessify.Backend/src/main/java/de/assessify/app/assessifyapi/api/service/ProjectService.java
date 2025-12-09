@@ -40,6 +40,7 @@ public class ProjectService {
         Project project = new Project();
         project.setProjectName(request.name());  // Assuming AddProjectDto has name()
         project.setProjectDescription(request.description());  // Assuming AddProjectDto has description()
+        project.setStartDate(request.startdate());
         project.setDeadline(request.deadline());
         project.setStatus(request.status());
         return projectRepository.save(project);
@@ -74,24 +75,9 @@ public class ProjectService {
             project.getDeadline(),
             project.getStatus(),
             project.getTrainingModules(),
-            project.getReviews(),
             project.getUserProjectGroups()
         );
         
-        return res;
-    }
-
-    // Get all groups in a project
-    public List<ProjectGroupDto> getProjectGroups(UUID projectId) {
-        List<Group> projectGroups = groupRepository.findByProjectId(projectId);
-        
-        List<ProjectGroupDto> res = projectGroups.stream()
-            .map(projectGroup -> new ProjectGroupDto(
-                projectGroup.getId(),
-                projectGroup.getName(),
-                projectGroup.getProject().getId()
-            )).toList();
-
         return res;
     }
 
@@ -110,34 +96,6 @@ public class ProjectService {
         return groupRepository.save(group);
     }
 
-    // Add a member to a group
-    @Transactional
-    public UserProjectGroup addMemberToGroup(AddMembertoGroupDto request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        Group group = groupRepository.findById(request.getGroupId())
-                .orElseThrow(() -> new RuntimeException("Group not found"));
-
-        // Check if user is already in the group
-        userProjectGroupRepository.findByUserIdAndGroupId(request.getUserId(), request.getGroupId())
-                .ifPresent(upg -> {
-                    throw new RuntimeException("User already in this group");
-                });
-
-        UserProjectGroup userProjectGroup = new UserProjectGroup();
-        userProjectGroup.setUser(user);
-        userProjectGroup.setGroup(group);
-        userProjectGroup.setProject(group.getProject());
-        userProjectGroup.setRole(request.getRole() != null ? request.getRole() : "MEMBER");
-
-        return userProjectGroupRepository.save(userProjectGroup);
-    }
-
-    // Get all members in a group
-    public List<UserProjectGroup> getGroupMembers(UUID groupId) {
-        return userProjectGroupRepository.findByGroupId(groupId);
-    }
 
     // Get user's current projects and groups
     public List<UserProjectGroupDto> getUserProjectGroups(UUID userId) {
@@ -148,10 +106,8 @@ public class ProjectService {
                 upg.getUser().getFirstName() + " " + upg.getUser().getLastName(),
                 upg.getProject().getId(),
                 upg.getGroup().getId(),
-                upg.getGroup().getName(),
-                upg.getRole()
-        ))
-                .collect(Collectors.toList());
+                upg.getGroup().getName()
+        )).collect(Collectors.toList());
     }
 
 }

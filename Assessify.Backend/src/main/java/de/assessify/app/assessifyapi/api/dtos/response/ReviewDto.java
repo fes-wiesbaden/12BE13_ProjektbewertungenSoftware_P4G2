@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public record ReviewDto(
         UUID id,
-        UUID projectId,
+        UUID groupId,
         UUID userId,
         LocalDate date,
         List<ReviewAnswerDto> answers

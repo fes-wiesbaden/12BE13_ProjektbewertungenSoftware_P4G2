@@ -25,9 +25,7 @@ public class UserProjectGroup {
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
     
-    @Column(name = "role")
-    private String role; // e.g., "MEMBER", "ADMIN", "OWNER"
-    
+
     // Constructors
     public UserProjectGroup() {}
     
@@ -44,6 +42,4 @@ public class UserProjectGroup {
     public Group getGroup() { return group; }
     public void setGroup(Group group) { this.group = group; }
     
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
 }

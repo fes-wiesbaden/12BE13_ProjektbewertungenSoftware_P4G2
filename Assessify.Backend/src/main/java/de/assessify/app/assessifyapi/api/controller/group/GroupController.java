@@ -6,11 +6,11 @@ import de.assessify.app.assessifyapi.api.dtos.request.UpdateGroupDto;
 import de.assessify.app.assessifyapi.api.dtos.response.GroupDto;
 import de.assessify.app.assessifyapi.api.dtos.response.UserProjectGroupResponseDto;
 import de.assessify.app.assessifyapi.api.entity.Group;
-import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.entity.UserProjectGroup;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.service.ProjectService;
-
+import de.assessify.app.assessifyapi.api.service.GroupService;
+import de.assessify.app.assessifyapi.api.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,20 +19,64 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-import de.assessify.app.assessifyapi.api.repository.GroupRepository;
-
 @RestController
 @RequestMapping("/api/groups")
-public class GroupController{
-
+public class GroupController {
+    
     private final GroupRepository groupRepository;
     private final EntityFinderService entityFinderService;
+    private final GroupService groupService;
+    
+    @Autowired
+    private ProjectService projectService;
 
-    public GroupController(GroupRepository groupRepository, EntityFinderService entityFinderService) {
-        this.groupRepository = groupRepository;
+    public GroupController(EntityFinderService entityFinderService, 
+                          GroupRepository groupRepository, 
+                          GroupService groupService) {
         this.entityFinderService = entityFinderService;
+        this.groupRepository = groupRepository;
+        this.groupService = groupService;
     }
 
+    /**
+     * Get all groups
+     * GET /api/groups
+     */
+    @GetMapping
+    public ResponseEntity<List<GroupDto>> getAllGroups(
+            @RequestParam(required = false) UUID projectId) {
+        
+        // If projectId parameter is provided, filter by project
+        if (projectId != null) {
+            return ResponseEntity.ok(groupService.getAllGroupsByProjectId(projectId));
+        }
+        
+        // Otherwise return all groups
+        List<GroupDto> groups = groupRepository.findAll()
+                .stream()
+                .map(group -> new GroupDto(
+                        group.getId(),
+                        group.getName(),
+                        group.getProject().getId()
+                ))
+                .toList();
+        
+        return ResponseEntity.ok(groups);
+    }
+
+    /**
+     * Get groups by project ID
+     * GET /api/groups/project/{projectId}
+     */
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<GroupDto>> getAllGroupsByProjectId(@PathVariable UUID projectId) {
+        return ResponseEntity.ok(groupService.getAllGroupsByProjectId(projectId));
+    }
+
+    /**
+     * Get one group by ID
+     * GET /api/groups/{groupId}
+     */
     @GetMapping("/{groupId}")
     public ResponseEntity<GroupDto> getOneGroup(@PathVariable UUID groupId) {
         Group group = entityFinderService.findGroup(groupId);
@@ -46,20 +90,27 @@ public class GroupController{
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<GroupDto>> getAllGroups() {
-        List<GroupDto> groups = groupRepository.findAll()
-                .stream()
-                .map(group -> new GroupDto(
-                        group.getId(),
-                        group.getName(),
-                        group.getProject().getId()
-                ))
-                .toList();
+    /**
+     * Create a new group
+     * POST /api/groups
+     */
+    @PostMapping
+    public ResponseEntity<GroupDto> createGroup(@RequestBody AddGroupDto request) {
+        Group group = projectService.createGroup(request);
         
-        return ResponseEntity.ok(groups);
+        GroupDto response = new GroupDto(
+                group.getId(),
+                group.getName(),
+                group.getProject().getId()
+        );
+        
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    /**
+     * Update a group
+     * PUT /api/groups/{groupId}
+     */
     @PutMapping("/{groupId}")
     public ResponseEntity<GroupDto> updateOneGroup(
             @PathVariable UUID groupId,
@@ -67,20 +118,25 @@ public class GroupController{
         
         Group group = entityFinderService.findGroup(groupId);
         
-        if (dto.name() != null) group.setName(dto.name());
+        if (dto.name() != null) {
+            group.setName(dto.name());
+        }
         
         Group updated = groupRepository.save(group);
         
         GroupDto response = new GroupDto(
                 updated.getId(),
                 updated.getName(),
-                group.getProject().getId()
+                updated.getProject().getId()
         );
         
         return ResponseEntity.ok(response);
     }
 
-    // delete a group with
+    /**
+     * Delete a group
+     * DELETE /api/groups/{groupId}
+     */
     @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> deleteOneGroup(@PathVariable UUID groupId) {
         Group group = entityFinderService.findGroup(groupId);
@@ -89,42 +145,33 @@ public class GroupController{
         return ResponseEntity.noContent().build();
     }
 
-
-
-
-    @Autowired
-    private ProjectService projectService;
-    
-    // Create a new group (in a project)
-    @PostMapping
-    public ResponseEntity<Group> createGroup(@RequestBody AddGroupDto request) {
-        Group group = projectService.createGroup(request);
-        return new ResponseEntity<>(group, HttpStatus.CREATED);
-    }
-    
-    // Add member to group - FIXED to return DTO
+    /**
+     * Add member to group
+     * POST /api/groups/members
+     */
     @PostMapping("/members")
     public ResponseEntity<UserProjectGroupResponseDto> addMember(@RequestBody AddMembertoGroupDto request) {
-        UserProjectGroup upg = projectService.addMemberToGroup(request);
+        UserProjectGroup upg = groupService.addMemberToGroup(request);
         
-        // Convert to DTO to avoid circular reference
         UserProjectGroupResponseDto response = new UserProjectGroupResponseDto(
             upg.getId(),
             upg.getUser().getId(),
             upg.getUser().getFirstName() + " " + upg.getUser().getLastName(),
             upg.getProject().getId(),
             upg.getGroup().getId(),
-            upg.getGroup().getName(),
-            upg.getRole()
+            upg.getGroup().getName()
         );
         
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-    
-    // Get all members in a group - FIXED to return DTOs
+
+    /**
+     * Get all members in a group
+     * GET /api/groups/{groupId}/members
+     */
     @GetMapping("/{groupId}/members")
     public ResponseEntity<List<UserProjectGroupResponseDto>> getGroupMembers(@PathVariable UUID groupId) {
-        List<UserProjectGroup> members = projectService.getGroupMembers(groupId);
+        List<UserProjectGroup> members = groupService.getGroupMembers(groupId);
         
         List<UserProjectGroupResponseDto> response = members.stream()
             .map(upg -> new UserProjectGroupResponseDto(
@@ -133,14 +180,10 @@ public class GroupController{
                 upg.getUser().getFirstName() + " " + upg.getUser().getLastName(),
                 upg.getProject().getId(),
                 upg.getGroup().getId(),
-                upg.getGroup().getName(),
-                upg.getRole()
+                upg.getGroup().getName()
             ))
             .toList();
         
         return ResponseEntity.ok(response);
     }
-   
-
-
 }
