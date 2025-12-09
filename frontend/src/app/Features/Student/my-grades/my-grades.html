@@ -4,10 +4,9 @@
   [items]="learningFields"
   [columns]="columns"
   [showViewButton]="true"
-  (view)="openAddModal($event)"
+  (view)="openGradeModal($event)"
 >
 </app-table-column>
-<app-add-grade-form [title]="'Neue Note hinzufügen'" [initialData]="myGrades"></app-add-grade-form>
 
 <app-grade-viewer-modal
   [showModal]="showViewer"

@@ -8,12 +8,11 @@ import { Grade } from '../../../Interfaces/grade.interface';
 import { LearningField } from '../../../Shared/models/learning-fields.interface';
 import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { AddGradeForm } from '../../../Shared/Components/add-grade-form/add-grade-form';
 import { GradeViewerModalComponent } from '../../../Shared/Components/grade-viewer/grade-viewer';
 
 @Component({
   selector: 'app-my-grades',
-  imports: [PageHeaderComponents, TableColumnComponent, AddGradeForm, GradeViewerModalComponent],
+  imports: [PageHeaderComponents, TableColumnComponent, GradeViewerModalComponent],
   templateUrl: './my-grades.html',
 })
 export class MyGrades {
@@ -28,7 +27,7 @@ export class MyGrades {
     { key: 'name', label: 'Lernfeldname' },
     { key: 'weighting', label: 'Gewichtung' },
   ];
-  showViewer: any;
+  showViewer: boolean = false;
 
   constructor(
     private learningFieldService: LearningFieldService,
@@ -40,7 +39,7 @@ export class MyGrades {
     this.loadLearningFields();
   }
 
-  openAddModal(item: any) {
+  openGradeModal(item: LearningField) {
     this.loading = true;
     this.showViewer = true;
     this.showGrade(item.id);
@@ -62,9 +61,10 @@ export class MyGrades {
     this.learningFieldService.getGradeByUserId(this.userId, learningFieldId).subscribe({
       next: (data) => {
         this.myGrades = data;
+        this.loading = false;
       },
       error: (err) => {
-        console.error('Fehler beim Laden der Lernfelder', err);
+        console.error('Fehler beim Laden der Noten', err);
         this.loading = false;
       },
     });
