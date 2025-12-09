@@ -1,86 +1,140 @@
-<!-- Main Content -->
-<div class="flex-1 flex flex-col md:flex-row p-4 md:p-8 gap-6 md:gap-8 bg-linear-to-br from-gray-900 to-gray-800">
-  <!-- Login Card -->
+<div
+  class="flex-1 flex flex-col md:flex-row p-4 md:p-8 gap-6 md:gap-8 bg-linear-to-br from-gray-900 to-gray-800"
+>
   <div class="flex-1 max-w-lg mx-auto">
     <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-white/20">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-        <p class="text-gray-300">Sign in to continue to your account</p>
+        <h1 class="text-3xl font-bold text-white mb-2">Willkommen zurück</h1>
+        <p class="text-gray-300">Melde dich an, um auf dein Konto zuzugreifen</p>
       </div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-200 mb-2">Username</label>
+          <label for="username" class="block text-sm font-medium text-gray-200 mb-2"
+            >Benutzername</label
+          >
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-200 pointer-events-none">
+            <div
+              class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-200 pointer-events-none"
+            >
               <mat-icon>person</mat-icon>
             </div>
-            <input formControlName="username" id="username" type="text"
+            <input
+              formControlName="username"
+              id="username"
+              type="text"
               class="block w-full pl-10 pr-3 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="Enter your username" />
+              placeholder="Gib deinen Benutzernamen ein"
+            />
           </div>
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-200 mb-2">Password</label>
+          <label for="password" class="block text-sm font-medium text-gray-200 mb-2"
+            >Passwort</label
+          >
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex text-gray-200 items-center pointer-events-none">
+            <div
+              class="absolute inset-y-0 left-0 pl-3 flex text-gray-200 items-center pointer-events-none"
+            >
               <mat-icon>lock</mat-icon>
             </div>
-            <input formControlName="password" id="password" type="password"
+            <input
+              formControlName="password"
+              id="password"
+              type="password"
               class="block w-full pl-10 pr-3 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="Enter your password">
+              placeholder="Gib dein Passwort ein"
+            />
           </div>
         </div>
 
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <input id="remember-me" type="checkbox"
-              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+            <input
+              id="remember-me"
+              type="checkbox"
+              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+            />
             <label for="remember-me" class="ml-2 block text-sm text-gray-300">Remember me</label>
           </div>
+
           <div class="text-sm">
-            <button><span class="font-medium text-indigo-400 hover:text-indigo-300 cursor-pointer">Forgot
-                password?</span></button>
+            <button type="button" (click)="showForgotPassword = true">
+              <span class="font-medium text-indigo-400 hover:text-indigo-300 cursor-pointer">
+                Passwort vergessen?
+              </span>
+            </button>
           </div>
         </div>
 
-        <button type="submit"
-          class="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] shadow-lg">
-          Sign In
+        @if(showForgotPassword) {
+        <div class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div class="bg-white rounded-xl p-6 max-w-sm w-full shadow-lg">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Passwort vergessen ?</h2>
+            <p class="text-gray-700 mb-4">
+              Bitte wende dich an deinen Klassenlehrer oder Administrator, um dein Passwort
+              zurückzusetzen.
+            </p>
+            <button
+              type="button"
+              (click)="showForgotPassword = false"
+              class="mt-2 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+            >
+              Schließen
+            </button>
+          </div>
+        </div>
+        }
+
+        <button
+          type="submit"
+          class="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] shadow-lg"
+        >
+          Anmelden
         </button>
       </form>
 
-      <!-- error box -->
       @if (hasError) {
-      <div class="flex flex-row gap-3 p-3 my-5 m-3 border-2 bg-red-50 text-red-900 border-red-400 rounded-sm">
+      <div
+        class="flex flex-row gap-3 p-3 my-5 m-3 border-2 bg-red-50 text-red-900 border-red-400 rounded-sm"
+      >
         <mat-icon>error</mat-icon>
-        <p>{{loginError}}</p>
+        <p>{{ loginError }}</p>
       </div>
       }
 
       <div class="mt-6 pt-6 border-t border-white/20">
         <p class="text-center text-gray-400 text-sm">
-          Don't have an account? Ask your Class Teacher for Access.
+          Du hast noch kein Konto? Bitte deinen Klassenlehrer um Zugang.
         </p>
       </div>
     </div>
   </div>
 
-  <!-- Illustration -->
   <div class="flex-1 hidden md:flex items-center justify-center">
     <div
-      class="bg-linear-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl shadow-xl p-8 w-full h-full flex flex-col items-center justify-center border border-white/10">
+      class="bg-linear-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl shadow-xl p-8 w-full h-full flex flex-col items-center justify-center border border-white/10"
+    >
       <div class="mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-indigo-400" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-24 w-24 text-indigo-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+          />
         </svg>
       </div>
-      <h2 class="text-2xl font-bold text-white mb-4 text-center">Secure Learning Platform</h2>
+      <h2 class="text-2xl font-bold text-white mb-4 text-center">Intelligente Notenverwaltung</h2>
       <p class="text-gray-300 text-center max-w-md">
-        Access your school resources, track progress, and connect with your learning community.
+        Verwalte Noten, verfolge Lernfortschritte und behalte den Überblick – einfach, sicher und für Lehrer sowie Schüler perfekt abgestimmt.
       </p>
     </div>
   </div>

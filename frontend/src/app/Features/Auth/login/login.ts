@@ -15,6 +15,7 @@ export class Login {
   loginForm: FormGroup;
   loginError: string = '';
   hasError = false;
+  showForgotPassword = false;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
