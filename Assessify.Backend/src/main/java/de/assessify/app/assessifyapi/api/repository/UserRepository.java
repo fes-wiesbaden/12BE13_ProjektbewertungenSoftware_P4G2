@@ -10,16 +10,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
-    @Query("""
-        SELECT u FROM User u
-        JOIN u.ClassEntityes c
-        WHERE c.id = :classId
-          AND u.roleId = :roleId
-    """)
+    
+    @Query("SELECT u FROM User u WHERE u.classEntity.id = :classId AND u.role.id = :roleId")
     List<User> findByClassIdAndRoleId(@Param("classId") UUID classId, @Param("roleId") Integer roleId);
-
+    
     Optional<User> findByUsernameIgnoreCase(String username);
-    List<User> findByRoleId(Integer roleId);
+    
+    @Query("SELECT u FROM User u WHERE u.role.id = :roleId")
+    List<User> findByRoleId(@Param("roleId") Integer roleId);
+    
     boolean existsByUsername(String username);
-    long countByRoleId(Integer roleId);
+    
+    @Query("SELECT COUNT(u) FROM User u WHERE u.role.id = :roleId")
+    long countByRoleId(@Param("roleId") Integer roleId);
 }

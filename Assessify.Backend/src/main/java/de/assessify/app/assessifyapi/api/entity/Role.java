@@ -10,6 +10,8 @@ import java.util.UUID;
 import io.micrometer.common.lang.Nullable;
 
 @Entity
+@Setter
+@Getter
 @Table(name = "role")
 @Data
 public class Role {

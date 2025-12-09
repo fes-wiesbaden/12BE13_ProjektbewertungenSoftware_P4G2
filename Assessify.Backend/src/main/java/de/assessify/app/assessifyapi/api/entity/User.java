@@ -2,15 +2,13 @@ package de.assessify.app.assessifyapi.api.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
-import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Table(name = "user", 
@@ -20,26 +18,28 @@ import org.hibernate.annotations.UuidGenerator;
 )
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-
+    
     @Id
-@UuidGenerator
-private UUID id;
+    @UuidGenerator
+    private UUID id;
 
-    @Column(name = "first_name", nullable=false, length=100)
+    @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
 
-    @Column(name = "last_name", nullable=false, length=100)
+    @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
 
-    @Column(name = "username", nullable=false, length=100)
+    @Column(name = "username", nullable = false, length = 100)
     private String username;
 
-    @Column(name = "password", nullable=false, length=100)
+    @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="role_id", nullable=false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -107,5 +107,4 @@ private UUID id;
     @EqualsAndHashCode.Exclude
     @Builder.Default
     private Set<Review> reviewsReceived = new HashSet<>();
-
 }

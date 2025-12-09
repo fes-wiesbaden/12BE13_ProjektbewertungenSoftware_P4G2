@@ -31,11 +31,11 @@ public class UserService {
     /**
      * Get All users by role
      */
-    public List<UserResponseDto> getUsersByRole(Integer roleId) {        
+    public List<UserResponseDto> getUsersByRole(Integer roleId) {
         List<User> users = userRepository.findByRoleId(roleId);
         return users.stream()
-                    .map(userMapper::toResponseDto)
-                    .collect(Collectors.toList());
+                .map(userMapper::toResponseDto)
+                .collect(Collectors.toList());
     }
 
     public UserService(UserRepository userRepository, RoleRepository roleRepository, ClassRepository classRepository, UserMapper userMapper) {

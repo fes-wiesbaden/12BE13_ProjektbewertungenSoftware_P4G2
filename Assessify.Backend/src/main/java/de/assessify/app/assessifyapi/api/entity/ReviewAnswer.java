@@ -8,6 +8,7 @@ import lombok.Data;
 //import javax.validation.constraints.Max;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 

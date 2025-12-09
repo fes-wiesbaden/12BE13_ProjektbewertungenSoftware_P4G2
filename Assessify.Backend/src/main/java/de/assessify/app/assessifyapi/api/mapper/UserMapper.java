@@ -11,11 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserMapper {
 
-    public UserResponseDto toResponseDto (User user){
-        if (user == null){
-            return null;
-        }
-
+    public UserResponseDto toResponseDto(User user) {
         return UserResponseDto.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
@@ -23,34 +19,11 @@ public class UserMapper {
                 .username(user.getUsername())
                 .roleId(user.getRole() != null ? user.getRole().getId() : null)
                 .roleName(user.getRole() != null ? user.getRole().getRoleName() : null)
-                .classId(user.getClassEntity() != null ? user.getClassEntity().getId(): null)
+                .classId(user.getClassEntity() != null ? user.getClassEntity().getId() : null)
                 .className(user.getClassEntity() != null ? user.getClassEntity().getName() : null)
                 .isActive(user.getIsActive())
                 .creationDate(user.getCreationDate())
                 .lastLogin(user.getLastLogin())
                 .build();
     }
-
-
-    /**
-     * Convert UserRequestDTO to User entity
-     * Note: Password should be encoded separately before saving
-     */
-    public User toEntity(UserRequestDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-
-        return User.builder()
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .username(dto.getUsername())
-                .email(dto.getEmail())
-                .password(dto.getPassword()) // Password should be hashed in service layer
-                .isActive(dto.getIsActive() != null ? dto.getIsActive() : true)
-                .build();
-    }
-
-
-
 }

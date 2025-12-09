@@ -3,7 +3,7 @@ package de.assessify.app.assessifyapi.api.dtos.response;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import lombok.Builder;
+import lombok.*;
 
 @Builder
 public record UserResponseDto (

@@ -1,3 +1,6 @@
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Drop tables if they exist (CASCADE drops dependent objects)
 DROP TABLE IF EXISTS review_answers CASCADE;
 DROP TABLE IF EXISTS review_question CASCADE;
@@ -17,12 +20,12 @@ DROP TABLE IF EXISTS role CASCADE;
 -- Create Role table
 CREATE TABLE role (
                       id SERIAL PRIMARY KEY,
-                      role VARCHAR(50) NOT NULL
+                      role_name VARCHAR(50) NOT NULL
 );
 
 -- Create Course table
 CREATE TABLE course (
-                        id SERIAL PRIMARY KEY,
+                        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                         code VARCHAR(10) NOT NULL,
                         name VARCHAR(200) NOT NULL,
                         description TEXT,
@@ -32,8 +35,8 @@ CREATE TABLE course (
 
 -- Create Class table
 CREATE TABLE class (
-                       id SERIAL PRIMARY KEY,
-                       course_id INTEGER NOT NULL,
+                       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                       course_id UUID NOT NULL,
                        cohort_year INTEGER NOT NULL,
                        name VARCHAR(50) NOT NULL,
                        description TEXT,
@@ -47,14 +50,13 @@ CREATE TABLE class (
 
 -- Create User table (quoted because "user" is reserved in PostgreSQL)
 CREATE TABLE "user" (
-                        id SERIAL PRIMARY KEY,
+                        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                         first_name VARCHAR(100) NOT NULL,
                         last_name VARCHAR(100) NOT NULL,
                         username VARCHAR(100) NOT NULL UNIQUE,
-                        email VARCHAR(255) NOT NULL UNIQUE,
                         password VARCHAR(255) NOT NULL,
                         role_id INTEGER NOT NULL,
-                        class_id INTEGER,
+                        class_id UUID,
                         is_active BOOLEAN NOT NULL DEFAULT TRUE,
                         creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         last_login TIMESTAMP,
@@ -64,8 +66,8 @@ CREATE TABLE "user" (
 
 -- Create Academic_Year table
 CREATE TABLE academic_year (
-                               id SERIAL PRIMARY KEY,
-                               class_id INTEGER NOT NULL,
+                               id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                               class_id UUID NOT NULL,
                                year_number INTEGER NOT NULL,
                                year_name VARCHAR(50) NOT NULL,
                                start_date DATE NOT NULL,
@@ -77,9 +79,9 @@ CREATE TABLE academic_year (
 
 -- Create Class_Teacher_List table
 CREATE TABLE class_teacher_list (
-                                    id SERIAL PRIMARY KEY,
-                                    teacher_id INTEGER NOT NULL,
-                                    class_id INTEGER NOT NULL,
+                                    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                                    teacher_id UUID NOT NULL,
+                                    class_id UUID NOT NULL,
                                     assigned_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                     CONSTRAINT fk_ctl_teacher FOREIGN KEY (teacher_id) REFERENCES "user"(id) ON DELETE CASCADE,
                                     CONSTRAINT fk_ctl_class FOREIGN KEY (class_id) REFERENCES class(id) ON DELETE CASCADE,
@@ -88,8 +90,8 @@ CREATE TABLE class_teacher_list (
 
 -- Create Lernfeld table
 CREATE TABLE lernfeld (
-                          id SERIAL PRIMARY KEY,
-                          course_id INTEGER NOT NULL,
+                          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                          course_id UUID NOT NULL,
                           name VARCHAR(200) NOT NULL,
                           description TEXT,
                           lernfeld_weighting NUMERIC(5,2) NOT NULL,
@@ -99,14 +101,14 @@ CREATE TABLE lernfeld (
 
 -- Create Project table
 CREATE TABLE project (
-                         id SERIAL PRIMARY KEY,
-                         class_id INTEGER NOT NULL,
-                         academic_year_id INTEGER,
+                         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                         class_id UUID NOT NULL,
+                         academic_year_id UUID,
                          name VARCHAR(200) NOT NULL,
                          description TEXT,
                          start_date DATE NOT NULL,
                          due_date DATE NOT NULL,
-                         created_by INTEGER NOT NULL,
+                         created_by UUID NOT NULL,
                          status VARCHAR(20) DEFAULT 'draft',
                          review_deadline TIMESTAMP,
                          creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -117,10 +119,10 @@ CREATE TABLE project (
 
 -- Create Group table (quoted because "group" is reserved in PostgreSQL)
 CREATE TABLE "group" (
-                         id SERIAL PRIMARY KEY,
+                         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                          name VARCHAR(100) NOT NULL,
-                         project_id INTEGER NOT NULL,
-                         created_by INTEGER NOT NULL,
+                         project_id UUID NOT NULL,
+                         created_by UUID NOT NULL,
                          creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                          CONSTRAINT fk_group_project FOREIGN KEY (project_id) REFERENCES project(id) ON DELETE CASCADE,
                          CONSTRAINT fk_group_creator FOREIGN KEY (created_by) REFERENCES "user"(id) ON DELETE CASCADE
@@ -128,9 +130,9 @@ CREATE TABLE "group" (
 
 -- Create Group_Members table
 CREATE TABLE group_members (
-                               id SERIAL PRIMARY KEY,
-                               member_id INTEGER NOT NULL,
-                               group_id INTEGER NOT NULL,
+                               id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                               member_id UUID NOT NULL,
+                               group_id UUID NOT NULL,
                                joined_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                CONSTRAINT fk_gm_member FOREIGN KEY (member_id) REFERENCES "user"(id) ON DELETE CASCADE,
                                CONSTRAINT fk_gm_group FOREIGN KEY (group_id) REFERENCES "group"(id) ON DELETE CASCADE,
@@ -139,14 +141,14 @@ CREATE TABLE group_members (
 
 -- Create Noten table
 CREATE TABLE noten (
-                       id SERIAL PRIMARY KEY,
-                       student_id INTEGER NOT NULL,
-                       lernfeld_id INTEGER NOT NULL,
-                       class_id INTEGER NOT NULL,
-                       academic_year_id INTEGER,
-                       project_id INTEGER,
+                       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                       student_id UUID NOT NULL,
+                       lernfeld_id UUID NOT NULL,
+                       class_id UUID NOT NULL,
+                       academic_year_id UUID,
+                       project_id UUID,
                        value NUMERIC(5,2) NOT NULL,
-                       given_by INTEGER NOT NULL,
+                       given_by UUID NOT NULL,
                        teacher_comment TEXT,
                        date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                        CONSTRAINT fk_noten_student FOREIGN KEY (student_id) REFERENCES "user"(id) ON DELETE CASCADE,
@@ -159,10 +161,10 @@ CREATE TABLE noten (
 
 -- Create Review table
 CREATE TABLE review (
-                        id SERIAL PRIMARY KEY,
-                        reviewer_id INTEGER NOT NULL,
-                        reviewee_id INTEGER NOT NULL,
-                        group_id INTEGER NOT NULL,
+                        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                        reviewer_id UUID NOT NULL,
+                        reviewee_id UUID NOT NULL,
+                        group_id UUID NOT NULL,
                         comment TEXT,
                         is_submitted BOOLEAN NOT NULL DEFAULT FALSE,
                         submission_date TIMESTAMP,
@@ -175,18 +177,18 @@ CREATE TABLE review (
 
 -- Create Review_Question table
 CREATE TABLE review_question (
-                                 id SERIAL PRIMARY KEY,
+                                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                                  question_text TEXT NOT NULL,
-                                 project_id INTEGER NOT NULL,
+                                 project_id UUID NOT NULL,
                                  question_order INTEGER NOT NULL DEFAULT 0,
                                  CONSTRAINT fk_rq_project FOREIGN KEY (project_id) REFERENCES project(id) ON DELETE CASCADE
 );
 
 -- Create Review_Answers table
 CREATE TABLE review_answers (
-                                id SERIAL PRIMARY KEY,
-                                review_id INTEGER NOT NULL,
-                                question_id INTEGER NOT NULL,
+                                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                                review_id UUID NOT NULL,
+                                question_id UUID NOT NULL,
                                 rate NUMERIC(3,2) NOT NULL,
                                 comment TEXT,
                                 CONSTRAINT fk_ra_review FOREIGN KEY (review_id) REFERENCES review(id) ON DELETE CASCADE,
@@ -195,7 +197,6 @@ CREATE TABLE review_answers (
 );
 
 -- Create Indexes for performance
-CREATE INDEX idx_user_email ON "user"(email);
 CREATE INDEX idx_user_username ON "user"(username);
 CREATE INDEX idx_user_class ON "user"(class_id);
 CREATE INDEX idx_class_course ON class(course_id);
