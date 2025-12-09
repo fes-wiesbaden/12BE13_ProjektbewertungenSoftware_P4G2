@@ -53,7 +53,6 @@
                       type="checkbox"
                       [(ngModel)]="option.selected"
                       name="{{ field.key }}_{{ option.value }}"
-                      [value]="formData[field.key] || ''"
                       (ngModelChange)="onMultiSelectChange(field)"
                       class="mr-2 rounded"
                     />
@@ -74,7 +73,6 @@
               <select
                 [(ngModel)]="formData[field.key]"
                 [name]="field.key"
-                [value]="formData[field.key] || ''"
                 [required]="!!field.required"
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
@@ -86,7 +84,6 @@
               <textarea
                 [(ngModel)]="formData[field.key]"
                 [name]="field.key"
-                [value]="formData[field.key] || ''"
                 [placeholder]="field.placeholder"
                 [required]="!!field.required"
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
@@ -98,7 +95,6 @@
                 [(ngModel)]="formData[field.key]"
                 [name]="field.key"
                 [type]="field.type"
-                [value]="formData[field.key] || ''"
                 [placeholder]="field.placeholder"
                 [required]="!!field.required"
                 [readonly]="field.readonly"

@@ -187,9 +187,6 @@ export class ManageStudents implements OnInit {
 
     const updatedStudent = { ...this.editingStudent, ...formData };
 
-    console.log(formData);
-    console.log(updatedStudent.id);
-
     this.userService.updateUser(updatedStudent).subscribe({
       next: (res: User) => {
         const index = this.students.findIndex((s) => s.id === updatedStudent.id);

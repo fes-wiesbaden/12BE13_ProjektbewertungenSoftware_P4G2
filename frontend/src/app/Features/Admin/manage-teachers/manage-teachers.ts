@@ -151,6 +151,7 @@ export class ManageTeachers implements OnInit {
     this.loadCourses();
   }
 
+
   openEditModal(teacher: User) {
     this.editingTeacher = teacher;
     this.showEditModal = true;
@@ -181,9 +182,6 @@ export class ManageTeachers implements OnInit {
     if (!this.editingTeacher) return;
 
     const updatedTeacher = { ...this.editingTeacher, ...formData };
-
-    console.log(formData);
-    console.log(updatedTeacher.id);
 
     this.userService.updateUser(updatedTeacher).subscribe({
       next: (res: User) => {
@@ -239,6 +237,7 @@ export class ManageTeachers implements OnInit {
         this.username = '';
         this.password = '';
         this.role = '';
+        console.log(teacher);
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
