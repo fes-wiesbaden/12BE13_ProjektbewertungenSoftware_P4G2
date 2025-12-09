@@ -2,7 +2,6 @@ package de.assessify.app.assessifyapi.api.controller.user;
 
 import de.assessify.app.assessifyapi.api.dtos.request.AddUserWithCourseDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateUserDto;
-import de.assessify.app.assessifyapi.api.dtos.response.UserDto;
 import de.assessify.app.assessifyapi.api.entity.ClassEntity;
 import de.assessify.app.assessifyapi.api.repository.RoleRepository;
 import de.assessify.app.assessifyapi.api.repository.ClassRepository;

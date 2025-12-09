@@ -1,6 +1,6 @@
 package de.assessify.app.assessifyapi.api.dtos.response;
 
-public record RoleDto (
+public record RoleResponseDto(
         int id,
-        String name
+        String roleName
 ) {}

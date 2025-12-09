@@ -2,7 +2,7 @@ package de.assessify.app.assessifyapi.api.controller.noten;
 
 import de.assessify.app.assessifyapi.api.dtos.request.NotenRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateGradeDto;
-import de.assessify.app.assessifyapi.api.dtos.response.GradeDto;
+import de.assessify.app.assessifyapi.api.dtos.response.NotenResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleWithGradesDto;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.service.GradeCalculationService;
@@ -33,7 +33,7 @@ public class GradeController {
     }
 
     @GetMapping("/user/{userId}/training-modules/{trainingModulesId}/grades")
-    public ResponseEntity<List<GradeDto>> getGradesForLearningField(
+    public ResponseEntity<List<NotenResponseDto>> getGradesForLearningField(
             @PathVariable UUID userId,
             @PathVariable UUID trainingModulesId) {
 
@@ -44,9 +44,9 @@ public class GradeController {
             throw new RuntimeException("User is not enrolled in this Training Module");
         }
         
-        List<GradeDto> dtos = trainingModule.getGrades().stream()
+        List<NotenResponseDto> dtos = trainingModule.getGrades().stream()
                 .filter(grade -> grade.getUser().getId().equals(userId))
-                .map(g -> new GradeDto(
+                .map(g -> new NotenResponseDto(
                         g.getId(),
                         g.getGradeName(),
                         g.getValue(),
@@ -72,7 +72,7 @@ public class GradeController {
                         field.getDescription(),
                         field.getWeighting(),
                         field.getGrades().stream()
-                                .map(g -> new GradeDto(
+                                .map(g -> new NotenResponseDto(
                                         g.getId(),
                                         g.getGradeName(),
                                         g.getValue(),
@@ -87,7 +87,7 @@ public class GradeController {
     }
 
     @PostMapping("/user/{userId}/training-modules/{trainingModulesId}/grade")
-    public ResponseEntity<GradeDto> addGradeToTrainingModule(
+    public ResponseEntity<NotenResponseDto> addGradeToTrainingModule(
             @PathVariable UUID userId,
             @PathVariable UUID trainingModulesId,
             @RequestBody NotenRequestDto dto){
@@ -109,7 +109,7 @@ public class GradeController {
 
         Grade savedGrade = notenRepository.save(grade);
 
-        GradeDto response = new GradeDto(
+        NotenResponseDto response = new NotenResponseDto(
                 savedGrade.getId(),
                 savedGrade.getGradeName(),
                 savedGrade.getValue(),
@@ -121,7 +121,7 @@ public class GradeController {
     }
 
     @PutMapping("/user/{userId}/training-modules/{trainingModulesId}/grade/{gradeId}")
-    public ResponseEntity<GradeDto> updateGrade(
+    public ResponseEntity<NotenResponseDto> updateGrade(
             @PathVariable UUID userId,
             @PathVariable UUID trainingModulesId,
             @PathVariable UUID gradeId,
@@ -140,7 +140,7 @@ public class GradeController {
 
         Grade updated = notenRepository.save(grade);
 
-        GradeDto response = new GradeDto(
+        NotenResponseDto response = new NotenResponseDto(
                 updated.getId(),
                 updated.getGradeName(),
                 updated.getValue(),

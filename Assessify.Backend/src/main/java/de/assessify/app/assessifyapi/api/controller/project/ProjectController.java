@@ -2,7 +2,7 @@ package de.assessify.app.assessifyapi.api.controller.project;
 
 import de.assessify.app.assessifyapi.api.dtos.request.ProjectRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateProjectDto;
-import de.assessify.app.assessifyapi.api.dtos.response.ProjectDto;
+import de.assessify.app.assessifyapi.api.dtos.response.ProjectResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectWithTrainingModulesDto;
 import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleSummaryDto;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
@@ -30,10 +30,10 @@ public class ProjectController {
     }
 
     @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDto>> getAllProjects() {
+    public ResponseEntity<List<ProjectResponseDto>> getAllProjects() {
         var modules = projectRepository.findAll()
                 .stream()
-                .map(field -> new ProjectDto(
+                .map(field -> new ProjectResponseDto(
                         field.getId(),
                         field.getProjectName(),
                         field.getProjectDescription()
@@ -44,7 +44,7 @@ public class ProjectController {
     }
 
     @PostMapping("/project")
-    public ResponseEntity<ProjectDto> addProject(@RequestBody ProjectRequestDto dto) {
+    public ResponseEntity<ProjectResponseDto> addProject(@RequestBody ProjectRequestDto dto) {
 
         Project entity = new Project();
         entity.setProjectName(dto.name());
@@ -52,7 +52,7 @@ public class ProjectController {
 
         Project saved = projectRepository.save(entity);
 
-        ProjectDto response = new ProjectDto(
+        ProjectResponseDto response = new ProjectResponseDto(
                 saved.getId(),
                 saved.getProjectName(),
                 saved.getProjectDescription()
@@ -94,7 +94,7 @@ public class ProjectController {
     }
 
     @PutMapping("/project/{projectId}")
-    public ResponseEntity<ProjectDto> updateProject(
+    public ResponseEntity<ProjectResponseDto> updateProject(
             @PathVariable UUID projectId,
             @RequestBody UpdateProjectDto dto) {
 
@@ -105,7 +105,7 @@ public class ProjectController {
 
         Project updated = projectRepository.save(project);
 
-        ProjectDto response = new ProjectDto(
+        ProjectResponseDto response = new ProjectResponseDto(
                 updated.getId(),
                 updated.getProjectName(),
                 updated.getProjectDescription()

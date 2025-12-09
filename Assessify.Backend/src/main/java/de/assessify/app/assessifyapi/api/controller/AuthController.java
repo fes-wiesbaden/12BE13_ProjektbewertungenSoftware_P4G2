@@ -1,5 +1,5 @@
 package de.assessify.app.assessifyapi.api.controller;
-import de.assessify.app.assessifyapi.api.dtos.response.LoginDto;
+import de.assessify.app.assessifyapi.api.dtos.response.LoginResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.request.AddLoginDto;
 import de.assessify.app.assessifyapi.api.service.AuthService;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class AuthController {
         if (token == null) {
             return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
         }
-        LoginDto response = new LoginDto(
+        LoginResponseDto response = new LoginResponseDto(
                 token,
                 "Bearer"
         );

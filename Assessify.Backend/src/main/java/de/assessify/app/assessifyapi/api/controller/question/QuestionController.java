@@ -2,7 +2,7 @@ package de.assessify.app.assessifyapi.api.controller.question;
 
 import de.assessify.app.assessifyapi.api.dtos.request.AddQuestionDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateQuestionDto;
-import de.assessify.app.assessifyapi.api.dtos.response.QuestionDto;
+import de.assessify.app.assessifyapi.api.dtos.response.ReviewQuestionResponseDto;
 import de.assessify.app.assessifyapi.api.entity.ReviewQuestion;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.repository.QuestionRepository;
@@ -24,10 +24,10 @@ public class QuestionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<QuestionDto>> getAllQuestions() {
+    public ResponseEntity<List<ReviewQuestionResponseDto>> getAllQuestions() {
         var modules = questionRepository.findAll()
                 .stream()
-                .map(field -> new QuestionDto(
+                .map(field -> new ReviewQuestionResponseDto(
                         field.getId(),
                         field.getQuestionText()
                 ))
@@ -37,7 +37,7 @@ public class QuestionController {
     }
 
     @PostMapping
-    public ResponseEntity<QuestionDto> createQuestion(
+    public ResponseEntity<ReviewQuestionResponseDto> createQuestion(
             @RequestBody AddQuestionDto dto) {
 
         ReviewQuestion entity = new ReviewQuestion();
@@ -45,7 +45,7 @@ public class QuestionController {
 
         ReviewQuestion saved = questionRepository.save(entity);
 
-        QuestionDto response = new QuestionDto(
+        ReviewQuestionResponseDto response = new ReviewQuestionResponseDto(
                 saved.getId(),
                 saved.getQuestionText()
         );
@@ -54,7 +54,7 @@ public class QuestionController {
     }
 
     @PutMapping("/{questionId}")
-    public ResponseEntity<QuestionDto> updateQuestion(
+    public ResponseEntity<ReviewQuestionResponseDto> updateQuestion(
             @PathVariable UUID questionId,
             @RequestBody UpdateQuestionDto dto) {
 
@@ -64,7 +64,7 @@ public class QuestionController {
 
         ReviewQuestion updated = questionRepository.save(question);
 
-        QuestionDto response = new QuestionDto(
+        ReviewQuestionResponseDto response = new ReviewQuestionResponseDto(
                 updated.getId(),
                 updated.getQuestionText()
         );

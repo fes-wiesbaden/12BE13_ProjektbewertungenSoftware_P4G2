@@ -11,7 +11,6 @@ public record UserResponseDto (
     String firstName,
     String lastName,
     String username,
-    String email,
     Integer roleId,
     String roleName,
     UUID classId,
