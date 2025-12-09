@@ -12,7 +12,7 @@ export interface ChangePasswordRequestDto {
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = 'http://localhost:4100/api/users';
+  private apiUrl = 'http://localhost:4100/api/user';
 
   constructor(private http: HttpClient) {}
 

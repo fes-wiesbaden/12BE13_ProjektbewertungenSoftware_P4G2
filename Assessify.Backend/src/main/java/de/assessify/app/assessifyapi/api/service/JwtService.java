@@ -41,4 +41,21 @@ public class JwtService {
                 .withExpiresAt(expiresAt)
                 .sign(algorithm);
     }
+
+    public boolean isTokenValid(String token) {
+        try {
+            JWT.require(algorithm).build().verify(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String getUsernameFromToken(String token) {
+        return JWT.decode(token).getClaim("username").asString();
+    }
+
+    public String getRoleFromToken(String token) {
+        return JWT.decode(token).getClaim("roleName").asString();
+    }
 }

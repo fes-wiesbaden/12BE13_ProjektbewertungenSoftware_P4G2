@@ -10,6 +10,7 @@ import de.assessify.app.assessifyapi.api.repository.UserRepository;
 import de.assessify.app.assessifyapi.api.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,7 +24,7 @@ import java.util.UUID;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -38,8 +39,10 @@ public class UserController {
         this.schoolClassRepository = schoolClassRepository;
     }
 
+    @PreAuthorize("hasRole('ADMIN') or #roleId == authentication.principal.roleId")
     @GetMapping("/role/{roleId}")
     public ResponseEntity<List<UserDto>> getAllUsersById(@PathVariable Integer roleId) {
+        System.out.println(roleId);
         var modules = userRepository.findByRoleId(roleId)
                 .stream()
                 .map(field -> {
