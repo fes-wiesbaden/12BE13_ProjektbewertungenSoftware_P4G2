@@ -44,7 +44,7 @@
               id="user-menu-button-2"
               [attr.aria-expanded]="profileMenuOpen"
             >
-              <mat-icon class="w-8 h-8" style="color: white">person_outline</mat-icon>
+              <mat-icon class="w-8 h-8" style="color: white" aria-label="Benutzerprofil">person_outline</mat-icon>
             </button>
           </div>
 
@@ -139,11 +139,11 @@
           class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
         />
         <div class="mt-1 space-y-1">
-          @if(changePasswordForm.get('newPassword')?.errors?.['required']){
+          @if(changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['required']){
           <p class="text-red-500 text-sm">Passwort ist erforderlich</p>
-          } @if (changePasswordForm.get('newPassword')?.errors?.['minlength']) {
+          } @if (changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['minlength']) {
           <p class="text-red-500 text-sm">Mindestens 8 Zeichen</p>
-          } @if(changePasswordForm.get('newPassword')?.errors?.['pattern']) {
+          } @if(changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['pattern']) {
           <p class="text-red-500 text-sm">
             Muss Großbuchstaben, Kleinbuchstaben, Zahl und Sonderzeichen enthalten
           </p>

@@ -10,8 +10,6 @@ import {
   AbstractControl,
   FormBuilder,
   FormGroup,
-  FormsModule,
-  NgForm,
   ReactiveFormsModule,
   ValidationErrors,
   Validators,
@@ -26,14 +24,13 @@ import { finalize } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
     MatMenuModule,
     SiXMarkIcon,
     SiBars3Icon,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './dashboard-navbar.html',
   styleUrl: './dashboard-navbar.css',
@@ -44,6 +41,7 @@ export class DashboardNavbar implements OnInit {
   loading = false;
   successMessage = '';
   errorMessage = '';
+  private static readonly PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/;
 
   @Output() sidebarToggle = new EventEmitter<void>();
 
@@ -67,7 +65,7 @@ export class DashboardNavbar implements OnInit {
           [
             Validators.required,
             Validators.minLength(8),
-            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/), // Groß/klein, Zahl, Sonderzeichen
+            Validators.pattern(DashboardNavbar.PASSWORD_PATTERN),
           ],
         ],
         confirmPassword: ['', Validators.required],
@@ -85,6 +83,11 @@ export class DashboardNavbar implements OnInit {
   passwordsMatch(group: AbstractControl): ValidationErrors | null {
     const newPwd = group.get('newPassword')?.value;
     const confirmPwd = group.get('confirmPassword')?.value;
+    
+    if (!newPwd || !confirmPwd) {
+      return null;
+    }
+
     return newPwd === confirmPwd ? null : { notMatching: true };
   }
 
@@ -97,6 +100,8 @@ export class DashboardNavbar implements OnInit {
 
   closeChangePasswordModal() {
     this.showChangePasswordModal = false;
+    this.successMessage = '';
+    this.errorMessage = '';
   }
 
   submitChangePassword() {
