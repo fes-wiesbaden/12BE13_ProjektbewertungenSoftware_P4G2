@@ -13,6 +13,9 @@ import {
   FormField,
   FormModalComponent,
 } from '../../../Shared/Components/form-modal/form-modal';
+import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
+import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
+
 
 @Component({
   selector: 'app-manage-classes',
@@ -24,13 +27,20 @@ import {
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
+    ImportModalComponent,
+    ExportModalComponent,
   ],
+
   templateUrl: './manage-classes.html',
 })
 export class ManageClasses implements OnInit {
   classes: Class[] = [];
   loading = true;
-
+  showImportModal = false;
+  showExportModal = false;
+  onImportFile(file: File) {
+    console.log('Import-Datei:', file);
+  }
   // Tabellen-Spalten: keys müssen zum Interface "Class" passen
   columns: TableColumn<Class>[] = [
     { key: 'courseName', label: 'Kursname' },

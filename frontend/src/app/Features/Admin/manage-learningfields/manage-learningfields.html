@@ -9,9 +9,11 @@
 
 <app-page-header
   title="Lernfelder"
-  (addClick)="openAddModel()"
   [showAddButton]="true"
-></app-page-header>
+  (addClick)="openAddModel()"
+  (importClick)="showImportModal = true"
+  (exportClick)="showExportModal = true"
+  ></app-page-header>
 
 <app-table-column
   [items]="learnfields"
@@ -39,3 +41,14 @@
   (delete)="deleteLearningField()"
 >
 </app-delete-button>
+
+<app-import-modal
+  [show]="showImportModal"
+  (close)="showImportModal = false"
+  (fileSelected)="onImportFile($event)"
+></app-import-modal>
+
+<app-export-modal
+  [show]="showExportModal"
+  (close)="showExportModal = false"
+></app-export-modal>

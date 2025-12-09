@@ -4,14 +4,15 @@
   [fields]="fields"
   (close)="closeAddModel()"
   (save)="saveAdmin($event)"
->
-</app-form-modal>
+></app-form-modal>
 
 <app-page-header
   title="Administratoren"
-  (addClick)="openAddModel()"
   [showAddButton]="true"
-></app-page-header>
+  (addClick)="openAddModel()"
+  (importClick)="showImportModal = true"
+  (exportClick)="showExportModal = true"
+  ></app-page-header>
 
 <app-table-column
   [items]="admins"
@@ -36,5 +37,15 @@
   [title]="'Sind Sie sicher, dass sie den Admin löschen wollen?'"
   (close)="closeDeleteModal()"
   (delete)="deleteAdmin()"
->
-</app-delete-button>
+></app-delete-button>
+
+<app-import-modal
+  [show]="showImportModal"
+  (close)="showImportModal = false"
+  (fileSelected)="onImportFile($event)"
+></app-import-modal>
+
+<app-export-modal
+  [show]="showExportModal"
+  (close)="showExportModal = false"
+></app-export-modal>

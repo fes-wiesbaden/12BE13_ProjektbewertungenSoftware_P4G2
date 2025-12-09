@@ -11,6 +11,8 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
+import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -23,13 +25,19 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
     TableColumnComponent,
     FormModalComponent,
     DeleteButtonComponent,
+    ImportModalComponent,
+    ExportModalComponent,
   ],
   templateUrl: './manage-teachers.html',
 })
 export class ManageTeachers implements OnInit {
   teachers: User[] = [];
   loading = true;
-
+  showImportModal = false;
+  showExportModal = false;
+  onImportFile(file: File) {
+    console.log('Import-Datei:', file);
+  }
   columns: TableColumn<User>[] = [
     { key: 'firstName', label: 'First Name' },
     { key: 'lastName', label: 'Last Name' },

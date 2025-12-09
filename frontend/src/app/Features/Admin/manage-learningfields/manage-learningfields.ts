@@ -11,6 +11,8 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
+import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 
 @Component({
   selector: 'app-learnfield',
@@ -23,6 +25,8 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
     TableColumnComponent,
     FormModalComponent,
     DeleteButtonComponent,
+    ImportModalComponent,
+    ExportModalComponent,
   ],
   templateUrl: './manage-learningfields.html',
 })
@@ -33,7 +37,11 @@ export class ManageLearnfields implements OnInit {
   showEditModal: boolean = false;
   showDeleteModal: boolean = false;
   selectedLearnfield: LearningField | null = null;
-
+  showImportModal = false;
+  showExportModal = false;
+  onImportFile(file: File) {
+    console.log('Import-Datei:', file);
+  }
   columns: TableColumn<LearningField>[] = [
     { key: 'name', label: 'Lernfeld' },
     { key: 'description', label: 'Beschreibung' },
