@@ -4,5 +4,13 @@
   [items]="learningFields"
   [columns]="columns"
   [showViewButton]="true"
+  (view)="openGradeModal($event)"
 >
 </app-table-column>
+
+<app-grade-viewer-modal
+  [showModal]="showViewer"
+  [grades]="myGrades"
+  title="Noten anzeigen"
+  (close)="showViewer = false"
+></app-grade-viewer-modal>

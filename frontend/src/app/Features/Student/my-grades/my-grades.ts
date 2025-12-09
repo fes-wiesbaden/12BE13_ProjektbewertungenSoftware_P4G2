@@ -8,17 +8,18 @@ import { Grade } from '../../../Interfaces/grade.interface';
 import { LearningField } from '../../../Shared/models/learning-fields.interface';
 import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { GradeViewerModalComponent } from '../../../Shared/Components/grade-viewer/grade-viewer';
 
 @Component({
   selector: 'app-my-grades',
-  imports: [PageHeaderComponents, TableColumnComponent],
-  templateUrl: './my-grades.html'
+  imports: [PageHeaderComponents, TableColumnComponent, GradeViewerModalComponent],
+  templateUrl: './my-grades.html',
 })
 export class MyGrades {
   userId!: string;
   currentLearningFieldId!: string;
   learningFields: LearningField[] = [];
-  grades: Grade[] = [];
+  myGrades: Grade[] = [];
   loading = true;
   isAddModalVisible = false;
 
@@ -26,12 +27,22 @@ export class MyGrades {
     { key: 'name', label: 'Lernfeldname' },
     { key: 'weighting', label: 'Gewichtung' },
   ];
+  showViewer: boolean = false;
 
-  constructor(private learningFieldService: LearningFieldService, private authService: AuthService) {}
+  constructor(
+    private learningFieldService: LearningFieldService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.userId = this.authService.getUserId();
     this.loadLearningFields();
+  }
+
+  openGradeModal(item: LearningField) {
+    this.loading = true;
+    this.showViewer = true;
+    this.showGrade(item.id);
   }
 
   loadLearningFields() {
@@ -42,6 +53,18 @@ export class MyGrades {
       },
       error: (err) => {
         console.error('Fehler beim Laden der Lernfelder', err);
+        this.loading = false;
+      },
+    });
+  }
+  showGrade(learningFieldId: string) {
+    this.learningFieldService.getGradeByUserId(this.userId, learningFieldId).subscribe({
+      next: (data) => {
+        this.myGrades = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Noten', err);
         this.loading = false;
       },
     });
