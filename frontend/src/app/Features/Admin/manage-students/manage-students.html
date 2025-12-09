@@ -7,7 +7,6 @@
 >
 </app-form-modal>
 
-<!-- ✅ PAGE HEADER MIT IMPORT / EXPORT -->
 <app-page-header
   title="Schüler"
   [showAddButton]="true"
@@ -22,8 +21,10 @@
   [columns]="columns"
   [showEditButtons]="true"
   [showDeleteButtons]="true"
+  [showResetButton]="true"
   (edit)="openEditModal($event)"
   (delete)="openDeleteModal($event)"
+  (reset)="onResetPassword($event)"
 ></app-table-column>
 
 <app-form-modal
@@ -43,15 +44,19 @@
 >
 </app-delete-button>
 
-<!-- ✅ IMPORT MODAL -->
 <app-import-modal
   [show]="showImportModal"
   (close)="showImportModal = false"
   (fileSelected)="onImportFile($event)"
 ></app-import-modal>
 
-<!-- ✅ EXPORT MODAL -->
 <app-export-modal
   [show]="showExportModal"
   (close)="showExportModal = false"
 ></app-export-modal>
+
+<app-reset-password
+  [show]="showResetModal"
+  [password]="tempPassword"
+  (closed)="closeResetModel()"
+></app-reset-password>
