@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../core/auth/auth.service';
 import {
   TableColumn,
   TableColumnComponent,
@@ -12,7 +11,7 @@ import { PageHeaderComponents } from '../../../Shared/Components/page-header/pag
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
-import { User, AddUser } from '../../../Shared/models/user.interface';
+import { User, AddUser, UserResetPassword } from '../../../Shared/models/user.interface';
 import { UserService } from '../../../Shared/Services/user.service';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 
@@ -46,7 +45,7 @@ export class ManageAdmins implements OnInit {
   showEditModal: boolean = false;
   showDeleteModal: boolean = false;
   showResetModal = false;
-  tempPassword: string | null = null;
+  tempPassword: string = '';
 
   columns: TableColumn<User>[] = [
     { key: 'firstName', label: 'First Name' },
@@ -164,7 +163,7 @@ export class ManageAdmins implements OnInit {
 
   closeResetModel() {
     this.showResetModal = false;
-    this.tempPassword = null;
+    this.tempPassword = '';
   }
 
   openEditModal(admin: User) {
@@ -265,12 +264,25 @@ export class ManageAdmins implements OnInit {
     });
   }
 
-  onResetPassword(admin: User) {
-    const tempPass = this.generateTempPassword(admin);
-    this.openResetModal(tempPass);
+  onResetPassword(user: User) {
+    var userId = user.id;
+    this.tempPassword = this.generateTempPassword();
+
+    const dto: UserResetPassword = {
+      newPassword: this.tempPassword,
+    };
+
+    this.userService.resetPassword(userId, dto).subscribe({
+      next: () => {
+        console.log('Passwort erfolgreich zurückgesetzt');
+      },
+      error: (err) => {
+        console.error('Fehler beim Zurücksetzen des Passworts', err);
+      },
+    });
   }
 
-  generateTempPassword(admin: User): string {
+  generateTempPassword(): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
     let pass = '';
     for (let i = 0; i < 12; i++) {

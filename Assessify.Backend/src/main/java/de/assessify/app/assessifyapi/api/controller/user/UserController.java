@@ -1,6 +1,7 @@
 package de.assessify.app.assessifyapi.api.controller.user;
 
 import de.assessify.app.assessifyapi.api.dtos.request.AddUserWithCourseDto;
+import de.assessify.app.assessifyapi.api.dtos.request.ResetPasswordDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateUserDto;
 import de.assessify.app.assessifyapi.api.dtos.response.UserDto;
 import de.assessify.app.assessifyapi.api.entity.SchoolClass;
@@ -13,9 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import de.assessify.app.assessifyapi.api.dtos.request.ChangePasswordRequestDto;
+import de.assessify.app.assessifyapi.api.dtos.request.ChangePasswordDto;
 
-import de.assessify.app.assessifyapi.api.dtos.response.ResetPasswordResponseDto;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -153,27 +153,22 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/reset-password")
-    public ResponseEntity<ResetPasswordResponseDto> resetPassword(@PathVariable UUID userId) {
-        var optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> resetPassword(@PathVariable UUID userId, @RequestBody ChangePasswordDto dto) {
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
 
-        User user = optionalUser.get();
+        existingUser.setPassword(passwordEncoder.encode(dto.newPassword()));
+        userRepository.save(existingUser);
 
-        String tempPassword = generateTempPassword(10);
+        System.out.println(existingUser);
 
-        user.setPassword(passwordEncoder.encode(tempPassword));
-        userRepository.save(user);
-
-        return ResponseEntity.ok(new ResetPasswordResponseDto(tempPassword));
+        return ResponseEntity.noContent().build();
     }
-
 
     @PostMapping("/{username}/change-password")
     public ResponseEntity<Void> changePasswordByUsername(
             @PathVariable String username,
-            @RequestBody ChangePasswordRequestDto dto
+            @RequestBody ResetPasswordDto dto
     ) {
         User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new ResponseStatusException(
