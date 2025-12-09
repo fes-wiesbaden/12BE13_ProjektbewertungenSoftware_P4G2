@@ -26,7 +26,7 @@ export class MyAssessment {
       this.form.addControl(`rating_${m.id}`, this.fb.control(null, Validators.required));
     });
   }
-
+  submited = false;
   form: FormGroup;
   reviewJson: ReviewJson[] = [];
 
@@ -105,6 +105,7 @@ export class MyAssessment {
       review: this.reviewJson,
     };
 
+    this.submited = true;
     this.reviewService.createSelbstFremd(reviewPayload).subscribe((res) => {
       console.log('Gespeichert:', res);
     });

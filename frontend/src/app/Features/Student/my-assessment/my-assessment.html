@@ -1,3 +1,4 @@
+@if(this.submited == false){
 <div class="rating-card flex flex-col rounded-lg p-6 mb-4 dark:bg-gray-800">
   <!-- Header -->
   <div class="mb-4">
@@ -47,3 +48,7 @@
     </button>
   </div>
 </div>
+}
+@else {
+  <p>Bewertung abgegeben</p>
+}
