@@ -6,10 +6,20 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AuthService } from '../../core/auth/auth.service';
 import { SidebarService } from '../../core/services/sidebar.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  NgForm,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { SiXMarkIcon, SiBars3Icon } from '@semantic-icons/heroicons/24/solid';
 import { UserService } from '../../Shared/Services/user.service';
 import { UserChangePassword } from '../../Shared/models/user.interface';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -22,39 +32,107 @@ import { UserChangePassword } from '../../Shared/models/user.interface';
     MatButtonModule,
     MatMenuModule,
     SiXMarkIcon,
-    SiBars3Icon
+    SiBars3Icon,
+    ReactiveFormsModule
   ],
   templateUrl: './dashboard-navbar.html',
   styleUrl: './dashboard-navbar.css',
 })
 export class DashboardNavbar implements OnInit {
+  changePasswordForm: FormGroup;
+  showChangePasswordModal = false;
+  loading = false;
+  successMessage = '';
+  errorMessage = '';
+
   @Output() sidebarToggle = new EventEmitter<void>();
 
   theme: string = 'dark';
-  username: string = 'John Doe';
-  role: string = 'Admin';
+  username: string = '';
+  role: string = '';
   sidebarStatus: string = 'close';
-  notificationMenuOpen: boolean = false;
   profileMenuOpen: boolean = false;
 
-  showChangePasswordModal = false;
-  oldPassword = '';
-  newPassword = '';
-  confirmPassword = '';
-  errorMessage = '';
-  successMessage = '';
-  loading = false;
-
   constructor(
-    private auth: AuthService,
+    private fb: FormBuilder,
+    private authService: AuthService,
     private sidebarService: SidebarService,
     private userService: UserService
-  ) {}
+  ) {
+    this.changePasswordForm = this.fb.group(
+      {
+        oldPassword: ['', Validators.required],
+        newPassword: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/), // Groß/klein, Zahl, Sonderzeichen
+          ],
+        ],
+        confirmPassword: ['', Validators.required],
+      },
+      { validators: this.passwordsMatch }
+    );
+  }
 
   ngOnInit() {
-    this.username = this.auth.getUsername();
+    this.username = this.authService.getUsername();
+    this.role = this.authService.getRole();
     this.theme = localStorage.getItem('theme') || 'dark';
-    // this.role = this.auth.getRole();
+  }
+
+  passwordsMatch(group: AbstractControl): ValidationErrors | null {
+    const newPwd = group.get('newPassword')?.value;
+    const confirmPwd = group.get('confirmPassword')?.value;
+    return newPwd === confirmPwd ? null : { notMatching: true };
+  }
+
+  openChangePasswordModal() {
+    this.showChangePasswordModal = true;
+    this.successMessage = '';
+    this.errorMessage = '';
+    this.changePasswordForm.reset();
+  }
+
+  closeChangePasswordModal() {
+    this.showChangePasswordModal = false;
+  }
+
+  submitChangePassword() {
+    if (this.changePasswordForm.invalid) {
+      this.errorMessage = 'Bitte alle Felder korrekt ausfüllen.';
+      return;
+    }
+
+    const username = this.authService.getUsername();
+    if (!username) {
+      this.errorMessage = 'Kein Benutzername gefunden. Bitte erneut einloggen.';
+      return;
+    }
+
+    const dto: UserChangePassword = {
+      oldPassword: this.changePasswordForm.value.oldPassword,
+      newPassword: this.changePasswordForm.value.newPassword,
+    };
+
+    this.loading = true;
+
+    this.userService
+      .changePassword(username, dto)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Passwort erfolgreich geändert!';
+          this.changePasswordForm.reset();
+          this.closeChangePasswordModal();
+        },
+        error: (err) => {
+          if (err.status === 400) this.errorMessage = 'Das alte Passwort ist falsch.';
+          else if (err.status === 404) this.errorMessage = 'Benutzer nicht gefunden.';
+          else this.errorMessage = 'Fehler beim Ändern des Passworts.';
+        },
+      });
   }
 
   onToggleSidebar() {
@@ -67,89 +145,15 @@ export class DashboardNavbar implements OnInit {
     localStorage.setItem('theme', this.theme);
   }
 
-  toggleNotificationMenu() {
-    this.notificationMenuOpen = !this.notificationMenuOpen;
-    if (this.notificationMenuOpen) {
-      this.profileMenuOpen = false;
-    }
-  }
-
   toggleProfileMenu() {
     this.profileMenuOpen = !this.profileMenuOpen;
-    if (this.profileMenuOpen) {
-      this.notificationMenuOpen = false;
-    }
   }
 
   closeMenus() {
-    this.notificationMenuOpen = false;
     this.profileMenuOpen = false;
   }
 
   signOut() {
-    this.auth.logout();
-  }
-
-  openChangePasswordModal() {
-    this.errorMessage = '';
-    this.successMessage = '';
-    this.oldPassword = '';
-    this.newPassword = '';
-    this.confirmPassword = '';
-    this.showChangePasswordModal = true;
-    this.profileMenuOpen = false;
-  }
-
-  closeChangePasswordModal() {
-    this.showChangePasswordModal = false;
-  }
-
-  submitChangePassword(form: NgForm) {
-    this.errorMessage = '';
-    this.successMessage = '';
-
-    if (form.invalid) {
-      this.errorMessage = 'Bitte alle Felder korrekt ausfüllen.';
-      return;
-    }
-
-    if (this.newPassword !== this.confirmPassword) {
-      this.errorMessage = 'Die neuen Passwörter stimmen nicht überein.';
-      return;
-    }
-
-   const username = this.auth.getUsername();
-    if (!username) {
-      this.errorMessage = 'Kein Benutzername gefunden. Bitte erneut einloggen.';
-      return;
-    }
-
-    const dto: UserChangePassword = {
-      oldPassword: this.oldPassword,
-      newPassword: this.newPassword,
-    };
-
-    this.loading = true;
-
-    this.userService.changePassword(username, dto).subscribe({
-      next: () => {
-        this.successMessage = 'Passwort wurde erfolgreich geändert.';
-        this.loading = false;
-        form.resetForm();
-        this.closeChangePasswordModal();
-      },
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-
-        if (err.status === 400) {
-          this.errorMessage = 'Das alte Passwort ist falsch.';
-        } else if (err.status === 404) {
-          this.errorMessage = 'Benutzer nicht gefunden.';
-        } else {
-          this.errorMessage = 'Fehler beim Ändern des Passworts.';
-        }
-      },
-    });
+    this.authService.logout();
   }
 }
