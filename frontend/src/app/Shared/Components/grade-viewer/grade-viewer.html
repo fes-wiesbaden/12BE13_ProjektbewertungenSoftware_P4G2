@@ -1,24 +1,64 @@
-<div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
-  <h3 class="text-xl font-semibold mb-4 dark:text-white">{{ title }}</h3>
+<div
+  [hidden]="!showModal"
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden
+         overflow-y-auto bg-gray-900/50 dark:bg-gray-900/60 backdrop-blur-sm p-4"
+>
+  <div class="relative w-full max-w-3xl">
+    <div class="relative bg-white rounded-lg shadow dark:bg-gray-800 max-h-[80vh] overflow-y-auto">
 
-  <table class="w-full text-left border-collapse">
-    <thead>
-      <tr class="border-b dark:border-gray-700">
-        <th class="p-2 dark:text-gray-300">Name</th>
-        <th class="p-2 dark:text-gray-300">Note</th>
-        <th class="p-2 dark:text-gray-300">Gewichtung</th>
-      </tr>
-    </thead>
+      <!-- Header -->
+      <div class="flex items-start justify-between p-5 border-b dark:border-gray-700 border-gray-200">
+        <h3 class="text-xl font-semibold dark:text-white">
+          {{ title }}
+        </h3>
+        <button
+          (click)="onClose()"
+          class="text-gray-400 hover:bg-gray-200 rounded-lg p-1.5 dark:hover:bg-gray-700"
+        >
+          <mat-icon class="w-5 h-5">close</mat-icon>
+        </button>
+      </div>
 
-    <tbody>
-      <tr 
-        *ngFor="let g of grades" 
-        class="border-b dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-      >
-        <td class="p-2 dark:text-white">{{ g.gradeName }}</td>
-        <td class="p-2 dark:text-white">{{ g.value }}</td>
-        <td class="p-2 dark:text-white">{{ g.gradeWeighting }}</td>
-      </tr>
-    </tbody>
-  </table>
+      <!-- Body -->
+      <div class="p-6 space-y-4">
+        <table class="w-full text-left border-collapse dark:text-white">
+          <thead>
+            <tr class="border-b dark:border-gray-700">
+              <th class="p-2">Name</th>
+              <th class="p-2">Note</th>
+              <th class="p-2">Gewichtung</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              *ngFor="let g of grades"
+              class="border-b dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <td class="p-2">{{ g.gradeName }}</td>
+              <td class="p-2">{{ g.value }}</td>
+              <td class="p-2">{{ g.gradeWeighting }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Falls keine Noten vorhanden -->
+        <p *ngIf="grades.length === 0" class="text-gray-600 dark:text-gray-300 text-center">
+          Keine Noten vorhanden.
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex justify-end p-5 border-t dark:border-gray-700 border-gray-200">
+        <button
+          (click)="onClose()"
+          class="bg-blue-700 text-white rounded-lg px-5 py-2.5 hover:bg-blue-800
+                dark:bg-blue-600 dark:hover:bg-blue-700"
+        >
+          Schließen
+        </button>
+      </div>
+
+    </div>
+  </div>
 </div>
