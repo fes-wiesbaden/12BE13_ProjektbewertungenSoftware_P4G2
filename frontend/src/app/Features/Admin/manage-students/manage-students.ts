@@ -254,23 +254,6 @@ export class ManageStudents implements OnInit {
     });
   }
 
-  // onResetPassword(student: User) {
-  //   if (!confirm(`Passwort für ${student.firstName} ${student.lastName} wirklich zurücksetzen?`)) {
-  //     return;
-  //   }
-
-  //   this.userService.resetPassword(student.id).subscribe({
-  //     next: (res) => {
-  //       console.log('Neues temporäres Passwort:', res.temporaryPassword);
-  //       this.tempPassword = res.temporaryPassword;
-  //     },
-  //     error: (err) => {
-  //       console.error('Fehler beim Zurücksetzen des Passworts', err);
-  //       alert('Passwort konnte nicht zurückgesetzt werden.');
-  //     },
-  //   });
-  // }
-
   loadAllClasses() {
     this.courseService.getAllCourses().subscribe({
       next: (data) => {
