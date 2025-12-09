@@ -246,9 +246,12 @@ export class ManageStudents implements OnInit {
   deleteStudent() {
     if (!this.deletingStudent) return;
 
+    const idToDelete = this.deletingStudent.id;
     this.userService.deleteUser(this.deletingStudent).subscribe({
       next: () => {
-        this.students = this.students.filter((s) => s.id !== this.deletingStudent!.id);
+        this.students = this.students.filter((s) => s.id !== idToDelete);
+        this.deletingStudent = null;
+        this.closeDeleteModal();
       },
       error: (err) => console.error('Fehler beim Löschen', err),
     });
