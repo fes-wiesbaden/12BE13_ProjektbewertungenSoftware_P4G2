@@ -47,38 +47,42 @@
                   <span *ngSwitchDefault>{{ item[col.key] }}</span>
                 </ng-container>
               </td>
-              @if(showEditButtons || showDeleteButtons || showViewButton) {
+              @if(showEditButtons || showDeleteButtons || showViewButton || showResetButton) {
 
               <td class="p-4 space-x-2 whitespace-nowrap">
-                @if(showEditButtons)
-                {
+                @if(showEditButtons) {
                 <button
                   (click)="edit.emit(item)"
                   class="inline-flex items-center px-3 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800"
-                  >
+                >
                   <mat-icon class="w-4 h-4 mr-2">edit</mat-icon> Edit
                 </button>
-              }
-                @if(showDeleteButtons)
-                  {
+                } @if(showDeleteButtons) {
                 <button
                   (click)="delete.emit(item)"
                   class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-800"
-                  >
+                >
                   <mat-icon class="w-4 h-4 mr-2">delete</mat-icon>
                   Delete
                 </button>
-              }
-              @if(showViewButton)
-              {
+                } @if(showViewButton) {
                 <button
                   (click)="view.emit(item)"
                   class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-800"
-                  >
+                >
                   <mat-icon class="w-4 h-4 mr-2">visibility</mat-icon>
                   Anzeigen
                 </button>
-              }
+                } @if(showResetButton) {
+                <button
+                  type="button"
+                  (click)="reset.emit(item)"
+                  class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700"
+                >
+                  <mat-icon class="w-4 h-4 mr-2">lock_reset</mat-icon>
+                  Reset password
+                </button>
+                }
               </td>
               }
             </tr>

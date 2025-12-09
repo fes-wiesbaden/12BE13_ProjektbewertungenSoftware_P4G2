@@ -12,8 +12,9 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
 import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { UserService } from '../../../Shared/Services/user.service';
-import { User } from '../../../Shared/models/user.interface';
+import { User, UserResetPassword } from '../../../Shared/models/user.interface';
 import { CourseService } from '../../../Shared/Services/course.service';
+import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -28,12 +29,13 @@ import { CourseService } from '../../../Shared/Services/course.service';
     DeleteButtonComponent,
     ImportModalComponent,
     ExportModalComponent,
+    ResetPassword,
   ],
   templateUrl: './manage-teachers.html',
 })
 export class ManageTeachers implements OnInit {
   teachers: User[] = [];
-  courses: { label: string, value: number }[] = [];
+  courses: { label: string; value: number }[] = [];
   loading = true;
   showImportModal = false;
   showExportModal = false;
@@ -77,7 +79,7 @@ export class ManageTeachers implements OnInit {
       label: 'Kurs',
       type: 'multiselect',
       colSpan: 3,
-      options: []
+      options: [],
     },
     {
       key: 'password',
@@ -121,21 +123,17 @@ export class ManageTeachers implements OnInit {
       required: true,
       colSpan: 3,
       placeholder: 'Benutzername',
-    }
+    },
   ];
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
   showDeleteModal: boolean = false;
+  showResetModal = false;
+  tempPassword: string = '';
 
   editingTeacher: User | null = null;
   deletingTeacher: User | null = null;
-
-  firstName = '';
-  lastName = '';
-  username = '';
-  password = '';
-  role = '';
 
   constructor(private userService: UserService, private courseService: CourseService) {}
 
@@ -152,6 +150,16 @@ export class ManageTeachers implements OnInit {
   closeEditModal() {
     this.showEditModal = false;
     this.editingTeacher = null;
+  }
+
+  openResetModal(password: string) {
+    this.tempPassword = password;
+    this.showResetModal = true;
+  }
+
+  closeResetModel() {
+    this.showResetModal = false;
+    this.tempPassword = '';
   }
 
   openAddModel(): void {
@@ -227,11 +235,6 @@ export class ManageTeachers implements OnInit {
       next: (teacher) => {
         this.teachers.push(teacher);
         this.closeAddModel();
-        this.firstName = '';
-        this.lastName = '';
-        this.username = '';
-        this.password = '';
-        this.role = '';
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
@@ -249,16 +252,42 @@ export class ManageTeachers implements OnInit {
   }
 
   loadCourses() {
-  this.courseService.getAllCourses().subscribe({
-    next: (data) => {
-      this.courses = data.map((c: any) => ({ label: c.courseName, value: c.id }));
+    this.courseService.getAllCourses().subscribe({
+      next: (data) => {
+        this.courses = data.map((c: any) => ({ label: c.courseName, value: c.id }));
 
-      const courseField = this.fields.find(f => f.key === 'courseId');
-      if (courseField) {
-        courseField.options = this.courses.map(c => ({ ...c, selected: false }));
-      }
-    },
-    error: (err) => console.error('Fehler beim Laden der Kurse:', err)
-  });
-}
+        const courseField = this.fields.find((f) => f.key === 'courseId');
+        if (courseField) {
+          courseField.options = this.courses.map((c) => ({ ...c, selected: false }));
+        }
+      },
+      error: (err) => console.error('Fehler beim Laden der Kurse:', err),
+    });
+  }
+  onResetPassword(user: User) {
+    var userId = user.id;
+    this.tempPassword = this.generateTempPassword();
+
+    const dto: UserResetPassword = {
+      newPassword: this.tempPassword,
+    };
+
+    this.userService.resetPassword(userId, dto).subscribe({
+      next: () => {
+        console.log('Passwort erfolgreich zurückgesetzt');
+      },
+      error: (err) => {
+        console.error('Fehler beim Zurücksetzen des Passworts', err);
+      },
+    });
+  }
+
+  generateTempPassword(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let pass = '';
+    for (let i = 0; i < 12; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pass;
+  }
 }
