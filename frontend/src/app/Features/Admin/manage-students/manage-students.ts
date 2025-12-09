@@ -123,6 +123,14 @@ export class ManageStudents implements OnInit {
       colSpan: 3,
       placeholder: 'Benutzername',
     },
+    {
+      key: 'courseId',
+      label: 'Kursname',
+      type: 'select',
+      required: true,
+      colSpan: 3,
+      options: [],
+    },
   ];
 
   showAddModel: boolean = false;
@@ -283,6 +291,10 @@ export class ManageStudents implements OnInit {
         if (courseField) {
           courseField.options = formatted;
         }
+        const courseFieldEdit = this.fieldsEdit.find(f => f.key === 'courseId');
+      if (courseFieldEdit) {
+        courseFieldEdit.options = this.classes.map(c => ({ ...c, selected: false }));
+      }
 
         this.loading = false;
       },

@@ -7,6 +7,16 @@
 >
 </app-form-modal>
 
+<app-form-modal
+  [showModal]="showEditModal"
+  [title]="'Schüler Editieren'"
+  [fields]="fieldsEdit"
+  [record]="editingStudent"
+  (close)="closeEditModal()"
+  (save)="saveEdit($event)"
+>
+</app-form-modal>
+
 <!-- ✅ PAGE HEADER MIT IMPORT / EXPORT -->
 <app-page-header
   title="Schüler"
@@ -26,15 +36,6 @@
   (delete)="openDeleteModal($event)"
 ></app-table-column>
 
-<app-form-modal
-  [showModal]="showEditModal"
-  [title]="'Schüler Editieren'"
-  [fields]="fieldsEdit"
-  [record]="editingStudent"
-  (close)="closeEditModal()"
-  (save)="saveEdit($event)"
->
-</app-form-modal>
 <app-delete-button
   [showModal]="showDeleteModal"
   [title]="'Sind Sie sicher, dass sie den Schüler löschen wollen?'"
