@@ -34,7 +34,7 @@ export class UserService {
     return this.http.put<User>(`${this.apiUrl}/${dto.id}`, dto);
   }
 
-  resetPassword(userId: string, dto:UserResetPassword): Observable<{ temporaryPassword: string }> {
+  resetPassword(userId: string, dto: UserResetPassword): Observable<{ temporaryPassword: string }> {
     return this.http.post<{ temporaryPassword: string }>(`${this.apiUrl}/${userId}/reset-password`, dto);
   }
 

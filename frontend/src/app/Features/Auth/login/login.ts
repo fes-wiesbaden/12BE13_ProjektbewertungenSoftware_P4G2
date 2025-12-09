@@ -43,32 +43,38 @@ export class Login {
     }
 
     this.isLoading = true;
-    const { username, password } = this.loginForm.value;
-    const success = await this.auth.login(username, password);
-    this.isLoading = false;
 
-    if (!success) {
-      this.loginError = 'Ungültiger Benutzername oder Passwort';
+    try {
+      const { username, password } = this.loginForm.value;
+      const success = await this.auth.login(username, password);
+
+      if (!success) {
+        this.loginError = 'Ungültiger Benutzername oder Passwort';
+        this.showError();
+        return;
+      }
+
+      const role = this.auth.getRole().toLowerCase();
+      switch (role) {
+        case 'teacher':
+          this.router.navigate(['/teacher/dashboard']);
+          break;
+        case 'student':
+          this.router.navigate(['/student/dashboard']);
+          break;
+        case 'admin':
+          this.router.navigate(['/admin/dashboard']);
+          break;
+        default:
+          this.router.navigate(['/auth/login']);
+          break;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      this.loginError = 'Fehler beim Login. Bitte erneut versuchen.';
       this.showError();
-      return;
-    }
-
-    const role = this.auth.getRole().toLowerCase();
-    console.log('User role:', role);
-
-    switch (role) {
-      case 'teacher':
-        this.router.navigate(['/teacher/dashboard']);
-        break;
-      case 'student':
-        this.router.navigate(['/student/dashboard']);
-        break;
-      case 'admin':
-        this.router.navigate(['/admin/dashboard']);
-        break;
-      default:
-        this.router.navigate(['/auth/login']);
-        break;
+    } finally {
+      this.isLoading = false;
     }
   }
 }

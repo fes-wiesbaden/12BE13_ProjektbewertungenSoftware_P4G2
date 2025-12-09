@@ -3,7 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../core/auth/auth.service';
 import { ɵInternalFormsSharedModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { SidebarService } from '../../core/services/sidebar.service';
 import { MenuItem } from '../../Shared/models/sidebar.interface';
 

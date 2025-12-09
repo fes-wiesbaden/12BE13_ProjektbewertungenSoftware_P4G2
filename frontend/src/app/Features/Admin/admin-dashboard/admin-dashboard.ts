@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../Shared/Services/user.service';
 import { CourseService } from '../../../Shared/Services/course.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -36,24 +37,23 @@ export class AdminDashboard implements OnInit {
 
   loadDashboardAmounts() {
     this.loading = true;
-    this.userService.getUserAmount(1).subscribe({
-      next: (value) => (this.teacherAmount = value),
-      error: (err) => console.error('Fehler beim Laden der Lehreranzahl', err),
-    });
-
-    this.userService.getUserAmount(2).subscribe({
-      next: (value) => (this.studentAmount = value),
-      error: (err) => console.error('Fehler beim Laden der Schüleranzahl', err),
-    });
-
-    this.userService.getUserAmount(3).subscribe({
-      next: (value) => (this.adminAmount = value),
-      error: (err) => console.error('Fehler beim Laden der Adminanzahl', err),
-    });
-
-    this.courseService.getCourseAmount().subscribe({
-      next: (value) => (this.classAmount = value),
-      error: (err) => console.error('Fehler beim Laden der Klassenanzahl', err),
+    forkJoin({
+      teachers: this.userService.getUserAmount(1),
+      students: this.userService.getUserAmount(2),
+      admins: this.userService.getUserAmount(3),
+      classes: this.courseService.getCourseAmount(),
+    }).subscribe({
+      next: (result) => {
+        this.teacherAmount = result.teachers;
+        this.studentAmount = result.students;
+        this.adminAmount = result.admins;
+        this.classAmount = result.classes;
+        this.loading = false; // Jetzt korrekt
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Dashboard-Daten', err);
+        this.loading = false; // Auch bei Fehler zurücksetzen
+      },
     });
   }
 }
