@@ -68,7 +68,6 @@ export class ManageTeachers implements OnInit {
       key: 'courseId',
       label: 'Kurs',
       type: 'multiselect',
-      readonly: true,
       colSpan: 3,
       options: []
     },
@@ -251,7 +250,7 @@ export class ManageTeachers implements OnInit {
         courseField.options = this.courses.map(c => ({ ...c, selected: false }));
       }
     },
-    error: (err) => console.error(err)
+    error: (err) => console.error('Fehler beim Laden der Kurse:', err)
   });
 }
 }

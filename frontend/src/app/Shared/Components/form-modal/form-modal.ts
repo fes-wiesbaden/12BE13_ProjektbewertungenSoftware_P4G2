@@ -45,7 +45,6 @@ export class FormModalComponent implements OnChanges {
 
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
-  multiField?: FormField;
 
   formData: Record<string, any> = {};
 
