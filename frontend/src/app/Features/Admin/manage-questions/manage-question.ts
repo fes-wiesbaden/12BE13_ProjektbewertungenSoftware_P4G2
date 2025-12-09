@@ -8,6 +8,8 @@ import {
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
+import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
+import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { Question } from '../../../Shared/models/question.interface';
 import { QuestionService } from '../../../Shared/Services/question.service';
 
@@ -21,6 +23,8 @@ import { QuestionService } from '../../../Shared/Services/question.service';
     PageHeaderComponents,
     TableColumnComponent,
     FormModalComponent,
+    ImportModalComponent,
+    ExportModalComponent,
   ],
   templateUrl: './manage-question.html',
 })
@@ -31,7 +35,11 @@ export class ManageQuestions implements OnInit {
   showEditModal: boolean = false;
   selectedQuestion: Question | null = null;
   showEditModel: boolean = false;
-
+  showImportModal = false;
+  showExportModal = false;
+  onImportFile(file: File) {
+    console.log('Import-Datei:', file);
+  }
   columns: TableColumn<Question>[] = [{ key: 'questionText', label: 'Frage' }];
 
   fields: FormField[] = [

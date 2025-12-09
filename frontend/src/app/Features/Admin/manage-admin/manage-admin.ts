@@ -10,6 +10,8 @@ import {
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { PageHeaderComponents } from '../../../Shared/Components/page-header/page-header';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
+import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { User, AddUser } from '../../../Shared/models/user.interface';
 import { UserService } from '../../../Shared/Services/user.service';
 
@@ -24,6 +26,8 @@ import { UserService } from '../../../Shared/Services/user.service';
     TableColumnComponent,
     FormModalComponent,
     DeleteButtonComponent,
+    ImportModalComponent,
+    ExportModalComponent,
   ],
   templateUrl: './manage-admin.html',
 })
@@ -31,7 +35,11 @@ export class ManageAdmins implements OnInit {
   admins: User[] = [];
   classes: { label: string; value: any }[] = [];
   loading = true;
-
+  showImportModal = false;
+  showExportModal = false;
+  onImportFile(file: File) {
+    console.log('Import-Datei:', file);
+  }
   showAddModel: boolean = false;
   showEditModal: boolean = false;
   showDeleteModal: boolean = false;
