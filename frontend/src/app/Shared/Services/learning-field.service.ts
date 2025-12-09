@@ -33,6 +33,8 @@ export class LearningFieldService {
   }
 
   getGradeByUserId(userId: string, trainingModulesId: string): Observable<Grade[]> {
-    return this.http.get<Grade[]>(`${this.apiUrl}/user/${userId}/training-modules/${trainingModulesId}/grades`);
+    return this.http.get<Grade[]>(
+      `${this.apiUrl}/user/${userId}/training-modules/${trainingModulesId}/grades`
+    );
   }
 }
