@@ -21,8 +21,10 @@ export class TableColumnComponent<T extends { id?: any } = any> {
   @Input() showEditButtons = false;
   @Input() showDeleteButtons = false;
   @Input() showViewButton = false;
+  @Input() showResetButton = false;
 
   @Output() edit = new EventEmitter<T>();
   @Output() delete = new EventEmitter<T>();
   @Output() view = new EventEmitter<T>();
+  @Output() reset = new EventEmitter<T>();
 }

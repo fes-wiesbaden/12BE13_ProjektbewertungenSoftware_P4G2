@@ -14,6 +14,7 @@ import { ImportModalComponent } from '../../../Shared/Components/import-modal/im
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { User, AddUser } from '../../../Shared/models/user.interface';
 import { UserService } from '../../../Shared/Services/user.service';
+import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 
 @Component({
   selector: 'app-manage-admin',
@@ -28,6 +29,7 @@ import { UserService } from '../../../Shared/Services/user.service';
     DeleteButtonComponent,
     ImportModalComponent,
     ExportModalComponent,
+    ResetPassword,
   ],
   templateUrl: './manage-admin.html',
 })
@@ -43,6 +45,8 @@ export class ManageAdmins implements OnInit {
   showAddModel: boolean = false;
   showEditModal: boolean = false;
   showDeleteModal: boolean = false;
+  showResetModal = false;
+  tempPassword: string | null = null;
 
   columns: TableColumn<User>[] = [
     { key: 'firstName', label: 'First Name' },
@@ -82,7 +86,7 @@ export class ManageAdmins implements OnInit {
       type: 'text',
       readonly: true,
       colSpan: 3,
-      value: "Administrator"
+      value: 'Administrator',
     },
     {
       key: 'password',
@@ -151,6 +155,16 @@ export class ManageAdmins implements OnInit {
 
   closeAddModel(): void {
     this.showAddModel = false;
+  }
+
+  openResetModal(password: string) {
+    this.tempPassword = password;
+    this.showResetModal = true;
+  }
+
+  closeResetModel() {
+    this.showResetModal = false;
+    this.tempPassword = null;
   }
 
   openEditModal(admin: User) {
@@ -249,5 +263,19 @@ export class ManageAdmins implements OnInit {
       },
       error: (err) => console.error('Fehler beim Löschen', err),
     });
+  }
+
+  onResetPassword(admin: User) {
+    const tempPass = this.generateTempPassword(admin);
+    this.openResetModal(tempPass);
+  }
+
+  generateTempPassword(admin: User): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let pass = '';
+    for (let i = 0; i < 12; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pass;
   }
 }

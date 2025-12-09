@@ -19,8 +19,10 @@
   [columns]="columns"
   [showEditButtons]="true"
   [showDeleteButtons]="true"
+  [showResetButton]="true"
   (edit)="openEditModal($event)"
   (delete)="openDeleteModal($event)"
+  (reset)="onResetPassword($event)"
 ></app-table-column>
 
 <app-form-modal
@@ -32,6 +34,7 @@
   (save)="saveEdit($event)"
 >
 </app-form-modal>
+
 <app-delete-button
   [showModal]="showDeleteModal"
   [title]="'Sind Sie sicher, dass sie den Admin löschen wollen?'"
@@ -49,3 +52,9 @@
   [show]="showExportModal"
   (close)="showExportModal = false"
 ></app-export-modal>
+
+<app-reset-password
+  [show]="showResetModal"
+  [password]="tempPassword"
+  (closed)="closeResetModel()"
+></app-reset-password>
