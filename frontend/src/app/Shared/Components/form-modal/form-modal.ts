@@ -9,12 +9,13 @@ export type FormFieldType = 'text' | 'password' | 'email' | 'number' | 'select' 
 export interface FormFieldOption {
   label: string;
   value: any;
+  selected?: boolean;
 }
 
 export interface FormField {
   key: string;
   label: string;
-  type: FormFieldType;
+  type: FormFieldType | 'multiselect';
   placeholder?: string;
   required?: boolean;
   options?: FormFieldOption[];
@@ -22,9 +23,12 @@ export interface FormField {
   readonly?: boolean;
   colSpan?: number;
   /** validation rules */
-  min?: number,
+  min?: number;
   max?: number;
   integer?: boolean;
+
+  selected?: FormFieldOption[];
+  open?: boolean;
 }
 
 @Component({
@@ -45,7 +49,14 @@ export class FormModalComponent implements OnChanges {
   formData: Record<string, any> = {};
 
   ngOnChanges() {
-    this.fields.forEach((f) => (this.formData[f.key] = f.value || ''));
+    this.fields.forEach((f) => {
+      this.formData[f.key] = f.value || '';
+
+      if (f.type === 'multiselect') {
+        f.selected = f.options?.filter((o) => o.selected) || [];
+        f.open = false;
+      }
+    });
   }
 
   onSave() {
@@ -65,5 +76,17 @@ export class FormModalComponent implements OnChanges {
       (v) => v !== '' && v !== null && v !== undefined
     );
     return allFilled;
+  }
+
+  onMultiSelectChange(field: FormField) {
+    if (!field.options) return;
+    field.selected = field.options.filter((o) => o.selected);
+    this.formData[field.key] = field.selected.map((o) => o.value);
+  }
+
+  getSelectedLabels(field: FormField): string {
+    return field.selected?.length
+      ? field.selected.map((s) => s.label).join(', ')
+      : 'Bitte auswählen';
   }
 }
