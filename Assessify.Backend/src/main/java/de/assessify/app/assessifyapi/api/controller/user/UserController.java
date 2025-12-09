@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/users")
@@ -37,6 +39,8 @@ public class UserController {
         this.roleRepository = roleRepository;
         this.schoolClassRepository = schoolClassRepository;
     }
+
+    private static final Logger logger = Logger.getLogger(UserController.class.getName());
 
     @GetMapping("/role/{roleId}")
     public ResponseEntity<List<UserDto>> getAllUsersById(@PathVariable Integer roleId) {
@@ -154,15 +158,18 @@ public class UserController {
 
     @PostMapping("/{userId}/reset-password")
     public ResponseEntity<Void> resetPassword(@PathVariable UUID userId, @RequestBody ChangePasswordDto dto) {
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
+        try {
+            User existingUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
 
-        existingUser.setPassword(passwordEncoder.encode(dto.newPassword()));
-        userRepository.save(existingUser);
+            existingUser.setPassword(passwordEncoder.encode(dto.newPassword()));
+            userRepository.save(existingUser);
 
-        System.out.println(existingUser);
-
-        return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error resetting passwords for current user", e);
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @PostMapping("/{username}/change-password")
