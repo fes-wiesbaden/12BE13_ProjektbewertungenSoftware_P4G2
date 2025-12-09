@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -41,23 +41,26 @@ export class FormModalComponent implements OnChanges {
   @Input() showModal = false;
   @Input() title = 'New Item';
   @Input() fields: FormField[] = [];
-  @Input() record: any = {};
+  @Input() record: any = null;
 
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
 
-  formData: Record<string, any> = {};
+  formData: any = {};
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
+  if (changes['record'] && this.record) {
+    this.formData = { ...this.record };
+
     this.fields.forEach((f) => {
-      this.formData[f.key] = f.value || '';
-
       if (f.type === 'multiselect') {
-        f.selected = f.options?.filter((o) => o.selected) || [];
-        f.open = false;
+        f.options?.forEach((opt) => {
+          opt.selected = this.formData[f.key]?.includes(opt.value);
+        });
       }
     });
   }
+}
 
   onSave() {
     if (this.isFieldEmpty()) {
