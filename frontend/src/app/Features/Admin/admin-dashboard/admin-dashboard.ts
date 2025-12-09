@@ -5,15 +5,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { AdminDashboardService } from './admin-dashboard.service';
+import { UserService } from '../../../Shared/Services/user.service';
+import { CourseService } from '../../../Shared/Services/course.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [
     CommonModule,
-    HttpClientModule,
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
@@ -21,38 +20,40 @@ import { AdminDashboardService } from './admin-dashboard.service';
     MatInputModule,
   ],
   templateUrl: './admin-dashboard.html',
-  styleUrl: './admin-dashboard.css',
 })
 export class AdminDashboard implements OnInit {
-
   studentAmount = 0;
   teacherAmount = 0;
   adminAmount = 0;
   classAmount = 0;
+  loading = true;
 
-  constructor(private dashboardService: AdminDashboardService) {}
+  constructor(private courseService: CourseService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.loadDashboardAmounts();
   }
 
   loadDashboardAmounts() {
-    this.dashboardService.getTeacherAmount().subscribe({
-      next: (value) => this.teacherAmount = value,
+    this.loading = true;
+    this.userService.getUserAmount(1).subscribe({
+      next: (value) => (this.teacherAmount = value),
       error: (err) => console.error('Fehler beim Laden der Lehreranzahl', err),
     });
 
-    this.dashboardService.getStudentAmount().subscribe({
-      next: (value) => this.studentAmount = value,
+    this.userService.getUserAmount(2).subscribe({
+      next: (value) => (this.studentAmount = value),
       error: (err) => console.error('Fehler beim Laden der Schüleranzahl', err),
     });
-    this.dashboardService.getAdminAmount().subscribe({
-      next: (value) => this.adminAmount = value,
+
+    this.userService.getUserAmount(3).subscribe({
+      next: (value) => (this.adminAmount = value),
       error: (err) => console.error('Fehler beim Laden der Adminanzahl', err),
     });
-    this.dashboardService.getClassAmount().subscribe({
-    next: (value) => (this.classAmount = value),
-    error: (err) => console.error('Fehler beim Laden der Klassenanzahl', err),
-   });
+
+    this.courseService.getCourseAmount().subscribe({
+      next: (value) => (this.classAmount = value),
+      error: (err) => console.error('Fehler beim Laden der Klassenanzahl', err),
+    });
   }
 }

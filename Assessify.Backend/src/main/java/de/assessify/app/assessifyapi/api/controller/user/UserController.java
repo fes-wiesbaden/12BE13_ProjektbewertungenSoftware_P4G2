@@ -194,11 +194,11 @@ public class UserController {
     }
 
 
-@GetMapping("/role/{roleId}/amount")
-public ResponseEntity<Long> getUserRoleAmount(@PathVariable Integer roleId) {
-    long count = userRepository.countByRoleId(roleId);
-    return ResponseEntity.ok(count);
-} 
+    @GetMapping("/role/{roleId}/amount")
+    public ResponseEntity<Long> getUserRoleAmount(@PathVariable Integer roleId) {
+        long count = userRepository.countByRoleId(roleId);
+        return ResponseEntity.ok(count);
+    }
 
     private static final String PASSWORD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 

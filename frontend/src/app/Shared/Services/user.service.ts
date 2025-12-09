@@ -42,4 +42,8 @@ export class UserService {
   resetPassword(userId: string, dto:UserResetPassword): Observable<{ temporaryPassword: string }> {
     return this.http.post<{ temporaryPassword: string }>(`${this.apiUrl}/${userId}/reset-password`, dto);
   }
+
+  getUserAmount(roleId: number): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/role/${roleId}/amount`);
+  }
 }
