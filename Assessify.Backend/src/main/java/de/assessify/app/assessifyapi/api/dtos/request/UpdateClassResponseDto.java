@@ -1,3 +1,3 @@
 package de.assessify.app.assessifyapi.api.dtos.request;
 
-public record AddSchoolClassDto (String name) {}
+public record UpdateClassResponseDto (String name) {}

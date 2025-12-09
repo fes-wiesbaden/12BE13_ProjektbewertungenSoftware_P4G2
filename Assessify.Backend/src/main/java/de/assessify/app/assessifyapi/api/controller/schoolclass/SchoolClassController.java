@@ -2,14 +2,13 @@ package de.assessify.app.assessifyapi.api.controller.schoolclass;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import de.assessify.app.assessifyapi.api.dtos.request.AddSchoolClassDto;
-import de.assessify.app.assessifyapi.api.dtos.request.UpdateSchoolClassDto;
-import de.assessify.app.assessifyapi.api.dtos.response.SchoolClassDto;
-import de.assessify.app.assessifyapi.api.dtos.response.UserWithSchoolClassDto;
+import de.assessify.app.assessifyapi.api.dtos.request.UpdateClassResponseDto;
+import de.assessify.app.assessifyapi.api.dtos.response.ClassResponseDto;
+import de.assessify.app.assessifyapi.api.dtos.response.UserWithClassResponseDto;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
-import de.assessify.app.assessifyapi.api.repository.SchoolClassRepository;
+import de.assessify.app.assessifyapi.api.repository.ClassRepository;
 import de.assessify.app.assessifyapi.api.repository.UserRepository;
-import de.assessify.app.assessifyapi.api.entity.SchoolClass;
+import de.assessify.app.assessifyapi.api.entity.ClassEntity;
 import de.assessify.app.assessifyapi.api.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,23 +23,23 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/api")
 public class SchoolClassController {
-    private final SchoolClassRepository schoolClassRepository;
+    private final ClassRepository ClassRepository;
     private final UserRepository userRepository;
     private final EntityFinderService entityFinderService;
 
-    public SchoolClassController(SchoolClassRepository schoolClassRepository, UserRepository userRepository, EntityFinderService entityFinderService) {
-        this.schoolClassRepository = schoolClassRepository;
+    public SchoolClassController(ClassRepository ClassRepository, UserRepository userRepository, EntityFinderService entityFinderService) {
+        this.ClassRepository = ClassRepository;
         this.userRepository = userRepository;
         this.entityFinderService = entityFinderService;
     }
 
-    private static final Logger logger = Logger.getLogger(SchoolClassController.class.getName());
+    private static final Logger logger = Logger.getLogger(ClassEntityController.class.getName());
 
     @GetMapping("/school-class/all")
-    public ResponseEntity<List<SchoolClassDto>> getAllSchoolClasses() {
-        var modules = schoolClassRepository.findAll()
+    public ResponseEntity<List<ClassResponseDto>> getAllClassEntityes() {
+        var modules = ClassRepository.findAll()
                 .stream()
-                .map(field -> new SchoolClassDto(
+                .map(field -> new ClassResponseDto(
                         field.getId(),
                         field.getCourseName(),
                         field.getClassName()
@@ -51,13 +50,13 @@ public class SchoolClassController {
     }
 
     @GetMapping("/school-class")
-    public ResponseEntity<List<SchoolClassDto>> getSchoolClassesForCurrentUser(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<List<ClassResponseDto>> getClassEntityesForCurrentUser(@RequestHeader("Authorization") String authHeader) {
         try {
             UUID userId = extractUserId(authHeader);
 
-            var classes = schoolClassRepository.findByUsers_Id(userId)
+            var classes = ClassRepository.findByUsers_Id(userId)
                     .stream()
-                    .map(c -> new SchoolClassDto(c.getId(), c.getCourseName(), c.getClassName()))
+                    .map(c -> new ClassResponseDto(c.getId(), c.getCourseName(), c.getClassName()))
                     .toList();
 
             return ResponseEntity.ok(classes);
@@ -69,19 +68,19 @@ public class SchoolClassController {
     }
 
     @GetMapping("/school-class/available")
-    public ResponseEntity<List<SchoolClassDto>> getAvailableSchoolClasses(
+    public ResponseEntity<List<ClassResponseDto>> getAvailableClassEntityes(
             @RequestHeader("Authorization") String authHeader) {
 
         try {
             UUID userId = extractUserId(authHeader);
 
-            List<SchoolClass> allClasses = schoolClassRepository.findAll();
+            List<ClassEntity> allClasses = ClassRepository.findAll();
 
-            List<SchoolClassDto> result = allClasses.stream()
+            List<ClassResponseDto> result = allClasses.stream()
                     .filter(c -> c.getUsers().stream()
                             .noneMatch(u -> u.getId().equals(userId))
                     )
-                    .map(c -> new SchoolClassDto(
+                    .map(c -> new ClassResponseDto(
                             c.getId(),
                             c.getCourseName(),
                             c.getClassName()
@@ -97,13 +96,13 @@ public class SchoolClassController {
     }
 
     @PostMapping("/school-class")
-    public ResponseEntity<SchoolClassDto> addSchoolClass(@RequestBody AddSchoolClassDto dto) {
-       SchoolClass entity = new SchoolClass();
+    public ResponseEntity<ClassResponseDto> addClassEntity(@RequestBody AddClassResponseDto dto) {
+       ClassEntity entity = new ClassEntity();
        entity.setCourseName(dto.name());
 
-       SchoolClass saved = schoolClassRepository.save(entity);
+       ClassEntity saved = ClassRepository.save(entity);
 
-       SchoolClassDto response = new SchoolClassDto(
+       ClassResponseDto response = new ClassResponseDto(
                saved.getId(),
                saved.getCourseName(),
                saved.getClassName()
@@ -112,30 +111,30 @@ public class SchoolClassController {
        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/school-class/{schoolClassId}/user")
-    public ResponseEntity<UserWithSchoolClassDto> addSchoolClassToUser(
-            @PathVariable UUID schoolClassId,
+    @PostMapping("/school-class/{ClassEntityId}/user")
+    public ResponseEntity<UserWithClassResponseDto> addClassEntityToUser(
+            @PathVariable UUID ClassEntityId,
             @RequestHeader("Authorization") String authHeader
             ){
         try {
             UUID userId = extractUserId(authHeader);
 
             User user = entityFinderService.findUser(userId);
-            SchoolClass schoolClass = entityFinderService.findSchoolClass(schoolClassId);
+            ClassEntity ClassEntity = entityFinderService.findClassEntity(ClassEntityId);
 
-            if (!user.getSchoolClasses().contains(schoolClass)) {
-                user.getSchoolClasses().add(schoolClass);
+            if (!user.getClassEntityes().contains(ClassEntity)) {
+                user.getClassEntityes().add(ClassEntity);
             }
 
             User updatedUser = userRepository.save(user);
 
-            UserWithSchoolClassDto response = new UserWithSchoolClassDto(
+            UserWithClassResponseDto response = new UserWithClassResponseDto(
                     updatedUser.getId(),
                     updatedUser.getFirstName(),
                     updatedUser.getFirstName(),
                     updatedUser.getUsername(),
-                    updatedUser.getSchoolClasses().stream()
-                            .map(r -> new SchoolClassDto(r.getId(), r.getCourseName(), r.getClassName()))
+                    updatedUser.getClassEntityes().stream()
+                            .map(r -> new ClassResponseDto(r.getId(), r.getCourseName(), r.getClassName()))
                             .toList()
             );
 
@@ -146,18 +145,18 @@ public class SchoolClassController {
         }
     }
 
-    @PutMapping("/school-class/{schoolClassId}")
-    public ResponseEntity<SchoolClassDto> updateRole(
-            @PathVariable UUID schoolClassId,
-            @RequestBody UpdateSchoolClassDto dto) {
+    @PutMapping("/school-class/{ClassEntityId}")
+    public ResponseEntity<ClassResponseDto> updateRole(
+            @PathVariable UUID ClassEntityId,
+            @RequestBody UpdateClassResponseDto dto) {
 
-        SchoolClass schoolClass = entityFinderService.findSchoolClass(schoolClassId);
+        ClassEntity ClassEntity = entityFinderService.findClassEntity(ClassEntityId);
 
-        schoolClass.setCourseName(dto.name());
+        ClassEntity.setCourseName(dto.name());
 
-        SchoolClass updated = schoolClassRepository.save(schoolClass);
+        ClassEntity updated = ClassRepository.save(ClassEntity);
 
-        SchoolClassDto response = new SchoolClassDto(
+        ClassResponseDto response = new ClassResponseDto(
                 updated.getId(),
                 updated.getCourseName(),
                 updated.getClassName()
@@ -166,27 +165,27 @@ public class SchoolClassController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/school-class/amount")
-    public ResponseEntity<Long> getSchoolClassAmount() {
-        long amount = schoolClassRepository.count();
+    public ResponseEntity<Long> getClassEntityAmount() {
+        long amount = ClassRepository.count();
         return ResponseEntity.ok(amount);
         }
 
-//    @DeleteMapping("/school-class/{schoolClassId}")
-//    public ResponseEntity<Void> deleteSchoolClass(
-//            @PathVariable UUID schoolClassId) {
+//    @DeleteMapping("/school-class/{ClassEntityId}")
+//    public ResponseEntity<Void> deleteClassEntity(
+//            @PathVariable UUID ClassEntityId) {
 //
-//        SchoolClass schoolClass = entityFinderService.findSchoolClass(schoolClassId);
+//        ClassEntity ClassEntity = entityFinderService.findClassEntity(ClassEntityId);
 //
 //        List<User> userWithRole = userRepository.findAll().stream()
-//                .filter(p -> p.getSchoolClasses().contains(schoolClass))
+//                .filter(p -> p.getClassEntityes().contains(ClassEntity))
 //                .toList();
 //
 //        for (User user : userWithRole) {
-//            user.getSchoolClasses().remove(schoolClass);
+//            user.getClassEntityes().remove(ClassEntity);
 //            userRepository.save(user);
 //        }
 //
-//        schoolClassRepository.delete(schoolClass);
+//        ClassRepository.delete(ClassEntity);
 //        return ResponseEntity.noContent().build();
 //    }
     private UUID extractUserId(String authHeader) {

@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("""
         SELECT u FROM User u
-        JOIN u.schoolClasses c
+        JOIN u.ClassEntityes c
         WHERE c.id = :classId
           AND u.roleId = :roleId
     """)

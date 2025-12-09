@@ -1,6 +1,6 @@
 package de.assessify.app.assessifyapi.api.controller.project;
 
-import de.assessify.app.assessifyapi.api.dtos.request.AddProjectDto;
+import de.assessify.app.assessifyapi.api.dtos.request.ProjectRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateProjectDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectWithTrainingModulesDto;
@@ -44,7 +44,7 @@ public class ProjectController {
     }
 
     @PostMapping("/project")
-    public ResponseEntity<ProjectDto> addProject(@RequestBody AddProjectDto dto) {
+    public ResponseEntity<ProjectDto> addProject(@RequestBody ProjectRequestDto dto) {
 
         Project entity = new Project();
         entity.setProjectName(dto.name());

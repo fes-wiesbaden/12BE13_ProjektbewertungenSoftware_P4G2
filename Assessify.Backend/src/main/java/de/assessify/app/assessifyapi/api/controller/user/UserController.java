@@ -3,11 +3,12 @@ package de.assessify.app.assessifyapi.api.controller.user;
 import de.assessify.app.assessifyapi.api.dtos.request.AddUserWithCourseDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateUserDto;
 import de.assessify.app.assessifyapi.api.dtos.response.UserDto;
-import de.assessify.app.assessifyapi.api.entity.SchoolClass;
+import de.assessify.app.assessifyapi.api.entity.ClassEntity;
 import de.assessify.app.assessifyapi.api.repository.RoleRepository;
-import de.assessify.app.assessifyapi.api.repository.SchoolClassRepository;
+import de.assessify.app.assessifyapi.api.repository.ClassRepository;
 import de.assessify.app.assessifyapi.api.repository.UserRepository;
 import de.assessify.app.assessifyapi.api.entity.User;
+import de.assessify.app.assessifyapi.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,17 +26,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    private final UserService userService;
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final SchoolClassRepository schoolClassRepository;
+    private final ClassRepository ClassRepository;
 
     public UserController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
-                          RoleRepository roleRepository, SchoolClassRepository schoolClassRepository) {
+                          RoleRepository roleRepository, ClassRepository ClassRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-        this.schoolClassRepository = schoolClassRepository;
+        this.ClassRepository = ClassRepository;
     }
 
     @GetMapping("/role/{roleId}")
@@ -94,13 +98,13 @@ public class UserController {
         user.setRoleId(roleId);
 
         if (dto.courseId() != null && !dto.courseId().isEmpty()) {
-            List<SchoolClass> classesToAssign = new ArrayList<>();
+            List<ClassEntity> classesToAssign = new ArrayList<>();
             for (UUID classId : dto.courseId()) {
-                SchoolClass schoolClass = schoolClassRepository.findById(classId)
+                ClassEntity ClassEntity = ClassRepository.findById(classId)
                         .orElseThrow(() -> new RuntimeException("Course not found: " + classId));
-                classesToAssign.add(schoolClass);
+                classesToAssign.add(ClassEntity);
             }
-            user.setSchoolClasses(classesToAssign);
+            user.setClassEntityes(classesToAssign);
         }
 
         User savedUser = userRepository.save(user);

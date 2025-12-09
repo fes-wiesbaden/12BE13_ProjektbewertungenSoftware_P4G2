@@ -1,6 +1,6 @@
 package de.assessify.app.assessifyapi.api.controller.learningfield;
 
-import de.assessify.app.assessifyapi.api.dtos.request.AddTrainingModuleDto;
+import de.assessify.app.assessifyapi.api.dtos.request.LernfeldRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateTrainingModuleDto;
 import de.assessify.app.assessifyapi.api.dtos.response.UserWithModulesDto;
 import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleSummaryDto;
@@ -9,7 +9,6 @@ import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.repository.ProjectRepository;
 import de.assessify.app.assessifyapi.api.repository.TrainingModuleRepository;
 import de.assessify.app.assessifyapi.api.repository.UserRepository;
-import de.assessify.app.assessifyapi.api.entity.TrainingModule;
 import de.assessify.app.assessifyapi.api.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +67,7 @@ public class LearningFieldController {
 
     @PostMapping("/training-modules")
     public ResponseEntity<TrainingModuleSummaryDto> createTrainingModule(
-            @RequestBody AddTrainingModuleDto dto) {
+            @RequestBody LernfeldRequestDto dto) {
 
         TrainingModule entity = new TrainingModule();
         entity.setName(dto.name());

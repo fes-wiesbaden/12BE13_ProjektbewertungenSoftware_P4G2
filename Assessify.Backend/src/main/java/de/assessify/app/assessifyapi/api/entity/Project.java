@@ -1,39 +1,83 @@
 package de.assessify.app.assessifyapi.api.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.UuidGenerator;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+
+import lombok.Builder;
+import lombok.Data;
+
 @Entity
-@Data
 @Table(name = "project")
+@Data
+@Builder
 public class Project {
+
     @Id
-    @UuidGenerator
-    @Column(name = "project_id", nullable = false, unique = true)
-    private UUID id;
+@UuidGenerator
+private UUID id;
 
-    @Column(name = "project_name", nullable = false)
-    private String ProjectName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id", nullable = false)
+    private ClassEntity classEntity;
 
-    @Column(name = "project_description", nullable = false)
-    private String ProjectDescription;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "academic_year_id")
+    private AcademicYear academicYear;
 
-    @ManyToMany
-    @JoinTable(
-            name = "project_training-module",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "training-module_id")
-    )
-    private List<TrainingModule> trainingModules = new ArrayList<>();
+    @Column(name = "name", nullable = false, length = 200)
+    private String name;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+    @Column(name = "description", nullable = false, length = 200)
+    private String description;
 
-    @OneToMany(mappedBy = "project")
-    private List<UserProjectGroup> userProjectGroups = new ArrayList<>();
+    @Column(name = "start_date", nullable = false, length = 200)
+    private LocalDate startDate;
+
+    @Column(name = "due_date", nullable = false, length = 200)
+    private LocalDate dueDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User creator;
+
+    @Column(name = "status", length = 20)
+    @Builder.Default
+    private String status = "draft"; // draft, active, completed, archived
+
+    @Column(name = "review_deadline")
+    private LocalDateTime reviewDeadline;
+
+    @CreationTimestamp
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    private LocalDateTime creationDate;
+
+
+    // Navigation properties
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<Group> groups = new HashSet<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<ReviewQuestion> reviewQuestions = new HashSet<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<Noten> grades = new HashSet<>();
 }

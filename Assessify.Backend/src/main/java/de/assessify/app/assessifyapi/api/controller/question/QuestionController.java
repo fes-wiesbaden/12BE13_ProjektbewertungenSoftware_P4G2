@@ -3,7 +3,7 @@ package de.assessify.app.assessifyapi.api.controller.question;
 import de.assessify.app.assessifyapi.api.dtos.request.AddQuestionDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateQuestionDto;
 import de.assessify.app.assessifyapi.api.dtos.response.QuestionDto;
-import de.assessify.app.assessifyapi.api.entity.Question;
+import de.assessify.app.assessifyapi.api.entity.ReviewQuestion;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.repository.QuestionRepository;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +40,10 @@ public class QuestionController {
     public ResponseEntity<QuestionDto> createQuestion(
             @RequestBody AddQuestionDto dto) {
 
-        Question entity = new Question();
+        ReviewQuestion entity = new ReviewQuestion();
         entity.setQuestionText(dto.questionText());
 
-        Question saved = questionRepository.save(entity);
+        ReviewQuestion saved = questionRepository.save(entity);
 
         QuestionDto response = new QuestionDto(
                 saved.getId(),
@@ -58,11 +58,11 @@ public class QuestionController {
             @PathVariable UUID questionId,
             @RequestBody UpdateQuestionDto dto) {
 
-        Question question = entityFinderService.findQuestion(questionId);
+        ReviewQuestion question = entityFinderService.findQuestion(questionId);
 
         question.setQuestionText(dto.questionText());
 
-        Question updated = questionRepository.save(question);
+        ReviewQuestion updated = questionRepository.save(question);
 
         QuestionDto response = new QuestionDto(
                 updated.getId(),
@@ -76,7 +76,7 @@ public class QuestionController {
     public ResponseEntity<Void> deleteQuestion(
             @PathVariable UUID questionId) {
 
-        Question question = entityFinderService.findQuestion(questionId);
+        ReviewQuestion question = entityFinderService.findQuestion(questionId);
 
         questionRepository.delete(question);
         return ResponseEntity.noContent().build();

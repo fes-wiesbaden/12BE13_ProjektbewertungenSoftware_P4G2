@@ -1,32 +1,40 @@
 package de.assessify.app.assessifyapi.api.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+
+//import javax.validation.constraints.Min;
+//import javax.validation.constraints.Max;
+
+import java.math.BigDecimal;
+
 import org.hibernate.annotations.UuidGenerator;
 
-import java.util.UUID;
-
 @Entity
+@Table(name = "review_answer",
+uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"review_id", "question_id"})
+})
 @Data
-@Table(name = "review-answer")
+@Builder
 public class ReviewAnswer {
-    @Id
-    @UuidGenerator
-    @Column(name = "review_answer_id", nullable = false, unique = true)
-    private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @Id
+@UuidGenerator
+private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
     private Review review;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
-
-    @Column(name = "rating", nullable = false)
-    private float rating;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewed_user_id")
-    private User reviewedUser;
+    @JoinColumn(name = "question_id", nullable = false)
+    private ReviewQuestion question;
+
+    @Column(name = "rate", nullable = false)
+    private BigDecimal rate; // Rating (e.g., 1 - 6)
+
+    @Column(name = "comment", columnDefinition = "TEXT")
+    private String comment; // Optional comment for this specific question
 }

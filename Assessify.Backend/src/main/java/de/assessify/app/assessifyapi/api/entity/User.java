@@ -1,64 +1,111 @@
 package de.assessify.app.assessifyapi.api.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.UuidGenerator;
+import lombok.*;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
-@Entity
-@Data
-@Table(name = "users")
-public class User {
-    @Id
-    @UuidGenerator
-    @Column(name = "user_id", nullable = false, unique = true)
-    private UUID id;
+import org.hibernate.annotations.UuidGenerator;
 
-    @Column(name = "first_name", nullable = false)
+@Entity
+@Table(name = "user", 
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username")
+    }
+)
+@Data
+@Builder
+public class User {
+
+    @Id
+@UuidGenerator
+private UUID id;
+
+    @Column(name = "first_name", nullable=false, length=100)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name", nullable=false, length=100)
     private String lastName;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "username", nullable=false, length=100)
     private String username;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable=false, length=100)
     private String password;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="role_id", nullable=false)
+    private Role role;
 
-    @Column(name = "role_id")
-    private Integer roleId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id")
+    private ClassEntity classEntity;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_training-module",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "training-module_id")
-    )
-    private List<TrainingModule> trainingModules = new ArrayList<>();
+    @Column(name = "is_active", nullable = false)
+    @Builder.Default
+    private Boolean isActive = true;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_schoolclass",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "class_id")
-    )
-    private List<SchoolClass> schoolClasses = new ArrayList<>();
+    @CreationTimestamp
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    private LocalDateTime creationDate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Grade> grades = new ArrayList<>();
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+    // Navigation property - Teacher relationships
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<ClassTeacherList> teachingClasses = new HashSet<>();
 
-    public String getPassword() { return password; }
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<Project> createdProjects = new HashSet<>();
 
-    public void setPassword(String password) { this.password = password; }
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<Group> createdGroups = new HashSet<>();
+
+    // Navigation properties - Student relationships
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<GroupMember> groupMemberships = new HashSet<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<Noten> gradesReceived = new HashSet<>();
+
+    @OneToMany(mappedBy = "givenBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<Noten> gradesGiven = new HashSet<>();
+
+    // Navigation properties - Review relationships
+    @OneToMany(mappedBy = "reviewer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<Review> reviewsGiven = new HashSet<>();
+
+    @OneToMany(mappedBy = "reviewee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private Set<Review> reviewsReceived = new HashSet<>();
+
 }

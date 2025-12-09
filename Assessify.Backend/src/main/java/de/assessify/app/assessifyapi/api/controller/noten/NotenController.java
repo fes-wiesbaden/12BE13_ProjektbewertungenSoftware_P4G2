@@ -1,12 +1,12 @@
-package de.assessify.app.assessifyapi.api.controller.grade;
+package de.assessify.app.assessifyapi.api.controller.noten;
 
-import de.assessify.app.assessifyapi.api.dtos.request.AddGradeDto;
+import de.assessify.app.assessifyapi.api.dtos.request.NotenRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateGradeDto;
 import de.assessify.app.assessifyapi.api.dtos.response.GradeDto;
 import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleWithGradesDto;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.service.GradeCalculationService;
-import de.assessify.app.assessifyapi.api.repository.GradeRepository;
+import de.assessify.app.assessifyapi.api.repository.NotenRepository;
 import de.assessify.app.assessifyapi.api.entity.Grade;
 import de.assessify.app.assessifyapi.api.entity.TrainingModule;
 import de.assessify.app.assessifyapi.api.entity.User;
@@ -20,14 +20,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class GradeController {
-    private final GradeRepository gradeRepository;
+    private final NotenRepository notenRepository;
     private final EntityFinderService entityFinderService;
     private final GradeCalculationService gradeCalculationService;
 
-    public GradeController(GradeRepository gradeRepository,
+    public GradeController(NotenRepository notenRepository,
                            EntityFinderService entityFinderService,
                            GradeCalculationService gradeCalculationService) {
-        this.gradeRepository = gradeRepository;
+        this.notenRepository = notenRepository;
         this.entityFinderService = entityFinderService;
         this.gradeCalculationService = gradeCalculationService;
     }
@@ -90,7 +90,7 @@ public class GradeController {
     public ResponseEntity<GradeDto> addGradeToTrainingModule(
             @PathVariable UUID userId,
             @PathVariable UUID trainingModulesId,
-            @RequestBody AddGradeDto dto){
+            @RequestBody NotenRequestDto dto){
 
         User user = entityFinderService.findUser(userId);
         TrainingModule trainingModule = entityFinderService.findTrainingModule(trainingModulesId);
@@ -107,7 +107,7 @@ public class GradeController {
         grade.setTrainingModules(trainingModule);
         grade.setUser(user);
 
-        Grade savedGrade = gradeRepository.save(grade);
+        Grade savedGrade = notenRepository.save(grade);
 
         GradeDto response = new GradeDto(
                 savedGrade.getId(),
@@ -138,7 +138,7 @@ public class GradeController {
         if (dto.gradeWeighting() != null) grade.setGradeWeighting(dto.gradeWeighting());
         if (dto.date() != null) grade.setDate(dto.date());
 
-        Grade updated = gradeRepository.save(grade);
+        Grade updated = notenRepository.save(grade);
 
         GradeDto response = new GradeDto(
                 updated.getId(),
@@ -163,7 +163,7 @@ public class GradeController {
 
         entityFinderService.validateUserTrainingModuleAndGrade(userId, trainingModulesId, gradeId);
 
-        gradeRepository.delete(grade);
+        notenRepository.delete(grade);
         return ResponseEntity.noContent().build();
     }
 
