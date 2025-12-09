@@ -46,32 +46,33 @@ export class FormModalComponent implements OnChanges {
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
 
-  
   formData: any = {};
   ngOnChanges() {
-  if(this.record === null){
-    console.log("Null true");
-    this.formData = {};
-     this.fields.forEach((f) => {
-    if (f.type === 'multiselect') {
-        f.selected = [];
-          f.options?.forEach(o => (o.selected = false));
-      }
-    });
+    if (this.record === null) {
+      this.formData = {};
+      this.fields.forEach((f) => {
+        if (f.type === 'multiselect') {
+          f.selected = [];
+          f.options?.forEach((o) => (o.selected = false));
+        }
+      });
+    }
+    if (this.record !== null) {
+      this.formData = this.record;
+      this.fields.forEach((o) => {
+        if (o.type === 'multiselect') {
+          console.log(o);
+          o.selected = [];
+          o.options?.forEach((f) => {
+            if (f.selected == true) {
+              //   // Wenn der Wert true ist
+              console.log(`${f.value} ist ausgewählt`);
+            }
+          });
+        }
+      });
+    }
   }
-  if(this.record !== null){
-    console.log("Null !true");
-    console.log("record", this.record);
-    this.formData = this.record;
-    this.fields.forEach((f) => {
-    if (f.type === 'multiselect') {
-        console.log(f); 
-          // f.options?.forEach(o => (o.selected = false));
-      }
-    });
-  }
-}
-
 
   onSave() {
     if (this.isFieldEmpty()) {

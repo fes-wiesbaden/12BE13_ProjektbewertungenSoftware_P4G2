@@ -149,7 +149,6 @@ export class ManageTeachers implements OnInit {
     this.loadCourses();
   }
 
-
   openEditModal(teacher: User) {
     this.editingTeacher = teacher;
     this.showEditModal = true;
@@ -240,12 +239,6 @@ export class ManageTeachers implements OnInit {
       next: (teacher) => {
         this.teachers.push(teacher);
         this.closeAddModel();
-        this.firstName = '';
-        this.lastName = '';
-        this.username = '';
-        this.password = '';
-        this.role = '';
-        console.log(teacher);
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
@@ -267,16 +260,43 @@ export class ManageTeachers implements OnInit {
       next: (data) => {
         this.courses = data.map((c: any) => ({ label: c.courseName, value: c.id }));
 
-      const courseField = this.fieldsNew.find(f => f.key === 'courseId');
-      if (courseField) {
-        courseField.options = this.courses.map(c => ({ ...c, selected: false }));
-      }
-      const courseFieldEdit = this.fieldsEdit.find(f => f.key === 'courseId');
-      if (courseFieldEdit) {
-        courseFieldEdit.options = this.courses.map(c => ({ ...c, selected: false }));
-      }
-    },
-    error: (err) => console.error('Fehler beim Laden der Kurse:', err)
-  });
-}
+        const courseField = this.fieldsNew.find((f) => f.key === 'courseId');
+        if (courseField) {
+          courseField.options = this.courses.map((c) => ({ ...c, selected: false }));
+        }
+        const courseFieldEdit = this.fieldsEdit.find((f) => f.key === 'courseId');
+        if (courseFieldEdit) {
+          courseFieldEdit.options = this.courses.map((c) => ({ ...c, selected: false }));
+        }
+      },
+      error: (err) => console.error('Fehler beim Laden der Kurse:', err),
+    });
+  }
+
+  onResetPassword(user: User) {
+    var userId = user.id;
+    this.tempPassword = this.generateTempPassword();
+
+    const dto: UserResetPassword = {
+      newPassword: this.tempPassword,
+    };
+
+    this.userService.resetPassword(userId, dto).subscribe({
+      next: () => {
+        console.log('Passwort erfolgreich zurückgesetzt');
+      },
+      error: (err) => {
+        console.error('Fehler beim Zurücksetzen des Passworts', err);
+      },
+    });
+  }
+
+  generateTempPassword(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let pass = '';
+    for (let i = 0; i < 12; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pass;
+  }
 }
