@@ -3,6 +3,7 @@ import { StudentDashboard } from './student-dashboard/student-dashboard';
 import { MyProfile } from './my-profile/my-profile';
 import { MyAssessment } from './my-assessment/my-assessment';
 import { MyClasses } from './my-classes/my-classes';
+import { MyGrades } from "./my-grades/my-grades";
 
 
 export const StudentRoutes: Routes = [
@@ -13,7 +14,7 @@ export const StudentRoutes: Routes = [
   {
     //noten
     path: 'my-profile',
-    component: MyProfile
+    component: MyGrades
   },
   {
     //selbstfremd

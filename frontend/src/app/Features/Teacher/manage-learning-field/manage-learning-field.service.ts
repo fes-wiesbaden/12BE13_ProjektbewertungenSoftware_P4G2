@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LearningField } from '../../../Interfaces/learning-field.interface';
 import { AddGrade, Grade } from '../../../Interfaces/grade.interface';
+import { LearningField } from '../../../Shared/models/learning-fields.interface';
 
 @Injectable({
   providedIn: 'root',
