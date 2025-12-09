@@ -9,18 +9,22 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [ReactiveFormsModule, MatIconModule],
   templateUrl: './login.html',
-  styleUrls: ['./login.css'],
 })
 export class Login {
   loginForm: FormGroup;
   loginError: string = '';
   hasError = false;
   showForgotPassword = false;
+  isLoading = false;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', [Validators.required]],
+    });
+
+    this.loginForm.valueChanges.subscribe(() => {
+      this.loginError = '';
     });
   }
 
@@ -33,25 +37,18 @@ export class Login {
   }
 
   async onSubmit() {
-    console.log('🔵 onSubmit called');
-    console.log('Form valid:', this.loginForm.valid);
-    console.log('Form values:', this.loginForm.value);
-
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
-      console.log('❌ Form is invalid');
       return;
     }
 
+    this.isLoading = true;
     const { username, password } = this.loginForm.value;
-    console.log('📤 Attempting login...');
-
     const success = await this.auth.login(username, password);
-    console.log('✅ Login result:', success);
+    this.isLoading = false;
 
     if (!success) {
-      console.log('❌ Login failed');
-      this.loginError = 'Invalid username or password';
+      this.loginError = 'Ungültiger Benutzername oder Passwort';
       this.showError();
       return;
     }
@@ -73,7 +70,5 @@ export class Login {
         this.router.navigate(['/auth/login']);
         break;
     }
-
-    console.log('✅ Navigation triggered');
   }
 }
