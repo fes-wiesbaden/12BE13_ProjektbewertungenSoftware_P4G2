@@ -132,13 +132,6 @@ export class ManageAdmins implements OnInit {
     },
   ];
 
-  firstName = '';
-  lastName = '';
-  username = '';
-  password = '';
-  confirmPassword = '';
-  role = '';
-
   editingAdmin: User | null = null;
   deletingAdmin: User | null = null;
 
@@ -243,11 +236,6 @@ export class ManageAdmins implements OnInit {
       next: (adminUser) => {
         this.admins.push(adminUser);
         this.closeAddModel();
-        this.firstName = '';
-        this.lastName = '';
-        this.username = '';
-        this.password = '';
-        this.role = '';
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
     });
