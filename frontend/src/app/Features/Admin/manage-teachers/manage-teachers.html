@@ -1,9 +1,19 @@
 <app-form-modal
   [showModal]="showAddModel"
   [title]="'Lehrer anlegen'"
-  [fields]="fields"
+  [fields]="fieldsNew"
   (close)="closeAddModel()"
   (save)="saveTeacher($event)"
+>
+</app-form-modal>
+
+<app-form-modal
+  [showModal]="showEditModal"
+  [title]="'Lehrer Editieren'"
+  [fields]="fieldsEdit"
+  [record]="editingTeacher"
+  (close)="closeEditModal()"
+  (save)="saveEdit($event)"
 >
 </app-form-modal>
 
@@ -26,15 +36,7 @@
   (delete)="openDeleteModal($event)"
 ></app-table-column>
 
-<app-form-modal
-  [showModal]="showEditModal"
-  [title]="'Lehrer Editieren'"
-  [fields]="fieldsEdit"
-  [record]="editingTeacher"
-  (close)="closeEditModal()"
-  (save)="saveEdit($event)"
->
-</app-form-modal>
+
 
 <app-delete-button
   [showModal]="showDeleteModal"

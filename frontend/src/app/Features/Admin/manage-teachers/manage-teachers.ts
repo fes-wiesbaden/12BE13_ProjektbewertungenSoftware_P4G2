@@ -47,7 +47,7 @@ export class ManageTeachers implements OnInit {
     { key: 'roleName', label: 'Role' },
   ];
 
-  fields: FormField[] = [
+  fieldsNew: FormField[] = [
     {
       key: 'firstName',
       label: 'Vorname',
@@ -121,7 +121,14 @@ export class ManageTeachers implements OnInit {
       required: true,
       colSpan: 3,
       placeholder: 'Benutzername',
-    }
+    },
+    {
+      key: 'courseId',
+      label: 'Kurs',
+      type: 'multiselect',
+      colSpan: 3,
+      options: [],
+    },
   ];
 
   showAddModel: boolean = false;
@@ -253,9 +260,13 @@ export class ManageTeachers implements OnInit {
     next: (data) => {
       this.courses = data.map((c: any) => ({ label: c.courseName, value: c.id }));
 
-      const courseField = this.fields.find(f => f.key === 'courseId');
+      const courseField = this.fieldsNew.find(f => f.key === 'courseId');
       if (courseField) {
         courseField.options = this.courses.map(c => ({ ...c, selected: false }));
+      }
+      const courseFieldEdit = this.fieldsEdit.find(f => f.key === 'courseId');
+      if (courseFieldEdit) {
+        courseFieldEdit.options = this.courses.map(c => ({ ...c, selected: false }));
       }
     },
     error: (err) => console.error('Fehler beim Laden der Kurse:', err)
