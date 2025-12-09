@@ -30,7 +30,46 @@
                 field.label
               }}</label>
 
-              @if (field.type === 'select') {
+              @if (field.type === 'multiselect') {
+              <div class="relative">
+                <button
+                  type="button"
+                  (click)="field.open = !field.open"
+                  class="w-full bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg p-2.5 flex justify-between items-center dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                >
+                  <span>{{ getSelectedLabels(field) }}</span>
+                  <mat-icon class="w-5 h-5">expand_more</mat-icon>
+                </button>
+
+                <div
+                  *ngIf="field.open"
+                  class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-600 max-h-60 overflow-y-auto"
+                >
+                  <div
+                    *ngFor="let option of field.options"
+                    class="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="option.selected"
+                      name="{{ field.key }}_{{ option.value }}"
+                      (ngModelChange)="onMultiSelectChange(field)"
+                      class="mr-2 rounded"
+                    />
+                    <label class="text-gray-900 dark:text-white">{{ option.label }}</label>
+                  </div>
+                </div>
+
+                <div class="mt-2 flex flex-wrap gap-2">
+                  <span
+                    *ngFor="let sel of field.selected"
+                    class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-100"
+                  >
+                    {{ sel.label }}
+                  </span>
+                </div>
+              </div>
+              } @if (field.type === 'select') {
               <select
                 [(ngModel)]="formData[field.key]"
                 [name]="field.key"
@@ -50,7 +89,8 @@
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
               </textarea>
-              } @if (field.type !== 'textarea' && field.type !== 'select') {
+              } @if (field.type !== 'textarea' && field.type !== 'select' && field.type !==
+              'multiselect') {
               <input
                 [(ngModel)]="formData[field.key]"
                 [name]="field.key"

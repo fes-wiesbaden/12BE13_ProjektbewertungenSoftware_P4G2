@@ -11,6 +11,7 @@ import { FormField, FormModalComponent } from '../../../Shared/Components/form-m
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 import { UserService } from '../../../Shared/Services/user.service';
 import { User } from '../../../Shared/models/user.interface';
+import { CourseService } from '../../../Shared/Services/course.service';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -28,6 +29,7 @@ import { User } from '../../../Shared/models/user.interface';
 })
 export class ManageTeachers implements OnInit {
   teachers: User[] = [];
+  courses: { label: string, value: number }[] = [];
   loading = true;
 
   columns: TableColumn<User>[] = [
@@ -63,12 +65,12 @@ export class ManageTeachers implements OnInit {
       placeholder: 'Benutzername',
     },
     {
-      key: 'position',
-      label: 'Rolle',
-      type: 'text',
+      key: 'courseId',
+      label: 'Kurs',
+      type: 'multiselect',
       readonly: true,
-      value: 'TEACHER',
       colSpan: 3,
+      options: []
     },
     {
       key: 'password',
@@ -112,7 +114,7 @@ export class ManageTeachers implements OnInit {
       required: true,
       colSpan: 3,
       placeholder: 'Benutzername',
-    },
+    }
   ];
 
   showAddModel: boolean = false;
@@ -128,10 +130,11 @@ export class ManageTeachers implements OnInit {
   password = '';
   role = '';
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private courseService: CourseService) {}
 
   ngOnInit(): void {
     this.loadTeachers();
+    this.loadCourses();
   }
 
   openEditModal(teacher: User) {
@@ -215,9 +218,8 @@ export class ManageTeachers implements OnInit {
 
     this.userService.createUserByRoleId(1, dto).subscribe({
       next: (teacher) => {
-        this.teachers.push(teacher); // direkt zur Liste hinzufügen
+        this.teachers.push(teacher);
         this.closeAddModel();
-        // Reset Form
         this.firstName = '';
         this.lastName = '';
         this.username = '';
@@ -238,4 +240,18 @@ export class ManageTeachers implements OnInit {
       error: (err) => console.error('Fehler beim Löschen', err),
     });
   }
+
+  loadCourses() {
+  this.courseService.getAllCourses().subscribe({
+    next: (data) => {
+      this.courses = data.map((c: any) => ({ label: c.courseName, value: c.id }));
+
+      const courseField = this.fields.find(f => f.key === 'courseId');
+      if (courseField) {
+        courseField.options = this.courses.map(c => ({ ...c, selected: false }));
+      }
+    },
+    error: (err) => console.error(err)
+  });
+}
 }
