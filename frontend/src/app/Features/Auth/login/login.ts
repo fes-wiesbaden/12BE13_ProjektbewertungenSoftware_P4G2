@@ -9,17 +9,22 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [ReactiveFormsModule, MatIconModule],
   templateUrl: './login.html',
-  styleUrls: ['./login.css'],
 })
 export class Login {
   loginForm: FormGroup;
   loginError: string = '';
   hasError = false;
+  showForgotPassword = false;
+  isLoading = false;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', [Validators.required]],
+    });
+
+    this.loginForm.valueChanges.subscribe(() => {
+      this.loginError = '';
     });
   }
 
@@ -32,46 +37,44 @@ export class Login {
   }
 
   async onSubmit() {
-    console.log('🔵 onSubmit called');
-    console.log('Form valid:', this.loginForm.valid);
-    console.log('Form values:', this.loginForm.value);
-
     if (this.loginForm.invalid) {
-      console.log('❌ Form is invalid');
+      this.loginForm.markAllAsTouched();
       return;
     }
 
-    const { username, password } = this.loginForm.value;
-    console.log('📤 Attempting login...');
+    this.isLoading = true;
 
-    const success = await this.auth.login(username, password);
-    console.log('✅ Login result:', success);
+    try {
+      const { username, password } = this.loginForm.value;
+      const success = await this.auth.login(username, password);
 
-    if (!success) {
-      console.log('❌ Login failed');
-      this.loginError = 'Invalid username or password';
+      if (!success) {
+        this.loginError = 'Ungültiger Benutzername oder Passwort';
+        this.showError();
+        return;
+      }
+
+      const role = this.auth.getRole().toLowerCase();
+      switch (role) {
+        case 'teacher':
+          this.router.navigate(['/teacher/dashboard']);
+          break;
+        case 'student':
+          this.router.navigate(['/student/dashboard']);
+          break;
+        case 'admin':
+          this.router.navigate(['/admin/dashboard']);
+          break;
+        default:
+          this.router.navigate(['/auth/login']);
+          break;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      this.loginError = 'Fehler beim Login. Bitte erneut versuchen.';
       this.showError();
-      return;
+    } finally {
+      this.isLoading = false;
     }
-
-    const role = this.auth.getRole().toLowerCase();
-    console.log('User role:', role);
-
-    switch (role) {
-      case 'teacher':
-        this.router.navigate(['/teacher/dashboard']);
-        break;
-      case 'student':
-        this.router.navigate(['/student/dashboard']);
-        break;
-      case 'admin':
-        this.router.navigate(['/admin/dashboard']);
-        break;
-      default:
-        this.router.navigate(['/auth/login']);
-        break;
-    }
-
-    console.log('✅ Navigation triggered');
   }
 }

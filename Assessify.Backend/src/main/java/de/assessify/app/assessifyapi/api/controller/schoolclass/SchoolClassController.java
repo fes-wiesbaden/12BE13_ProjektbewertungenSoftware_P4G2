@@ -169,7 +169,7 @@ public class SchoolClassController {
     public ResponseEntity<Long> getSchoolClassAmount() {
         long amount = schoolClassRepository.count();
         return ResponseEntity.ok(amount);
-        }
+    }
 
 //    @DeleteMapping("/school-class/{schoolClassId}")
 //    public ResponseEntity<Void> deleteSchoolClass(

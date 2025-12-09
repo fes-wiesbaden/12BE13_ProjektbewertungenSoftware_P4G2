@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AddUser, UpdateUser, User, UserResetPassword } from '../models/user.interface';
-
-export interface ChangePasswordRequestDto {
-  oldPassword: string;
-  newPassword: string;
-}
+import { AddUser, UpdateUser, User, UserChangePassword, UserResetPassword } from '../models/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +11,7 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  changePassword(username: string, dto: ChangePasswordRequestDto): Observable<void> {
+  changePassword(username: string, dto: UserChangePassword): Observable<void> {
     return this.http.post<void>(
       `${this.apiUrl}/${encodeURIComponent(username)}/change-password`,
       dto
@@ -39,7 +34,11 @@ export class UserService {
     return this.http.put<User>(`${this.apiUrl}/${dto.id}`, dto);
   }
 
-  resetPassword(userId: string, dto:UserResetPassword): Observable<{ temporaryPassword: string }> {
+  resetPassword(userId: string, dto: UserResetPassword): Observable<{ temporaryPassword: string }> {
     return this.http.post<{ temporaryPassword: string }>(`${this.apiUrl}/${userId}/reset-password`, dto);
+  }
+
+  getUserAmount(roleId: number): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/role/${roleId}/amount`);
   }
 }

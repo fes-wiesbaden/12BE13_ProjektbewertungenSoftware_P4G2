@@ -8,7 +8,8 @@ import { SidebarService } from '../../core/services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { SiXMarkIcon, SiBars3Icon } from '@semantic-icons/heroicons/24/solid';
-import { UserService, ChangePasswordRequestDto } from '../../Shared/Services/user.service';
+import { UserService } from '../../Shared/Services/user.service';
+import { UserChangePassword } from '../../Shared/models/user.interface';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -123,7 +124,7 @@ export class DashboardNavbar implements OnInit {
       return;
     }
 
-    const dto: ChangePasswordRequestDto = {
+    const dto: UserChangePassword = {
       oldPassword: this.oldPassword,
       newPassword: this.newPassword,
     };
