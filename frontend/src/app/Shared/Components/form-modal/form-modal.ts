@@ -61,8 +61,6 @@ export class FormModalComponent implements OnChanges {
       this.formData = this.record;
       this.fields.forEach((o) => {
         if (o.type === 'multiselect') {
-          console.log(o);
-          o.selected = [];
           o.options?.forEach((f) => {
             if (f.selected == true) {
               //   // Wenn der Wert true ist

@@ -8,6 +8,16 @@
 >
 </app-form-modal>
 
+<app-form-modal
+  [showModal]="showEditModal"
+  [title]="'Schüler Editieren'"
+  [fields]="fieldsEdit"
+  [record]="editingStudent"
+  (close)="closeEditModal()"
+  (save)="saveEdit($event)"
+>
+</app-form-modal>
+
 <app-page-header
   title="Schüler"
   [showAddButton]="true"
