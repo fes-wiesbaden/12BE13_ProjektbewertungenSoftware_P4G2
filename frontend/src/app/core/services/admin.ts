@@ -7,18 +7,14 @@ interface ResetPasswordResponseDto {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminService {
-
   private apiUrl = 'http://localhost:4100/api/users';
 
   constructor(private http: HttpClient) {}
 
   resetPassword(userId: string): Observable<ResetPasswordResponseDto> {
-    return this.http.post<ResetPasswordResponseDto>(
-      `${this.apiUrl}/${userId}/reset-password`,
-      {}
-    );
+    return this.http.post<ResetPasswordResponseDto>(`${this.apiUrl}/${userId}/reset-password`, {});
   }
 }

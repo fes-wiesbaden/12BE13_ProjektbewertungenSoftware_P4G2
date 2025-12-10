@@ -146,7 +146,10 @@ export class ManageStudents implements OnInit {
 
   delete: any;
 
-  constructor(private userService: UserService, private courseService: CourseService) {}
+  constructor(
+    private userService: UserService,
+    private courseService: CourseService,
+  ) {}
 
   ngOnInit(): void {
     this.loadStudents();
@@ -276,10 +279,10 @@ export class ManageStudents implements OnInit {
         if (courseField) {
           courseField.options = formatted;
         }
-        const courseFieldEdit = this.fieldsEdit.find(f => f.key === 'courseId');
-      if (courseFieldEdit) {
-        courseFieldEdit.options = this.classes.map(c => ({ ...c, selected: false }));
-      }
+        const courseFieldEdit = this.fieldsEdit.find((f) => f.key === 'courseId');
+        if (courseFieldEdit) {
+          courseFieldEdit.options = this.classes.map((c) => ({ ...c, selected: false }));
+        }
 
         this.loading = false;
       },

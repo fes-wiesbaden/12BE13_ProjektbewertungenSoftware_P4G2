@@ -55,7 +55,7 @@ export class DashboardNavbar implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private sidebarService: SidebarService,
-    private userService: UserService
+    private userService: UserService,
   ) {
     this.changePasswordForm = this.fb.group(
       {
@@ -70,7 +70,7 @@ export class DashboardNavbar implements OnInit {
         ],
         confirmPassword: ['', Validators.required],
       },
-      { validators: this.passwordsMatch }
+      { validators: this.passwordsMatch },
     );
   }
 
@@ -83,7 +83,7 @@ export class DashboardNavbar implements OnInit {
   passwordsMatch(group: AbstractControl): ValidationErrors | null {
     const newPwd = group.get('newPassword')?.value;
     const confirmPwd = group.get('confirmPassword')?.value;
-    
+
     if (!newPwd || !confirmPwd) {
       return null;
     }

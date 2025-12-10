@@ -21,7 +21,10 @@ export class Sidebar implements OnInit {
   sidebarStatus: string = 'open';
   menuItems: MenuItem[] = [];
 
-  constructor(private auth: AuthService, private sidebarService: SidebarService) {}
+  constructor(
+    private auth: AuthService,
+    private sidebarService: SidebarService,
+  ) {}
 
   ngOnInit() {
     const role = this.auth.getRole();
