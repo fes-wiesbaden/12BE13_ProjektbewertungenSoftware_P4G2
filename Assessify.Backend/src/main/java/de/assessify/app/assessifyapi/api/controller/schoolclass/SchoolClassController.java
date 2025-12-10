@@ -171,24 +171,25 @@ public class SchoolClassController {
         return ResponseEntity.ok(amount);
     }
 
-//    @DeleteMapping("/school-class/{schoolClassId}")
-//    public ResponseEntity<Void> deleteSchoolClass(
-//            @PathVariable UUID schoolClassId) {
-//
-//        SchoolClass schoolClass = entityFinderService.findSchoolClass(schoolClassId);
-//
-//        List<User> userWithRole = userRepository.findAll().stream()
-//                .filter(p -> p.getSchoolClasses().contains(schoolClass))
-//                .toList();
-//
-//        for (User user : userWithRole) {
-//            user.getSchoolClasses().remove(schoolClass);
-//            userRepository.save(user);
-//        }
-//
-//        schoolClassRepository.delete(schoolClass);
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/school-class/{schoolClassId}")
+    public ResponseEntity<Void> deleteSchoolClass(
+            @PathVariable UUID schoolClassId) {
+
+        SchoolClass schoolClass = entityFinderService.findSchoolClass(schoolClassId);
+
+        List<User> userWithRole = userRepository.findAll().stream()
+                .filter(p -> p.getSchoolClasses().contains(schoolClass))
+                .toList();
+
+        for (User user : userWithRole) {
+            user.getSchoolClasses().remove(schoolClass);
+            userRepository.save(user);
+        }
+
+        schoolClassRepository.delete(schoolClass);
+        return ResponseEntity.noContent().build();
+    }
+
     private UUID extractUserId(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token missing or invalid");

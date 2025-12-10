@@ -247,9 +247,12 @@ export class ManageTeachers implements OnInit {
   deleteTeacher() {
     if (!this.deletingTeacher) return;
 
+    const idToDelete = this.deletingTeacher.id;
     this.userService.deleteUser(this.deletingTeacher).subscribe({
       next: () => {
-        this.teachers = this.teachers.filter((s) => s.id !== this.deletingTeacher!.id);
+        this.teachers = this.teachers.filter((s) => s.id !== idToDelete);
+        this.deletingTeacher = null;
+        this.closeDeleteModal();
       },
       error: (err) => console.error('Fehler beim Löschen', err),
     });

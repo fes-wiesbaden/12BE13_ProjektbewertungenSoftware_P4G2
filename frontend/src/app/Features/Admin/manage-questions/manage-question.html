@@ -20,6 +20,7 @@
   [columns]="columns"
   [showEditButtons]="true"
   [showDeleteButtons]="true"
+  (delete)="openDeleteModal($event)"
   (edit)="openEditModal($event)"
 ></app-table-column>
 
@@ -43,3 +44,10 @@
   [show]="showExportModal"
   (close)="showExportModal = false"
 ></app-export-modal>
+
+<app-delete-button
+  [showModal]="showDeleteModal"
+  [title]="'Sind Sie sicher, dass sie den Admin löschen wollen?'"
+  (close)="closeDeleteModal()"
+  (delete)="deleteQuestion()"
+></app-delete-button>

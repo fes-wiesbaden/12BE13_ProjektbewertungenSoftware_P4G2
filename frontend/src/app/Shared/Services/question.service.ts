@@ -22,4 +22,8 @@ export class QuestionService {
   updateQuestion(dto: Question): Observable<Question> {
     return this.http.put<Question>(`${this.apiUrl}/${dto.id}`, dto);
   }
+
+  deleteQuestion(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

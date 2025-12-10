@@ -12,6 +12,7 @@ import { ImportModalComponent } from '../../../Shared/Components/import-modal/im
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { Question } from '../../../Shared/models/question.interface';
 import { QuestionService } from '../../../Shared/Services/question.service';
+import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 
 @Component({
   selector: 'app-question',
@@ -25,6 +26,7 @@ import { QuestionService } from '../../../Shared/Services/question.service';
     FormModalComponent,
     ImportModalComponent,
     ExportModalComponent,
+    DeleteButtonComponent
   ],
   templateUrl: './manage-question.html',
 })
@@ -37,6 +39,7 @@ export class ManageQuestions implements OnInit {
   showEditModel: boolean = false;
   showImportModal = false;
   showExportModal = false;
+  showDeleteModal: boolean = false;
   onImportFile(file: File) {
     console.log('Import-Datei:', file);
   }
@@ -54,6 +57,7 @@ export class ManageQuestions implements OnInit {
   ];
 
   editingQuestions: Question | null = null;
+  deletingQuestion: Question | null = null;
 
   questionText = '';
 
@@ -79,6 +83,16 @@ export class ManageQuestions implements OnInit {
 
   closeAddModel(): void {
     this.showAddModel = false;
+  }
+
+  openDeleteModal(admin: Question) {
+    this.deletingQuestion = admin;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.deletingQuestion = null;
   }
 
   saveEdit(formData: any) {
@@ -123,6 +137,20 @@ export class ManageQuestions implements OnInit {
         this.questionText = '';
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
+    });
+  }
+
+  deleteQuestion() {
+    if (!this.deletingQuestion) return;
+
+    const idToDelete = this.deletingQuestion.id;
+    this.questionService.deleteQuestion(idToDelete).subscribe({
+      next: () => {
+        this.questions = this.questions.filter((s) => s.id !== idToDelete);
+        this.deletingQuestion = null;
+        this.closeDeleteModal(); 
+      },
+      error: (err) => console.error('Fehler beim Löschen', err),
     });
   }
 }

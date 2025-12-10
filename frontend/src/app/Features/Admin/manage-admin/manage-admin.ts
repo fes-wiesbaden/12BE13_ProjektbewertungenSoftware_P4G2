@@ -244,9 +244,12 @@ export class ManageAdmins implements OnInit {
   deleteAdmin() {
     if (!this.deletingAdmin) return;
 
+    const idToDelete = this.deletingAdmin.id;
     this.userService.deleteUser(this.deletingAdmin).subscribe({
       next: () => {
-        this.admins = this.admins.filter((s) => s.id !== this.deletingAdmin!.id);
+        this.admins = this.admins.filter((s) => s.id !== idToDelete);
+        this.deletingAdmin = null;
+        this.closeDeleteModal();
       },
       error: (err) => console.error('Fehler beim Löschen', err),
     });
