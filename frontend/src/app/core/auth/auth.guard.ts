@@ -3,11 +3,13 @@ import { CanActivate, CanMatch, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuard implements CanActivate, CanMatch {
-
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+  ) {}
 
   private check(): boolean {
     if (this.auth.isLoggedIn()) {

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Grade } from '../../../Interfaces/grade.interface';
-import { MatIcon } from "@angular/material/icon";
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-grade-viewer-modal',

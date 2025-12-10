@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AddUser, UpdateUser, User, UserChangePassword, UserResetPassword } from '../models/user.interface';
+import {
+  AddUser,
+  UpdateUser,
+  User,
+  UserChangePassword,
+  UserResetPassword,
+} from '../models/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +20,7 @@ export class UserService {
   changePassword(username: string, dto: UserChangePassword): Observable<void> {
     return this.http.post<void>(
       `${this.apiUrl}/${encodeURIComponent(username)}/change-password`,
-      dto
+      dto,
     );
   }
 
@@ -35,7 +41,10 @@ export class UserService {
   }
 
   resetPassword(userId: string, dto: UserResetPassword): Observable<{ temporaryPassword: string }> {
-    return this.http.post<{ temporaryPassword: string }>(`${this.apiUrl}/${userId}/reset-password`, dto);
+    return this.http.post<{ temporaryPassword: string }>(
+      `${this.apiUrl}/${userId}/reset-password`,
+      dto,
+    );
   }
 
   getUserAmount(roleId: number): Observable<number> {

@@ -11,5 +11,4 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 })
 export class App {
   title = 'Friedrich Ebert Schule';
-
 }

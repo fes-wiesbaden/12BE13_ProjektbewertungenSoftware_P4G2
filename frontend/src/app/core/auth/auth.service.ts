@@ -16,13 +16,16 @@ interface StoredUserData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = 'http://localhost:4100/api/auth/login';
   private readonly storageKey = 'user';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   // Hilfsmethode: JWT-Token dekodieren
   private decodeToken(token: string): Record<string, any> | null {
@@ -33,8 +36,8 @@ export class AuthService {
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split('')
-          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(''),
       );
       return JSON.parse(jsonPayload);
     } catch (error) {
@@ -47,7 +50,7 @@ export class AuthService {
   async login(username: string, password: string): Promise<boolean> {
     try {
       const res = await firstValueFrom(
-        this.http.post<LoginResponseDto>(this.apiUrl, { username, password })
+        this.http.post<LoginResponseDto>(this.apiUrl, { username, password }),
       );
 
       console.log('Request vom Backend', res);
@@ -64,7 +67,7 @@ export class AuthService {
       const stored: StoredUserData = {
         token: res.accessToken,
         tokenType: res.tokenType,
-        claims
+        claims,
       };
 
       localStorage.setItem(this.storageKey, JSON.stringify(stored));
@@ -114,9 +117,9 @@ export class AuthService {
     const stored = localStorage.getItem(this.storageKey);
     return stored ? JSON.parse(stored).claims : {};
   }
-  
+
   getToken(): string {
-  const stored = localStorage.getItem(this.storageKey);
-  return stored ? JSON.parse(stored).token : '';
-}
+    const stored = localStorage.getItem(this.storageKey);
+    return stored ? JSON.parse(stored).token : '';
+  }
 }

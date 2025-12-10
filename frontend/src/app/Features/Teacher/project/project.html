@@ -8,12 +8,14 @@
           @if (project.description) {
             <p class="text-gray-600 dark:text-gray-400 mt-2">{{ project.description }}</p>
           }
-          
+
           <!-- Project Stats -->
           <div class="flex flex-wrap gap-4 mt-4">
             <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
               <mat-icon class="mr-1 text-base">groups</mat-icon>
-              <span>{{ project.groups.length }} team{{ project.groups.length !== 1 ? 's' : '' }}</span>
+              <span
+                >{{ project.groups.length }} team{{ project.groups.length !== 1 ? 's' : '' }}</span
+              >
             </div>
             <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
               <mat-icon class="mr-1 text-base">person</mat-icon>
@@ -21,34 +23,42 @@
             </div>
           </div>
         </div>
-        
+
         <div class="flex flex-col items-start lg:items-end gap-2">
           <!-- Status Badge -->
           @if (project.status) {
-            <span 
+            <span
               class="px-3 py-1 rounded-full text-sm font-medium"
               [ngClass]="{
-                'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100': project.status === 'active',
-                'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100': project.status === 'pending',
-                'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-100': project.status === 'completed',
-                'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100': project.status === 'overdue'
-              }">
+                'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100':
+                  project.status === 'active',
+                'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100':
+                  project.status === 'pending',
+                'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-100':
+                  project.status === 'completed',
+                'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100':
+                  project.status === 'overdue',
+              }"
+            >
               {{ project.status | titlecase }}
             </span>
           }
-          
+
           <!-- Deadline -->
           <div class="flex items-center gap-2">
-            <div 
+            <div
               class="flex items-center px-3 py-1 rounded-lg text-sm"
               [ngClass]="{
                 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300': isOverdue(),
-                'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300': isDeadlineApproaching(),
-                'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300': !isOverdue() && !isDeadlineApproaching()
-              }">
+                'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300':
+                  isDeadlineApproaching(),
+                'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300':
+                  !isOverdue() && !isDeadlineApproaching(),
+              }"
+            >
               <mat-icon class="mr-1 text-base">event</mat-icon>
               <div class="flex flex-col">
-                <span class="font-medium">{{ project.deadline | date:'MMM d, yyyy' }}</span>
+                <span class="font-medium">{{ project.deadline | date: 'MMM d, yyyy' }}</span>
                 <span class="text-xs">{{ getDeadlineText(daysUntilDeadline()) }}</span>
               </div>
             </div>
@@ -63,35 +73,44 @@
         <mat-icon class="mr-2">groups</mat-icon>
         Working Groups
       </h2>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         @for (group of project.groups; track group.id) {
-          <div class="bg-white shadow rounded-lg p-4 dark:bg-gray-700 hover:shadow-lg transition-shadow border-l-4 border-blue-500">
+          <div
+            class="bg-white shadow rounded-lg p-4 dark:bg-gray-700 hover:shadow-lg transition-shadow border-l-4 border-blue-500"
+          >
             <div class="flex justify-between items-start mb-3">
               <div class="flex-1">
                 <h3 class="text-lg font-semibold dark:text-white">
                   {{ group.name }}
                 </h3>
               </div>
-              
+
               <button
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white transition-colors"
                 [attr.aria-label]="'Options for ' + group.name"
-                type="button">
+                type="button"
+              >
                 <mat-icon>more_vert</mat-icon>
               </button>
             </div>
-            
+
             <!-- Members -->
             <div class="space-y-2">
               <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
                 <mat-icon class="mr-1 text-base">person</mat-icon>
-                <span class="font-medium">{{ group.members.length }} member{{ group.members.length !== 1 ? 's' : '' }}</span>
+                <span class="font-medium"
+                  >{{ group.members.length }} member{{
+                    group.members.length !== 1 ? 's' : ''
+                  }}</span
+                >
               </div>
-              
+
               <div class="flex flex-wrap gap-1">
                 @for (member of group.members; track member) {
-                  <span class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-xs dark:text-gray-200">
+                  <span
+                    class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-xs dark:text-gray-200"
+                  >
                     {{ member }}
                   </span>
                 }
@@ -101,16 +120,14 @@
         }
       </div>
     </div>
-
-
   } @else {
     <!-- Error State -->
-    <div class="bg-red-50 border border-red-200 rounded-lg p-4 my-4 dark:bg-red-900/20 dark:border-red-800">
+    <div
+      class="bg-red-50 border border-red-200 rounded-lg p-4 my-4 dark:bg-red-900/20 dark:border-red-800"
+    >
       <div class="flex items-center">
         <mat-icon class="text-red-600 dark:text-red-400 mr-2">error</mat-icon>
-        <p class="text-red-800 dark:text-red-200">
-          Project with ID "{{ projectId() }}" not found
-        </p>
+        <p class="text-red-800 dark:text-red-200">Project with ID "{{ projectId() }}" not found</p>
       </div>
     </div>
   }

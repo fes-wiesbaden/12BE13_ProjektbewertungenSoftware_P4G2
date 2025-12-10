@@ -2,7 +2,7 @@
   flex: 1 1 auto;
 }
 
-.navbar-menu{
-    display: flex;
-    flex-direction: row;
+.navbar-menu {
+  display: flex;
+  flex-direction: row;
 }
