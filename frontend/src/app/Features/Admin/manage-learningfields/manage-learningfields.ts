@@ -115,16 +115,16 @@ export class ManageLearnfields implements OnInit {
   saveEdit(formData: any) {
     if (!this.editingLearningfields) return;
 
-    const dto = {
+    const dtoLearningfield = {
       id: this.editingLearningfields.id,
       name: formData.name,
       description: formData.description,
       weighting: formData.weighting,
     };
 
-    this.learningFieldService.updateLearningField(dto).subscribe({
+    this.learningFieldService.updateLearningField(dtoLearningfield).subscribe({
       next: (res: LearningField) => {
-        const index = this.learnfields.findIndex((s) => s.id === dto.id);
+        const index = this.learnfields.findIndex((s) => s.id === dtoLearningfield.id);
         if (index !== -1) {
           this.learnfields[index] = res;
         }
@@ -149,7 +149,11 @@ export class ManageLearnfields implements OnInit {
   }
 
   saveLearningfields(formData: any) {
-    if (!Number.isInteger(Number(formData.weighting)) || formData.weighting < 0 || formData.weighting > 99) {
+    if (
+      !Number.isInteger(Number(formData.weighting)) ||
+      formData.weighting < 0 ||
+      formData.weighting > 99
+    ) {
       alert('Gewichtung muss eine ganze Zahl zwischen 0 und 99 sein.');
       return;
     }

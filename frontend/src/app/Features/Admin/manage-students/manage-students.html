@@ -52,10 +52,7 @@
   (fileSelected)="onImportFile($event)"
 ></app-import-modal>
 
-<app-export-modal
-  [show]="showExportModal"
-  (close)="showExportModal = false"
-></app-export-modal>
+<app-export-modal [show]="showExportModal" (close)="showExportModal = false"></app-export-modal>
 
 <app-reset-password
   [show]="showResetModal"

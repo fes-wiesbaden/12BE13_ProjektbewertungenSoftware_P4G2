@@ -7,10 +7,7 @@ import {
   TableColumn,
   TableColumnComponent,
 } from '../../../Shared/Components/table-column/table-column';
-import {
-  FormField,
-  FormModalComponent,
-} from '../../../Shared/Components/form-modal/form-modal';
+import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 
@@ -32,7 +29,7 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
     FormModalComponent,
     ImportModalComponent,
     ExportModalComponent,
-    DeleteButtonComponent
+    DeleteButtonComponent,
   ],
 
   templateUrl: './manage-classes.html',
@@ -55,7 +52,7 @@ export class ManageClasses implements OnInit {
   // Felder für "neu anlegen"
   fields: FormField[] = [
     {
-      key: 'courseName',        // Name im Form-Objekt
+      key: 'courseName', // Name im Form-Objekt
       label: 'Kursname',
       type: 'text',
       required: true,

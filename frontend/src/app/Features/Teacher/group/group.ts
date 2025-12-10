@@ -9,7 +9,6 @@ interface IMember {
   username?: string;
 }
 
-
 interface IGroup {
   id: number;
   name: string;
@@ -26,7 +25,7 @@ interface IGroup {
   standalone: true,
   imports: [MatIcon, DatePipe, TitleCasePipe, NgClass, CommonModule, RouterLink],
   templateUrl: './group.html',
-  styleUrls: ['./group.css']
+  styleUrls: ['./group.css'],
 })
 export class Group {
   groupId = input.required<string>();
@@ -43,7 +42,7 @@ export class Group {
       members: [
         { id: 1, name: 'Alice Johnson', username: 'alice@example.com' },
         { id: 2, name: 'Bob Smith', username: 'bob@example.com' },
-        { id: 3, name: 'Carol White', username: 'carol@example.com' }
+        { id: 3, name: 'Carol White', username: 'carol@example.com' },
       ],
     },
     {
@@ -56,9 +55,8 @@ export class Group {
       deadline: new Date('2024-05-30'),
       members: [
         { id: 4, name: 'David Brown', username: 'david@example.com' },
-        { id: 5, name: 'Eve Davis',  username: 'eve@example.com' }
+        { id: 5, name: 'Eve Davis', username: 'eve@example.com' },
       ],
-
     },
     {
       id: 3,
@@ -69,33 +67,34 @@ export class Group {
       createdDate: new Date('2024-02-01'),
       deadline: new Date('2024-07-15'),
       members: [
-        { id: 6, name: 'Frank Miller',  username: 'frank@example.com' },
-        { id: 7, name: 'Grace Lee',  username: 'grace@example.com' },
-        { id: 8, name: 'Henry Wilson',  username: 'henry@example.com' }
+        { id: 6, name: 'Frank Miller', username: 'frank@example.com' },
+        { id: 7, name: 'Grace Lee', username: 'grace@example.com' },
+        { id: 8, name: 'Henry Wilson', username: 'henry@example.com' },
       ],
-    }
+    },
   ];
 
   currentGroup = computed(() => {
     const id = Number(this.groupId());
-    return this.groups.find(g => g.id === id);
+    return this.groups.find((g) => g.id === id);
   });
-
 
   daysUntilDeadline = computed(() => {
     const group = this.currentGroup();
     if (!group) return 0;
-    
+
     const today = new Date();
     const deadline = new Date(group.deadline);
     const diffTime = deadline.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     return diffDays;
   });
 
   isOverdue = computed(() => this.daysUntilDeadline() < 0);
-  isDeadlineApproaching = computed(() => this.daysUntilDeadline() >= 0 && this.daysUntilDeadline() <= 7);
+  isDeadlineApproaching = computed(
+    () => this.daysUntilDeadline() >= 0 && this.daysUntilDeadline() <= 7,
+  );
 
   getDeadlineText(days: number): string {
     if (days < 0) {
@@ -108,7 +107,6 @@ export class Group {
       return `${days} days remaining`;
     }
   }
-
 
   getTaskStatusColor(status: string): string {
     switch (status) {
