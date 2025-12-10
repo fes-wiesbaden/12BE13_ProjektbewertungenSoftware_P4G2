@@ -50,7 +50,7 @@ export class ManageLearnfields implements OnInit {
 
   fields: FormField[] = [
     {
-      key: 'learningFieldText',
+      key: 'name',
       label: 'Lernfeld',
       type: 'text',
       required: true,
@@ -66,7 +66,7 @@ export class ManageLearnfields implements OnInit {
       colSpan: 6,
     },
     {
-      key: 'weight',
+      key: 'weighting',
       label: 'Gewichtung',
       type: 'number',
       required: true,
