@@ -117,9 +117,9 @@ export class ManageLearnfields implements OnInit {
 
     const dto = {
       id: this.editingLearningfields.id,
-      name: formData.learningFieldText,
+      name: formData.name,
       description: formData.description,
-      weighting: formData.weight,
+      weighting: formData.weighting,
     };
 
     this.learningFieldService.updateLearningField(dto).subscribe({
@@ -149,16 +149,15 @@ export class ManageLearnfields implements OnInit {
   }
 
   saveLearningfields(formData: any) {
-    if (!Number.isInteger(Number(formData.weight)) || formData.weight < 0 || formData.weight > 99) {
+    if (!Number.isInteger(Number(formData.weighting)) || formData.weighting < 0 || formData.weighting > 99) {
       alert('Gewichtung muss eine ganze Zahl zwischen 0 und 99 sein.');
       return;
     }
     const dto = {
-      name: formData.learningFieldText,
+      name: formData.name,
       description: formData.description,
-      weighting: formData.weight,
+      weighting: formData.weighting,
     };
-
     this.learningFieldService.createLearningField(dto).subscribe({
       next: (learnfield) => {
         this.learnfields.push(learnfield); // direkt zur Liste hinzufügen
