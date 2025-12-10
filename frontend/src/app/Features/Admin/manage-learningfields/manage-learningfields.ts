@@ -149,11 +149,7 @@ export class ManageLearnfields implements OnInit {
   }
 
   saveLearningfields(formData: any) {
-    if (
-      !Number.isInteger(Number(formData.weighting)) ||
-      formData.weighting < 0 ||
-      formData.weighting > 99
-    ) {
+    if (!Number.isInteger(Number(formData.weighting)) || formData.weighting < 0 || formData.weighting > 99) {
       alert('Gewichtung muss eine ganze Zahl zwischen 0 und 99 sein.');
       return;
     }

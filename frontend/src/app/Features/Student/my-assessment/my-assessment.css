@@ -1,8 +1,8 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 .rating-card {
   max-width: 500px;
-  padding: auto;
+  padding: auto; 
   margin: auto;
   margin-top: 5%;
   text-align: center;
@@ -21,7 +21,7 @@ mat-icon {
   color: gray;
   cursor: pointer;
   transition: color 0.2s;
-  align-items: center;
+  align-items:center;
   justify-content: space-between;
 }
 
@@ -42,23 +42,24 @@ mat-icon.active4 {
 }
 
 mat-icon.active5 {
-  color: red;
+  color: red
 }
 
 mat-icon.active6 {
   color: black;
-}
+}   
 
-.mat-card-actions {
+.mat-card-actions{
   display: flex;
   justify-content: space-between;
   margin-top: 2%;
 }
 
-.mat-flat-button {
-  color: #00ffff;
+.mat-flat-button{
+  color: #00FFFF;
+
 }
 
-.mat-stroked-button {
+.mat-stroked-button{
   color: #008080;
 }

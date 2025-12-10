@@ -18,7 +18,7 @@ export class ManageLearningFieldService {
 
   getGrades(learningFieldId: string, studentId: string): Observable<Grade[]> {
     return this.http.get<Grade[]>(
-      `${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grades`,
+      `${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grades`
     );
   }
 
@@ -26,20 +26,20 @@ export class ManageLearningFieldService {
     return this.http.post<Grade>(
       `${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grade`,
       grade,
-      { headers: { 'Content-Type': 'application/json' } },
+      { headers: { 'Content-Type': 'application/json' } }
     );
   }
 
   updateGrade(studentId: string, learningFieldId: string, gradeId: string, grade: Grade) {
     return this.http.put(
       `${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grade/${gradeId}`,
-      grade,
+      grade
     );
   }
 
   deleteGrade(studentId: string, learningFieldId: string, gradeId: string) {
     return this.http.delete(
-      `${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grade/${gradeId}`,
+      `${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/grade/${gradeId}`
     );
   }
 }

@@ -9,6 +9,7 @@ import { StudentGuard } from './core/guards/student.guard';
 import { LoginGuard } from './core/guards/login.guard';
 
 export const routes: Routes = [
+
   {
     path: '',
     pathMatch: 'full',
@@ -27,7 +28,8 @@ export const routes: Routes = [
     children: [
       {
         path: 'auth',
-        loadChildren: () => import('./Features/Auth/auth-routing.module').then((c) => c.AuthRoutes),
+        loadChildren: () =>
+          import('./Features/Auth/auth-routing.module').then((c) => c.AuthRoutes),
         canMatch: [LoginGuard],
       },
     ],

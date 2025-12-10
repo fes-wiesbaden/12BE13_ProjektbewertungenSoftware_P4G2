@@ -10,10 +10,7 @@ import { AuthService } from '../../core/auth/auth.service';
 export class CourseService {
   private apiUrl = 'http://localhost:4100/api/school-class';
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-  ) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   getAllCourses(): Observable<Course[]> {
     return this.http.get<Course[]>(`${this.apiUrl}/all`);

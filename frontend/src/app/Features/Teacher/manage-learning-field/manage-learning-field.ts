@@ -30,7 +30,7 @@ export class ManageLearningField implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private manageLearningFieldService: ManageLearningFieldService,
+    private manageLearningFieldService: ManageLearningFieldService
   ) {}
 
   openAddModal(item: any) {

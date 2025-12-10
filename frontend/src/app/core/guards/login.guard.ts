@@ -6,21 +6,19 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root',
 })
 export class LoginGuard implements CanActivate, CanMatch {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
 
-  private check(): boolean {
-    const role = this.authService.getRole();
+  constructor(private authService: AuthService, private router: Router) {}
 
-    if (!role || !role.trim()) {
-      return true;
-    }
+private check(): boolean {
+  const role = this.authService.getRole();
 
-    this.router.navigate([`${role}/dashboard`]);
-    return false;
+  if (!role || !role.trim()) {
+    return true;
   }
+
+  this.router.navigate([`${role}/dashboard`]);
+  return false; 
+}
 
   canMatch(): boolean {
     return this.check();

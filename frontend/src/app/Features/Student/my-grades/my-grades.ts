@@ -31,7 +31,7 @@ export class MyGrades {
 
   constructor(
     private learningFieldService: LearningFieldService,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {

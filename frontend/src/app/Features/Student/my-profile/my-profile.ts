@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-my-profile',
-  imports: [MatCardModule, MatListModule, MatIconModule],
+  imports: [ MatCardModule, MatListModule, MatIconModule],
   templateUrl: './my-profile.html',
   styleUrl: './my-profile.css',
 })
@@ -49,19 +49,22 @@ export class MyProfile {
     console.log(msg);
     console.log(this.learningFieldsCount);
     if (msg === 'up') {
-      if (this.learningFieldsCount + 1 < 9) {
+        if (this.learningFieldsCount + 1 < 9) {
         this.learningFieldsCount += 1;
-      } else {
-        this.learningFieldsCount = 0;
+        }
+        else{
+          this.learningFieldsCount = 0;
+        }
+      } else if (msg == 'down') {
+        if(this.learningFieldsCount - 1 >= 0){
+          this.learningFieldsCount -= 1;
+        }
+        else{
+          this.learningFieldsCount = 9;
+        }
       }
-    } else if (msg == 'down') {
-      if (this.learningFieldsCount - 1 >= 0) {
-        this.learningFieldsCount -= 1;
-      } else {
-        this.learningFieldsCount = 9;
+      else{
+        console.log('fehler');
       }
-    } else {
-      console.log('fehler');
     }
   }
-}

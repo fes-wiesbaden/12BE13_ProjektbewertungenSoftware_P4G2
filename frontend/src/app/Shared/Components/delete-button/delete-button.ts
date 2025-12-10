@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
   selector: 'app-delete-button',
@@ -11,6 +11,7 @@ export class DeleteButtonComponent {
   @Input() title = 'Are you sure you want to delete this item?';
   @Output() close = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
+
 
   onClose() {
     this.close.emit();

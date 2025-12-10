@@ -17,11 +17,7 @@ export class Login {
   showForgotPassword = false;
   isLoading = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private auth: AuthService,
-    private router: Router,
-  ) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', [Validators.required]],

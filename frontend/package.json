@@ -38,7 +38,6 @@
     "@semantic-icons/heroicons": "^0.52.0",
     "@tailwindcss/postcss": "^4.1.17",
     "postcss": "^8.5.6",
-    "prettier": "^3.7.4",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.1.17",
     "tslib": "^2.3.0",

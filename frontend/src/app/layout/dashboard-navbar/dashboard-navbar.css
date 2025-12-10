@@ -1,15 +1,15 @@
 /* Ensure menus appear above other content */
 #notification-dropdown,
 #dropdown-2 {
-  min-width: 280px;
+    min-width: 280px;
 }
 
 #notification-dropdown {
-  width: 384px;
-  max-width: 384px;
+    width: 384px;
+    max-width: 384px;
 }
 
 /* Make sure relative positioning works for dropdowns */
 .relative {
-  position: relative;
+    position: relative;
 }

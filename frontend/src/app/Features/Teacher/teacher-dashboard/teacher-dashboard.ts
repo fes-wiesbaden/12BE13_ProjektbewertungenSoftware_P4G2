@@ -54,10 +54,7 @@ export class TeacherDashboard {
   editingClass: Course | null = null;
   addClass: Course | null = null;
 
-  constructor(
-    private router: Router,
-    private courseService: CourseService,
-  ) {}
+  constructor(private router: Router, private courseService: CourseService) {}
 
   ngOnInit(): void {
     this.loadMyClasses();

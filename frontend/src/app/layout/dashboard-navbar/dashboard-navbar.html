@@ -12,10 +12,9 @@
           class="p-2 text-gray-600 rounded cursor-pointer lg:hidden hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
         >
           @if (sidebarStatus === 'close') {
-            <svg class="size-6" si-bars-3-icon></svg>
-          }
-          @if (sidebarStatus === 'open') {
-            <svg class="size-6" si-x-mark-icon></svg>
+          <svg class="size-6" si-bars-3-icon></svg>
+          } @if (sidebarStatus === 'open') {
+          <svg class="size-6" si-x-mark-icon></svg>
           }
         </button>
         <a href="/" class="flex ml-2 md:mr-24">
@@ -45,51 +44,46 @@
               id="user-menu-button-2"
               [attr.aria-expanded]="profileMenuOpen"
             >
-              <mat-icon class="w-8 h-8" style="color: white" aria-label="Benutzerprofil"
-                >person_outline</mat-icon
-              >
+              <mat-icon class="w-8 h-8" style="color: white" aria-label="Benutzerprofil">person_outline</mat-icon>
             </button>
           </div>
 
           @if (profileMenuOpen) {
-            <div
-              class="absolute right-0 top-10 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-              id="dropdown-2"
-            >
-              <div class="px-4 py-3" role="none">
-                <p class="text-sm text-gray-900 dark:text-white" role="none">
-                  {{ username }}
-                </p>
-                <p
-                  class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
-                  role="none"
-                >
-                  {{ role }}
-                </p>
-              </div>
-              <ul class="py-1" role="none">
-                <li>
-                  <a
-                    href="#"
-                    (click)="openChangePasswordModal(); $event.preventDefault()"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                    role="menuitem"
-                  >
-                    Passwort ändern
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    (click)="signOut(); $event.preventDefault()"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                    role="menuitem"
-                  >
-                    Ausloggen
-                  </a>
-                </li>
-              </ul>
+          <div
+            class="absolute right-0 top-10 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+            id="dropdown-2"
+          >
+            <div class="px-4 py-3" role="none">
+              <p class="text-sm text-gray-900 dark:text-white" role="none">
+                {{ username }}
+              </p>
+              <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                {{ role }}
+              </p>
             </div>
+            <ul class="py-1" role="none">
+              <li>
+                <a
+                  href="#"
+                  (click)="openChangePasswordModal(); $event.preventDefault()"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                  role="menuitem"
+                >
+                  Passwort ändern
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  (click)="signOut(); $event.preventDefault()"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                  role="menuitem"
+                >
+                  Ausloggen
+                </a>
+              </li>
+            </ul>
+          </div>
           }
         </div>
       </div>
@@ -98,133 +92,113 @@
 </nav>
 
 @if (profileMenuOpen) {
-  <div (click)="closeMenus()" class="fixed inset-0 z-20"></div>
-}
-@if (showChangePasswordModal) {
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 dark:bg-gray-900/60"
-  >
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full max-w-lg">
-      <div class="flex items-start justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Passwort ändern</h2>
+<div (click)="closeMenus()" class="fixed inset-0 z-20"></div>
+} @if (showChangePasswordModal) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 dark:bg-gray-900/60">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full max-w-lg">
+    <div class="flex items-start justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Passwort ändern</h2>
+      <button
+        type="button"
+        (click)="closeChangePasswordModal()"
+        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        <mat-icon class="w-5 h-5">close</mat-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="changePasswordForm" (ngSubmit)="submitChangePassword()" class="space-y-4">
+      <div>
+        <label
+          for="oldPassword"
+          class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+          >Altes Passwort</label
+        >
+        <input
+          id="oldPassword"
+          type="password"
+          formControlName="oldPassword"
+          class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
+        />
+        @if(changePasswordForm.get('oldPassword')?.touched &&
+        changePasswordForm.get('oldPassword')?.invalid) {
+        <p class="text-red-500 text-sm mt-1">Bitte altes Passwort eingeben</p>
+        }
+      </div>
+
+      <div>
+        <label
+          for="newPassword"
+          class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+          >Neues Passwort</label
+        >
+        <input
+          id="newPassword"
+          type="password"
+          formControlName="newPassword"
+          class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
+        />
+        <div class="mt-1 space-y-1">
+          @if(changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['required']){
+          <p class="text-red-500 text-sm">Passwort ist erforderlich</p>
+          } @if (changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['minlength']) {
+          <p class="text-red-500 text-sm">Mindestens 8 Zeichen</p>
+          } @if(changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors?.['pattern']) {
+          <p class="text-red-500 text-sm">
+            Muss Großbuchstaben, Kleinbuchstaben, Zahl und Sonderzeichen enthalten
+          </p>
+          }
+        </div>
+      </div>
+
+      <div>
+        <label
+          for="confirmPassword"
+          class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+          >Passwort wiederholen</label
+        >
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
+        />
+        @if (changePasswordForm.errors?.['notMatching'] &&
+        changePasswordForm.get('confirmPassword')?.touched) {
+        <p class="text-red-500 text-sm mt-1">Passwörter stimmen nicht überein</p>
+        }
+      </div>
+
+      <div class="flex justify-end gap-3 mt-2">
         <button
           type="button"
           (click)="closeChangePasswordModal()"
-          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
         >
-          <mat-icon class="w-5 h-5">close</mat-icon>
+          Abbrechen
+        </button>
+        <button
+          type="submit"
+          [disabled]="changePasswordForm.invalid || loading"
+          class="px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center"
+        >
+          <mat-icon class="w-4 h-4 mr-2">lock</mat-icon>
+          @if (!loading) {
+          <span>Passwort speichern</span>
+          } @if (loading) {
+          <span>Speichern...</span>
+          }
         </button>
       </div>
 
-      <form [formGroup]="changePasswordForm" (ngSubmit)="submitChangePassword()" class="space-y-4">
-        <div>
-          <label
-            for="oldPassword"
-            class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-            >Altes Passwort</label
-          >
-          <input
-            id="oldPassword"
-            type="password"
-            formControlName="oldPassword"
-            class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
-          />
-          @if (
-            changePasswordForm.get('oldPassword')?.touched &&
-            changePasswordForm.get('oldPassword')?.invalid
-          ) {
-            <p class="text-red-500 text-sm mt-1">Bitte altes Passwort eingeben</p>
-          }
-        </div>
-
-        <div>
-          <label
-            for="newPassword"
-            class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-            >Neues Passwort</label
-          >
-          <input
-            id="newPassword"
-            type="password"
-            formControlName="newPassword"
-            class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
-          />
-          <div class="mt-1 space-y-1">
-            @if (
-              changePasswordForm.get('newPassword')?.touched &&
-              changePasswordForm.get('newPassword')?.errors?.['required']
-            ) {
-              <p class="text-red-500 text-sm">Passwort ist erforderlich</p>
-            }
-            @if (
-              changePasswordForm.get('newPassword')?.touched &&
-              changePasswordForm.get('newPassword')?.errors?.['minlength']
-            ) {
-              <p class="text-red-500 text-sm">Mindestens 8 Zeichen</p>
-            }
-            @if (
-              changePasswordForm.get('newPassword')?.touched &&
-              changePasswordForm.get('newPassword')?.errors?.['pattern']
-            ) {
-              <p class="text-red-500 text-sm">
-                Muss Großbuchstaben, Kleinbuchstaben, Zahl und Sonderzeichen enthalten
-              </p>
-            }
-          </div>
-        </div>
-
-        <div>
-          <label
-            for="confirmPassword"
-            class="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-            >Passwort wiederholen</label
-          >
-          <input
-            id="confirmPassword"
-            type="password"
-            formControlName="confirmPassword"
-            class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
-          />
-          @if (
-            changePasswordForm.errors?.['notMatching'] &&
-            changePasswordForm.get('confirmPassword')?.touched
-          ) {
-            <p class="text-red-500 text-sm mt-1">Passwörter stimmen nicht überein</p>
-          }
-        </div>
-
-        <div class="flex justify-end gap-3 mt-2">
-          <button
-            type="button"
-            (click)="closeChangePasswordModal()"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-          >
-            Abbrechen
-          </button>
-          <button
-            type="submit"
-            [disabled]="changePasswordForm.invalid || loading"
-            class="px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center"
-          >
-            <mat-icon class="w-4 h-4 mr-2">lock</mat-icon>
-            @if (!loading) {
-              <span>Passwort speichern</span>
-            }
-            @if (loading) {
-              <span>Speichern...</span>
-            }
-          </button>
-        </div>
-
-        @if (successMessage) {
-          <p class="text-green-600 dark:text-green-400 mt-2">
-            {{ successMessage }}
-          </p>
-        }
-        @if (errorMessage) {
-          <p class="text-red-600 dark:text-red-400 mt-2">{{ errorMessage }}</p>
-        }
-      </form>
-    </div>
+      @if (successMessage) {
+      <p class="text-green-600 dark:text-green-400 mt-2">
+        {{ successMessage }}
+      </p>
+      } @if (errorMessage) {
+      <p class="text-red-600 dark:text-red-400 mt-2">{{ errorMessage }}</p>
+      }
+    </form>
   </div>
+</div>
 }

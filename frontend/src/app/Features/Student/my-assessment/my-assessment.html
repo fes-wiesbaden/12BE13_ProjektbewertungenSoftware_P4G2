@@ -1,32 +1,34 @@
-<div class="rating-card flex flex-col rounded-lg p-6 mb-4 dark:bg-gray-800">
+<div
+  class="rating-card flex flex-col rounded-lg p-6 mb-4 dark:bg-gray-800"
+>
   <!-- Header -->
   <div class="mb-4">
     <h2 class="text-lg dark:text-white font-semibold">{{ questions[frage].question }}</h2>
-    <p class="text-sm dark:text-white">Bitte wähle eine Bewertung</p>
+    <p class="text-sm dark:text-white ">Bitte wähle eine Bewertung</p>
   </div>
 
   <!-- Content -->
   <div>
     @for (member of members; track $index) {
-      <div class="mb-4">
-        <h3 class="font-medium dark:text-white">{{ member.name }}</h3>
-        <div class="rating">
-          @for (val of [1, 2, 3, 4, 5, 6]; track $index) {
-            <button (click)="setRating(member.id, val)">
-              <mat-icon
-                [class.active1]="ratings[member.id] === 1 && val === 1"
-                [class.active2]="ratings[member.id] === 2 && val === 2"
-                [class.active3]="ratings[member.id] === 3 && val === 3"
-                [class.active4]="ratings[member.id] === 4 && val === 4"
-                [class.active5]="ratings[member.id] === 5 && val === 5"
-                [class.active6]="ratings[member.id] === 6 && val === 6"
-              >
-                filter_{{ val }}
-              </mat-icon>
-            </button>
-          }
-        </div>
+    <div class="mb-4">
+      <h3 class="font-medium dark:text-white">{{ member.name }}</h3>
+      <div class="rating">
+        @for (val of [1,2,3,4,5,6]; track $index) {
+        <button (click)="setRating(member.id, val)">
+          <mat-icon
+            [class.active1]="ratings[member.id] === 1 && val === 1"
+            [class.active2]="ratings[member.id] === 2 && val === 2"
+            [class.active3]="ratings[member.id] === 3 && val === 3"
+            [class.active4]="ratings[member.id] === 4 && val === 4"
+            [class.active5]="ratings[member.id] === 5 && val === 5"
+            [class.active6]="ratings[member.id] === 6 && val === 6"
+          >
+            filter_{{ val }}
+          </mat-icon>
+        </button>
+        }
       </div>
+    </div>
     }
   </div>
 
@@ -46,4 +48,4 @@
       Bewertung speichern
     </button>
   </div>
-</div>
+  </div>

@@ -29,10 +29,7 @@ export class AdminDashboard implements OnInit {
   classAmount = 0;
   loading = true;
 
-  constructor(
-    private courseService: CourseService,
-    private userService: UserService,
-  ) {}
+  constructor(private courseService: CourseService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.loadDashboardAmounts();

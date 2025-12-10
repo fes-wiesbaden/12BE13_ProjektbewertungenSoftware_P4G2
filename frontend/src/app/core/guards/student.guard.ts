@@ -1,15 +1,13 @@
-import { CanActivate, Router } from '@angular/router';
-import { Injectable } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
+import { CanActivate, Router } from "@angular/router";
+import { Injectable } from "@angular/core";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class StudentGuard implements CanActivate {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   private check(): boolean {
     if (this.authService.getRole() === 'student') {
