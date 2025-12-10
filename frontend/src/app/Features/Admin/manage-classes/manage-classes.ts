@@ -16,6 +16,9 @@ import { ExportModalComponent } from '../../../Shared/Components/export-modal/ex
 
 import { CourseService } from '../../../Shared/Services/course.service';
 import { Course } from '../../../Shared/models/course.interface';
+import { User } from '../../../Shared/models/user.interface';
+import { UserService } from '../../../Shared/Services/user.service';
+import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 
 @Component({
   selector: 'app-manage-classes',
@@ -29,6 +32,7 @@ import { Course } from '../../../Shared/models/course.interface';
     FormModalComponent,
     ImportModalComponent,
     ExportModalComponent,
+    DeleteButtonComponent
   ],
 
   templateUrl: './manage-classes.html',
@@ -38,6 +42,7 @@ export class ManageClasses implements OnInit {
   loading = true;
   showImportModal = false;
   showExportModal = false;
+  showDeleteModal: boolean = false;
   onImportFile(file: File) {
     console.log('Import-Datei:', file);
   }
@@ -74,6 +79,7 @@ export class ManageClasses implements OnInit {
   showAddModel = false;
   showEditModal = false;
   editingClass: Course | null = null;
+  deletingClass: Course | null = null;
 
   constructor(private courseService: CourseService) {}
 
@@ -97,6 +103,16 @@ export class ManageClasses implements OnInit {
   closeEditModal() {
     this.showEditModal = false;
     this.editingClass = null;
+  }
+
+  openDeleteModal(admin: Course) {
+    this.deletingClass = admin;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.deletingClass = null;
   }
 
   loadClasses() {
@@ -144,6 +160,20 @@ export class ManageClasses implements OnInit {
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
+    });
+  }
+
+  deleteCourse() {
+    if (!this.deletingClass) return;
+
+    const idToDelete = this.deletingClass.id;
+    this.courseService.deleteCourse(idToDelete).subscribe({
+      next: () => {
+        this.classes = this.classes.filter((s) => s.id !== idToDelete);
+        this.deletingClass = null;
+        this.closeDeleteModal();
+      },
+      error: (err) => console.error('Fehler beim Löschen', err),
     });
   }
 }
