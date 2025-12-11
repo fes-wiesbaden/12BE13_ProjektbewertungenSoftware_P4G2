@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { TeacherDashboard } from './teacher-dashboard/teacher-dashboard';
 import { MyStudents } from './my-students/my-students';
-import { MyProfile } from './my-profile/my-profile';
 import { StudentGroups } from './student-groups/student-groups';
 import { Projects } from './projects/projects';
 import { Project } from './project/project';
@@ -12,10 +11,6 @@ export const TeacherRoutes: Routes = [
   {
     path: 'dashboard',
     component: TeacherDashboard,
-  },
-  {
-    path: 'my-profile',
-    component: MyProfile,
   },
   {
     path: 'my-students/:classId',

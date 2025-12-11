@@ -3,7 +3,6 @@ import { Sidebar } from '../sidebar/sidebar';
 import { DashboardNavbar } from '../dashboard-navbar/dashboard-navbar';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { Card } from '../../Shared/Components/card/card';
 
 @Component({
   selector: 'app-main-layout',
