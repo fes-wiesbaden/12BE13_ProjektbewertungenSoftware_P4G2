@@ -53,21 +53,19 @@ Das System unterstützt drei verschiedene Benutzerrollen mit unterschiedlichen B
 ### 🔐 Admin
 - Verwaltung aller Benutzer (Lehrkräfte, Schüler)
 - Verwaltung von Klassen und Lernfeldern
-- Verwaltung von Fragen und Quiz
+- Verwaltung von Fragen
 - Systemkonfiguration
 
 ### 👨‍🏫 Lehrkraft (Teacher)
 - Noten und Bewertungen verwalten
 - Schüler und ihre Leistungen überwachen
 - Projektgruppen erstellen und verwalten
-- Lernfelder definieren
 - Bewertungsberichte einsehen
 
 ### 👨‍🎓 Schüler (Student)
 - Eigene Noten und Bewertungen einsehen
 - Klassen und Kurse anzeigen
 - Peer-Evaluationen durchführen
-- Profil und Klassenzugehörigkeit verwalten
 
 ---
 
@@ -75,7 +73,6 @@ Das System unterstützt drei verschiedene Benutzerrollen mit unterschiedlichen B
 
 ### Voraussetzungen
 - Docker & Docker Compose
-- Git
 - Java 21 (für lokale Backend-Entwicklung)
 - Node.js 18+ (für lokale Frontend-Entwicklung)
 
@@ -119,25 +116,6 @@ ng serve --open
 ### Anmeldung
 Alle Benutzer melden sich mit ihren Zugangsdaten an. Die Authentifizierung erfolgt über JWT-Token.
 
-### Hauptfunktionen
-
-**Für Lehrkräfte:**
-- Dashboards mit Schülerübersicht
-- Noten verwalten und berechnen
-- Projekte und Lernfelder erstellen
-- Studentengruppen verwalten
-
-**Für Schüler:**
-- Persönliches Dashboard mit Noten
-- Klassenzugehörigkeiten einsehen
-- Peer-Evaluationen durchführen
-- Profil verwalten
-
-**Für Admins:**
-- Benutzerverwaltung
-- Klassenverwaltung
-- System-Einstellungen
-
 ---
 
 ## 📡 API Dokumentation
@@ -165,7 +143,7 @@ http://localhost:4100/api
 ├── frontend/                          # Angular Frontend
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── Features/             # Feature Module (Admin, Teacher, Student, Auth)
+│   │   │   ├── Features/             # Feature Module (Admin, Teacher, Student)
 │   │   │   ├── layout/               # Layouts (Navbar, Sidebar, Main)
 │   │   │   ├── Shared/               # Gemeinsame Komponenten & Services
 │   │   │   └── core/                 # Guards, Services, Auth
@@ -218,25 +196,7 @@ http://localhost:4100/api
 
 ---
 
-## 👨‍💻 Entwicklung
-
-### Projektstruktur für neue Features
-
-1. **Frontend Feature hinzufügen**
-   - Neues Modul unter `frontend/src/app/Features/`
-   - Routing-Module erstellen
-   - Komponenten und Services hinzufügen
-
-2. **Backend Endpoint hinzufügen**
-   - Controller unter `Assessify.Backend/src/main/java/de/assessify/`
-   - Service-Klasse für Geschäftslogik
-   - Entity-Klasse für Datenbankmodell
-
-3. **Tests schreiben**
-   - Frontend: `*.spec.ts` Dateien
-   - Backend: JUnit Tests in `src/test/`
-
-### Code-Style
+## Code-Style
 - Frontend: TypeScript, Angular Best Practices
 - Backend: Java 21, Spring Framework Conventions
 
