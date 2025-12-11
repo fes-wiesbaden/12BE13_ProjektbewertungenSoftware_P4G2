@@ -42,7 +42,7 @@ export class MyStudents implements OnInit {
 
   ngOnInit(): void {
     const courseIdParam = this.route.snapshot.paramMap.get('courseId');
-    const courseNameParam = this.route.snapshot.paramMap.get('courseName')
+    const courseNameParam = this.route.snapshot.paramMap.get('courseName');
     if (!courseIdParam) {
       console.error("Missing or invalid 'courseId' route parameter.");
       this.loading = false;
