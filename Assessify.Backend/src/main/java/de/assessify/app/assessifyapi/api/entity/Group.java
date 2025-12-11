@@ -41,10 +41,6 @@ public class Group {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

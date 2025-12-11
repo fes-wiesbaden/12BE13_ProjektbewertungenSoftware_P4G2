@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
 
     List<Project> findByStatus(ProjectStatus status);
-    List<Project> findByGroupId(UUID groupId);
+    List<Project> findByGroups_Id(UUID groupId);
 
     // Find projects with due date before a certain date
     List<Project> findByDueDateBefore(LocalDate date);
