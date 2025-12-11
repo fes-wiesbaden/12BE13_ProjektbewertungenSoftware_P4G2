@@ -83,8 +83,9 @@ export class TeacherDashboard {
   }
 
   openClassDetail(item: any) {
-    const classId = item.id;
-    this.router.navigate(['/teacher/my-students', classId]);
+    const courseId = item.id;
+    const courseName = item.courseName
+    this.router.navigate(['/teacher/my-students', courseId , courseName]);
   }
 
   loadMyClasses() {
