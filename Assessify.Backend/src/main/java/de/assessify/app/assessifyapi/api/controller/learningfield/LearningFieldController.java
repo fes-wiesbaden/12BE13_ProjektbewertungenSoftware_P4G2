@@ -40,7 +40,7 @@ public class LearningFieldController {
                         field.getId(),
                         field.getName(),
                         field.getDescription(),
-                        field.getWeighting()
+                        field.getWeightingHours()
                 ))
                 .toList();
 
@@ -59,7 +59,7 @@ public class LearningFieldController {
                         module.getId(),
                         module.getName(),
                         module.getDescription(),
-                        module.getWeighting()
+                        module.getWeightingHours()
                 ))
                 .toList();
 
@@ -73,7 +73,7 @@ public class LearningFieldController {
         TrainingModule entity = new TrainingModule();
         entity.setName(dto.name());
         entity.setDescription(dto.description());
-        entity.setWeighting(dto.weighting());
+        entity.setWeightingHours(dto.weightingHours());
 
         TrainingModule saved = trainingModuleRepository.save(entity);
 
@@ -81,7 +81,7 @@ public class LearningFieldController {
                 saved.getId(),
                 saved.getName(),
                 saved.getDescription(),
-                saved.getWeighting()
+                saved.getWeightingHours()
         );
 
         return ResponseEntity.ok(response);
@@ -106,7 +106,7 @@ public class LearningFieldController {
                         field.getId(),
                         field.getName(),
                         field.getDescription(),
-                        field.getWeighting()
+                        field.getWeightingHours()
                 ))
                 .toList();
 
@@ -129,7 +129,7 @@ public class LearningFieldController {
 
         if (dto.description() != null) trainingModule.setDescription(dto.description());
         if (dto.name() != null) trainingModule.setName(dto.name());
-        trainingModule.setWeighting(dto.weighting());
+        trainingModule.setWeightingHours(dto.weightingHours());
         
         TrainingModule updated = trainingModuleRepository.save(trainingModule);
 
@@ -137,7 +137,7 @@ public class LearningFieldController {
                 updated.getId(),
                 updated.getName(),
                 updated.getDescription(),
-                updated.getWeighting()
+                updated.getWeightingHours()
         );
 
         return ResponseEntity.ok(response);

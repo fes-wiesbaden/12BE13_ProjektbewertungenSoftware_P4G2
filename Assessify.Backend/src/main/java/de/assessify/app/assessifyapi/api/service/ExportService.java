@@ -126,7 +126,7 @@ public class ExportService {
                         module.getId() != null ? module.getId().toString() : ""
                 );
                 row.createCell(1).setCellValue(nullSafe(module.getName()));
-                row.createCell(2).setCellValue(module.getWeighting());
+                row.createCell(2).setCellValue(module.getWeightingHours());
             }
 
             autosizeColumns(sheet, 3);

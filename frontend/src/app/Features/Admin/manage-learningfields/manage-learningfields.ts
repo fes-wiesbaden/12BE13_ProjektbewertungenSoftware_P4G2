@@ -66,7 +66,7 @@ export class ManageLearnfields implements OnInit {
       colSpan: 6,
     },
     {
-      key: 'weighting',
+      key: 'weightingHours',
       label: 'Stunden',
       type: 'number',
       required: true,
@@ -150,9 +150,9 @@ export class ManageLearnfields implements OnInit {
 
   saveLearningfields(formData: any) {
     if (
-      !Number.isInteger(Number(formData.weighting)) ||
-      formData.weighting < 0 ||
-      formData.weighting > 99
+      !Number.isInteger(Number(formData.weightingHours)) ||
+      formData.weightingHours < 0 ||
+      formData.weightingHours > 99
     ) {
       alert('Gewichtung muss eine ganze Zahl zwischen 0 und 99 sein.');
       return;
