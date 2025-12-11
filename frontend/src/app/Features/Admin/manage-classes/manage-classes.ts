@@ -12,10 +12,12 @@ import { ImportModalComponent } from '../../../Shared/Components/import-modal/im
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 
 import { CourseService } from '../../../Shared/Services/course.service';
+import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
 import { Course } from '../../../Shared/models/course.interface';
 import { User } from '../../../Shared/models/user.interface';
 import { UserService } from '../../../Shared/Services/user.service';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { LearningField } from '../../../Shared/models/learning-fields.interface';
 
 @Component({
   selector: 'app-manage-classes',
@@ -36,6 +38,7 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
 })
 export class ManageClasses implements OnInit {
   classes: Course[] = [];
+  learningFields: LearningField[] = [];
   loading = true;
   showImportModal = false;
   showExportModal = false;
@@ -47,6 +50,7 @@ export class ManageClasses implements OnInit {
   columns: TableColumn<Course>[] = [
     { key: 'courseName', label: 'Kursname' },
     { key: 'className', label: 'Klassenname' },
+    { key: 'learnfields', label: 'Lernfelder' },
   ];
 
   // Felder für "neu anlegen"
@@ -58,6 +62,14 @@ export class ManageClasses implements OnInit {
       required: true,
       colSpan: 6,
       placeholder: 'z.B. 23FIIRG1',
+    },
+    {
+      key: 'learnfields', // Name im Form-Objekt
+      label: 'Lernfelder',
+      type: 'multiselect',
+      required: true,
+      colSpan: 6,
+      options: [],
     },
   ];
 
@@ -71,6 +83,14 @@ export class ManageClasses implements OnInit {
       colSpan: 6,
       placeholder: 'z.B. 23FIIRG1',
     },
+    {
+      key: 'learnfields', // Name im Form-Objekt
+      label: 'Lernfelder',
+      type: 'multiselect',
+      required: true,
+      colSpan: 6,
+      options: [],
+    },
   ];
 
   showAddModel = false;
@@ -78,9 +98,13 @@ export class ManageClasses implements OnInit {
   editingClass: Course | null = null;
   deletingClass: Course | null = null;
 
-  constructor(private courseService: CourseService) {}
+  constructor(
+    private courseService: CourseService,
+    private learningFieldService: LearningFieldService,
+  ) {}
 
   ngOnInit(): void {
+    this.getAllLearningFields();
     this.loadClasses();
   }
 
@@ -115,6 +139,7 @@ export class ManageClasses implements OnInit {
   loadClasses() {
     this.courseService.getAllCourses().subscribe({
       next: (data) => {
+        console.log("data", data);
         this.classes = data;
         this.loading = false;
       },
@@ -125,11 +150,36 @@ export class ManageClasses implements OnInit {
     });
   }
 
+  getAllLearningFields() {
+  this.learningFieldService.getAllLearningFields().subscribe({
+    next: (learnfields) => {
+      this.learningFields = learnfields;
+
+      // Options in beiden Formularen setzen
+      this.fields.find(f => f.key === 'learnfields')!.options =
+        this.learningFields.map(lf => ({
+          label: lf.name,   // oder lf.title / lf.bezeichnung
+          value: lf.id
+        }));
+
+      this.fieldsEdit.find(f => f.key === 'learnfields')!.options =
+        this.learningFields.map(lf => ({
+          label: lf.name,
+          value: lf.id
+        }));
+
+    },
+    error: (err) => console.error('Fehler beim Erstellen:', err),
+  });
+}
+
+
   // Neues Objekt speichern
   saveClass(formData: any) {
     // formData.courseName kommt vom FormModal
     const dto = {
       name: formData.courseName, // Backend erwartet Feld "name"
+      learnfields: this.learningFields,
     };
 
     this.courseService.createCourse(dto).subscribe({
