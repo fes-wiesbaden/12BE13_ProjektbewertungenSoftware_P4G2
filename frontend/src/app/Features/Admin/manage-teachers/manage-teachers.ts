@@ -12,7 +12,7 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
 import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { UserService } from '../../../Shared/Services/user.service';
-import { User, UserResetPassword } from '../../../Shared/models/user.interface';
+import { UpdateUser, User, UserResetPassword } from '../../../Shared/models/user.interface';
 import { CourseService } from '../../../Shared/Services/course.service';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 
@@ -139,21 +139,29 @@ export class ManageTeachers implements OnInit {
   showResetModal = false;
   tempPassword: string = '';
 
-  editingTeacher: User | null = null;
+  editingTeacher: UpdateUser | null = null;
   deletingTeacher: User | null = null;
 
-  constructor(
-    private userService: UserService,
-    private courseService: CourseService,
-  ) {}
+  constructor(private userService: UserService, private courseService: CourseService) {}
 
   ngOnInit(): void {
     this.loadTeachers();
     this.loadCourses();
   }
 
-  openEditModal(teacher: User) {
+  openEditModal(teacher: UpdateUser) {
     this.editingTeacher = teacher;
+
+    const selectedIds = teacher.courseId ?? [];
+
+    const courseField = this.fieldsEdit.find((f) => f.key === 'courseId');
+    if (courseField && courseField.options) {
+      courseField.options = courseField.options.map((opt) => ({
+        ...opt,
+        selected: selectedIds.includes(opt.value),
+      }));
+    }
+
     this.showEditModal = true;
   }
 
@@ -191,12 +199,28 @@ export class ManageTeachers implements OnInit {
   saveEdit(formData: any) {
     if (!this.editingTeacher) return;
 
-    const updatedTeacher = { ...this.editingTeacher, ...formData };
+    const courseField = this.fieldsEdit.find((f) => f.key === 'courseId');
+    let selectedCourseIds: string[] = [];
+    if (courseField && courseField.options) {
+      selectedCourseIds = courseField.options.filter((opt) => opt.selected).map((opt) => opt.value);
+    }
 
+    const updatedTeacher: UpdateUser = {
+      id: this.editingTeacher.id,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      username: formData.username,
+      courseId: formData.courseId,
+    };
     this.userService.updateUser(updatedTeacher).subscribe({
-      next: (res: User) => {
+      next: (res: UpdateUser) => {
         const index = this.teachers.findIndex((s) => s.id === updatedTeacher.id);
-        if (index !== -1) this.teachers[index] = res;
+        if (index !== -1) {
+          this.teachers[index] = {
+            ...this.teachers[index],
+            ...res,
+          };
+        }
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
