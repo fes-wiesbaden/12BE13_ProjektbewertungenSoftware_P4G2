@@ -1,4 +1,3 @@
-<!-- ✅ ADD MODAL -->
 <app-form-modal
   [showModal]="showAddModel"
   [title]="'Kurs anlegen'"
@@ -8,17 +7,13 @@
 >
 </app-form-modal>
 
-<!-- ✅ PAGE HEADER MIT IMPORT / EXPORT -->
 <app-page-header
   title="Klassen"
   [showAddButton]="true"
   (addClick)="openAddModel()"
-  (importClick)="showImportModal = true"
-  (exportClick)="showExportModal = true"
->
+  (exportClick)="showExportModal = true">
 </app-page-header>
 
-<!-- ✅ TABLE -->
 <app-table-column
   [items]="classes"
   [columns]="columns"
@@ -28,7 +23,6 @@
   (delete)="openDeleteModal($event)"
 ></app-table-column>
 
-<!-- ✅ EDIT MODAL -->
 <app-form-modal
   [showModal]="showEditModal"
   [title]="'Kurs Editieren'"
@@ -41,19 +35,17 @@
 
 <app-delete-button
   [showModal]="showDeleteModal"
-  [title]="'Sind Sie sicher, dass sie den Admin löschen wollen?'"
+  [title]="'Sind Sie sicher, dass sie den Kurs löschen wollen?'"
   (close)="closeDeleteModal()"
   (delete)="deleteCourse()"
 ></app-delete-button>
 
-<!-- ✅ IMPORT MODAL -->
 <app-import-modal
   [show]="showImportModal"
   (close)="showImportModal = false"
   (fileSelected)="onImportFile($event)"
 ></app-import-modal>
 
-<!-- ✅ EXPORT MODAL -->
 <app-export-modal
   [show]="showExportModal"
   (close)="showExportModal = false"
