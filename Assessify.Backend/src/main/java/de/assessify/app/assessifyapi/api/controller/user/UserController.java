@@ -4,6 +4,7 @@ import de.assessify.app.assessifyapi.api.dtos.request.AddUserWithCourseDto;
 import de.assessify.app.assessifyapi.api.dtos.request.ResetPasswordDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateUserDto;
 import de.assessify.app.assessifyapi.api.dtos.response.UserDto;
+import de.assessify.app.assessifyapi.api.dtos.response.UserWithOutCourseDto;
 import de.assessify.app.assessifyapi.api.entity.SchoolClass;
 import de.assessify.app.assessifyapi.api.repository.RoleRepository;
 import de.assessify.app.assessifyapi.api.repository.SchoolClassRepository;
@@ -46,30 +47,15 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllUsersById(@PathVariable Integer roleId) {
         var modules = userRepository.findByRoleId(roleId)
                 .stream()
-                .map(field -> {
+                .map(user -> {
 
-                    var role = roleRepository.findById(field.getRoleId())
+                    var role = roleRepository.findById(user.getRoleId())
                             .orElse(null);
 
-                    return new UserDto(
-                            field.getId(),
-                            field.getFirstName(),
-                            field.getLastName(),
-                            field.getUsername(),
-                            field.getCreatedAt(),
-                            role != null ? role.getName() : null);
-                })
-                .toList();
-
-        return ResponseEntity.ok(modules);
-    }
-
-    @GetMapping("/role/{roleId}/class/{classId}")
-    public ResponseEntity<List<UserDto>> getAllUsersByClass(@PathVariable Integer roleId, @PathVariable UUID classId) {
-        var students = userRepository.findByClassIdAndRoleId(classId, roleId)
-                .stream()
-                .map(user -> {
-                    var role = roleRepository.findById(user.getRoleId()).orElse(null);
+                    List<UUID> courseIds = user.getSchoolClasses()
+                            .stream()
+                            .map(SchoolClass::getId)
+                            .toList();
 
                     return new UserDto(
                             user.getId(),
@@ -77,16 +63,38 @@ public class UserController {
                             user.getLastName(),
                             user.getUsername(),
                             user.getCreatedAt(),
-                            role != null ? role.getName() : null
+                            role != null ? role.getName() : null,
+                            courseIds
                     );
                 })
                 .toList();
 
-        return ResponseEntity.ok(students);
+        return ResponseEntity.ok(modules);
     }
 
+//    @GetMapping("/role/{roleId}/class/{classId}")
+//    public ResponseEntity<List<UserDto>> getAllUsersByClass(@PathVariable Integer roleId, @PathVariable UUID classId) {
+//        var students = userRepository.findByClassIdAndRoleId(classId, roleId)
+//                .stream()
+//                .map(user -> {
+//                    var role = roleRepository.findById(user.getRoleId()).orElse(null);
+//
+//                    return new UserDto(
+//                            user.getId(),
+//                            user.getFirstName(),
+//                            user.getLastName(),
+//                            user.getUsername(),
+//                            user.getCreatedAt(),
+//                            role != null ? role.getName() : null
+//                    );
+//                })
+//                .toList();
+//
+//        return ResponseEntity.ok(students);
+//    }
+
     @PostMapping("/role/{roleId}")
-    public ResponseEntity<UserDto> createUserByRole(
+    public ResponseEntity<UserWithOutCourseDto> createUserByRole(
             @RequestBody AddUserWithCourseDto dto,
             @PathVariable Integer roleId) {
 
@@ -112,7 +120,7 @@ public class UserController {
         var role = roleRepository.findById(savedUser.getRoleId()).orElse(null);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new UserDto(
+                .body(new UserWithOutCourseDto(
                         savedUser.getId(),
                         savedUser.getFirstName(),
                         savedUser.getLastName(),
@@ -135,7 +143,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UpdateUserDto dto, @PathVariable UUID userId) {
+    public ResponseEntity<UserWithOutCourseDto> updateUser(@RequestBody UpdateUserDto dto, @PathVariable UUID userId) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
 
@@ -143,11 +151,17 @@ public class UserController {
         existingUser.setLastName(dto.lastName());
         existingUser.setUsername(dto.username());
 
+        if (dto.courseId() != null) {
+            // Optional: existierende Kurse löschen oder updaten
+            List<SchoolClass> newCourses = schoolClassRepository.findAllById(dto.courseId());
+            existingUser.setSchoolClasses(newCourses); // assuming User hat eine List<Course> courses
+        }
+
         User updatedUser = userRepository.save(existingUser);
 
         var role = roleRepository.findById(updatedUser.getRoleId()).orElse(null);
 
-        return ResponseEntity.ok(new UserDto(
+        return ResponseEntity.ok(new UserWithOutCourseDto(
                 updatedUser.getId(),
                 updatedUser.getFirstName(),
                 updatedUser.getLastName(),
