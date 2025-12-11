@@ -33,7 +33,7 @@ public class Grade {
     private Date date;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "training-module_id", nullable = false)
+    @JoinColumn(name = "training_module_id", nullable = false)
     @JsonBackReference
     private TrainingModule trainingModules;
 
