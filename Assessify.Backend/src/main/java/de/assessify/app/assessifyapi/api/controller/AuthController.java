@@ -1,4 +1,5 @@
 package de.assessify.app.assessifyapi.api.controller;
+import de.assessify.app.assessifyapi.api.dtos.request.RefreshTokenRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.response.LoginDto;
 import de.assessify.app.assessifyapi.api.dtos.request.AddLoginDto;
 import de.assessify.app.assessifyapi.api.service.AuthService;
@@ -16,15 +17,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AddLoginDto loginDto) {
-        String token = authService.loginAndGetJwt(loginDto.username(), loginDto.password());
-        if (token == null) {
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
-        }
-        LoginDto response = new LoginDto(
-                token,
-                "Bearer"
-        );
+    public ResponseEntity<LoginDto> login(@RequestBody AddLoginDto loginDto) {
+        LoginDto response = authService.login(loginDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginDto> refresh(@RequestBody RefreshTokenRequestDto request) {
+        LoginDto response = authService.refreshTokens(request.refreshToken());
         return ResponseEntity.ok(response);
     }
 }
