@@ -13,7 +13,7 @@ import { ImportModalComponent } from '../../../Shared/Components/import-modal/im
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { UserService } from '../../../Shared/Services/user.service';
 import { CourseService } from '../../../Shared/Services/course.service';
-import { AddUser, User, UserResetPassword } from '../../../Shared/models/user.interface';
+import { AddUser, UpdateUser, User, UserResetPassword } from '../../../Shared/models/user.interface';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 
 @Component({
@@ -195,12 +195,23 @@ export class ManageStudents implements OnInit {
   saveEdit(formData: any) {
     if (!this.editingStudent) return;
 
-    const updatedStudent = { ...this.editingStudent, ...formData };
+    const updatedStudent: UpdateUser = {
+      id: this.editingStudent.id,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      username: formData.username,
+      courseId: formData.courseId ? [formData.courseId] : [],
+    }
 
     this.userService.updateUser(updatedStudent).subscribe({
-      next: (res: User) => {
+      next: (res: UpdateUser) => {
         const index = this.students.findIndex((s) => s.id === updatedStudent.id);
-        if (index !== -1) this.students[index] = res;
+        if (index !== -1) {
+          this.students[index] = {
+            ...this.students[index],
+            ...res,
+          };
+        }
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
