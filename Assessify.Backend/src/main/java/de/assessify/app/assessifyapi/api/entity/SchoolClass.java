@@ -26,12 +26,31 @@ public class SchoolClass {
     @Column(name = "class_name", nullable = false)
     private String className;
 
+    // many to many with users (students)
     @ManyToMany(mappedBy = "schoolClasses")
     @JsonIgnore
     private List<User> users = new ArrayList<>();
 
+
+    // teachers assigned to this class (bidirectional)
+    @OneToMany(mappedBy = "schoolClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ClassTeacherList> classTeacherAssignments = new ArrayList<>();
+
     public void setClassName(String className) {
         this.className = className;
+    }
+
+
+    public SchoolClass () {}
+
+    public SchoolClass ( String courseName){
+        this.courseName = courseName;
+        calculateClass();
+    }
+
+    public List<User> getUsers(){
+        return users;
     }
 
     @PrePersist
@@ -73,5 +92,17 @@ public class SchoolClass {
             default: className = "false";
         }
 
+    }
+
+    // Helper methods
+    public void addTeacher(User teacher) {
+        ClassTeacherList assignment = new ClassTeacherList(teacher, this);
+        classTeacherAssignments.add(assignment);
+        teacher.getTeacherClassAssignments().add(assignment);
+    }
+    
+    public void removeTeacher(User teacher) {
+        classTeacherAssignments.removeIf(assignment -> 
+            assignment.getTeacher().equals(teacher));
     }
 }
