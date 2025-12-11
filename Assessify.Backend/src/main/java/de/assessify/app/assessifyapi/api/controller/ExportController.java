@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.export;
+package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.service.ExportService;
 import org.springframework.http.ContentDisposition;

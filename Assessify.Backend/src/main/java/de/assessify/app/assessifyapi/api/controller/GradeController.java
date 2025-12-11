@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.grade;
+package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.dtos.request.AddGradeDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateGradeDto;

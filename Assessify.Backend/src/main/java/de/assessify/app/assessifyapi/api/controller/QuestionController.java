@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.question;
+package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.dtos.request.AddQuestionDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateQuestionDto;

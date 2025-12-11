@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.schoolclass;
+package de.assessify.app.assessifyapi.api.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;

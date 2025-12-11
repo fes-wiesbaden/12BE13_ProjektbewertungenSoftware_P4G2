@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.import_;
+package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.dtos.response.ImportResultDto;
 import de.assessify.app.assessifyapi.api.service.ImportService;

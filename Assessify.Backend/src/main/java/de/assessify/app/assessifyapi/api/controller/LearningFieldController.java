@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.learningfield;
+package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.dtos.request.AddTrainingModuleDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateTrainingModuleDto;

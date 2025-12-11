@@ -1,16 +1,11 @@
-package de.assessify.app.assessifyapi.api.controller.review;
+package de.assessify.app.assessifyapi.api.controller;
 
-import de.assessify.app.assessifyapi.api.dtos.request.AddReviewAnswerDto;
-import de.assessify.app.assessifyapi.api.dtos.request.UpdateRatingDto;
-import de.assessify.app.assessifyapi.api.dtos.response.ReviewAnswerDto;
-import de.assessify.app.assessifyapi.api.dtos.response.ReviewDto;
 import de.assessify.app.assessifyapi.api.entity.*;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.repository.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
