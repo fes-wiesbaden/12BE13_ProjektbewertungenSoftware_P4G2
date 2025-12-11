@@ -5,10 +5,10 @@
   <div class="relative w-full max-w-lg px-4">
     <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
       <!-- Header -->
-      <div
-        class="flex items-start justify-between p-5 border-b rounded-t border-gray-200 dark:border-gray-700"
-      >
-        <h3 class="text-xl font-semibold dark:text-white">Import</h3>
+      <div class="flex items-start justify-between p-5 border-b rounded-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-xl font-semibold dark:text-white">
+          Import
+        </h3>
         <button
           (click)="onClose()"
           class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
@@ -19,11 +19,27 @@
 
       <!-- Body -->
       <div class="p-6 space-y-4">
+        <!-- Typ-Auswahl -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+            Was soll importiert werden?
+          </label>
+          <select
+            class="w-full text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5"
+            [(ngModel)]="importType"
+          >
+            <option value="users">Nutzer</option>
+            <option value="classes">Klassen</option>
+            <option value="training-modules">Training-Module</option>
+          </select>
+        </div>
+
+        <!-- Drag & Drop Feld -->
         <div
           class="border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer transition"
           [ngClass]="{
             'border-blue-500 bg-blue-50/40 dark:border-blue-400 dark:bg-blue-900/30': isDragOver,
-            'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700': !isDragOver,
+            'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700': !isDragOver
           }"
           (drop)="onDrop($event)"
           (dragover)="onDragOver($event)"
@@ -35,22 +51,65 @@
             Datei hierher ziehen oder klicken zum Auswählen
           </p>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Unterstützt z. B. CSV, XLSX (Platzhalter, Logik kommt im Backend)
+            Unterstützt z. B. XLSX (Spalten entsprechend dem gewählten Typ).
           </p>
 
-          <input #fileInput type="file" class="hidden" (change)="onFileInputChange($event)" />
+          @if (selectedFile) {
+            <p class="mt-3 text-xs text-gray-600 dark:text-gray-300">
+              Ausgewählte Datei:
+              <span class="font-semibold">{{ selectedFile.name }}</span>
+            </p>
+          }
+
+          <input
+            #fileInput
+            type="file"
+            class="hidden"
+            (change)="onFileInputChange($event)"
+          />
         </div>
+
+        @if (errorMessage) {
+          <p class="text-sm text-red-500">
+            {{ errorMessage }}
+          </p>
+        }
+
+        @if (result) {
+          <div class="mt-3 text-sm text-gray-800 dark:text-gray-100 space-y-1">
+            <p>Gesamt: {{ result.totalRows }}</p>
+            <p>Erfolgreich: {{ result.successCount }}</p>
+            <p>Fehler: {{ result.errorCount }}</p>
+
+            @if (result.errors?.length) {
+              <details class="mt-1">
+                <summary class="cursor-pointer text-xs text-gray-600 dark:text-gray-300">
+                  Fehlerdetails anzeigen ({{ result.errors.length }})
+                </summary>
+                <ul class="mt-1 text-xs text-red-400 list-disc list-inside max-h-32 overflow-auto">
+                  <li *ngFor="let err of result.errors">
+                    {{ err }}
+                  </li>
+                </ul>
+              </details>
+            }
+          </div>
+        }
       </div>
 
       <!-- Footer -->
-      <div
-        class="flex items-center justify-end p-5 border-t border-gray-200 rounded-b dark:border-gray-700"
-      >
+      <div class="flex items-center justify-end p-5 border-t border-gray-200 rounded-b dark:border-gray-700">
         <button
-          (click)="onClose()"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+          type="button"
+          (click)="onImport()"
+          [disabled]="uploading"
+          class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 disabled:opacity-60 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700"
         >
-          Schließen
+          @if (uploading) {
+            <span>Importiere...</span>
+          } @else {
+            <span>Importieren</span>
+          }
         </button>
       </div>
     </div>
