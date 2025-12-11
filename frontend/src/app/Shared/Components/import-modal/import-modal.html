@@ -5,10 +5,10 @@
   <div class="relative w-full max-w-lg px-4">
     <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
       <!-- Header -->
-      <div class="flex items-start justify-between p-5 border-b rounded-t border-gray-200 dark:border-gray-700">
-        <h3 class="text-xl font-semibold dark:text-white">
-          Import
-        </h3>
+      <div
+        class="flex items-start justify-between p-5 border-b rounded-t border-gray-200 dark:border-gray-700"
+      >
+        <h3 class="text-xl font-semibold dark:text-white">Import</h3>
         <button
           (click)="onClose()"
           class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
@@ -23,7 +23,7 @@
           class="border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer transition"
           [ngClass]="{
             'border-blue-500 bg-blue-50/40 dark:border-blue-400 dark:bg-blue-900/30': isDragOver,
-            'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700': !isDragOver
+            'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700': !isDragOver,
           }"
           (drop)="onDrop($event)"
           (dragover)="onDragOver($event)"
@@ -38,17 +38,14 @@
             Unterstützt z. B. CSV, XLSX (Platzhalter, Logik kommt im Backend)
           </p>
 
-          <input
-            #fileInput
-            type="file"
-            class="hidden"
-            (change)="onFileInputChange($event)"
-          />
+          <input #fileInput type="file" class="hidden" (change)="onFileInputChange($event)" />
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="flex items-center justify-end p-5 border-t border-gray-200 rounded-b dark:border-gray-700">
+      <div
+        class="flex items-center justify-end p-5 border-t border-gray-200 rounded-b dark:border-gray-700"
+      >
         <button
           (click)="onClose()"
           class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"

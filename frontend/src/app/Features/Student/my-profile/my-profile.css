@@ -1,13 +1,13 @@
-.mat-card-content{
-    display: flex;
-    flex-direction: column;
+.mat-card-content {
+  display: flex;
+  flex-direction: column;
 }
-.contentList{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.contentList {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
-.mat-card-actions{
-    display: flex;
-    justify-content: space-between;
+.mat-card-actions {
+  display: flex;
+  justify-content: space-between;
 }

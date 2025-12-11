@@ -26,7 +26,7 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
     FormModalComponent,
     ImportModalComponent,
     ExportModalComponent,
-    DeleteButtonComponent
+    DeleteButtonComponent,
   ],
   templateUrl: './manage-question.html',
 })
@@ -148,7 +148,7 @@ export class ManageQuestions implements OnInit {
       next: () => {
         this.questions = this.questions.filter((s) => s.id !== idToDelete);
         this.deletingQuestion = null;
-        this.closeDeleteModal(); 
+        this.closeDeleteModal();
       },
       error: (err) => console.error('Fehler beim Löschen', err),
     });

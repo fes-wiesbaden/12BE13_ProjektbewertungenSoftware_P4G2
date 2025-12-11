@@ -13,7 +13,7 @@
   (addClick)="openAddModel()"
   (importClick)="showImportModal = true"
   (exportClick)="showExportModal = true"
-  ></app-page-header>
+></app-page-header>
 
 <app-table-column
   [items]="learnfields"
@@ -48,7 +48,4 @@
   (fileSelected)="onImportFile($event)"
 ></app-import-modal>
 
-<app-export-modal
-  [show]="showExportModal"
-  (close)="showExportModal = false"
-></app-export-modal>
+<app-export-modal [show]="showExportModal" (close)="showExportModal = false"></app-export-modal>

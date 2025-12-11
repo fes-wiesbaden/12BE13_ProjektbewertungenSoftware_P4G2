@@ -142,7 +142,10 @@ export class ManageTeachers implements OnInit {
   editingTeacher: User | null = null;
   deletingTeacher: User | null = null;
 
-  constructor(private userService: UserService, private courseService: CourseService) {}
+  constructor(
+    private userService: UserService,
+    private courseService: CourseService,
+  ) {}
 
   ngOnInit(): void {
     this.loadTeachers();

@@ -39,8 +39,6 @@
   (reset)="onResetPassword($event)"
 ></app-table-column>
 
-
-
 <app-delete-button
   [showModal]="showDeleteModal"
   [title]="'Sind Sie sicher, dass sie den Lehrer löschen wollen?'"
@@ -55,10 +53,7 @@
   (fileSelected)="onImportFile($event)"
 ></app-import-modal>
 
-<app-export-modal
-  [show]="showExportModal"
-  (close)="showExportModal = false"
-></app-export-modal>
+<app-export-modal [show]="showExportModal" (close)="showExportModal = false"></app-export-modal>
 
 <app-reset-password
   [show]="showResetModal"

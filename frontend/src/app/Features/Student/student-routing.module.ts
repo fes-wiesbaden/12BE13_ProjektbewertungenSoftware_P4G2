@@ -1,10 +1,9 @@
-import { Routes } from "@angular/router";
+import { Routes } from '@angular/router';
 import { StudentDashboard } from './student-dashboard/student-dashboard';
 import { MyProfile } from './my-profile/my-profile';
 import { MyAssessment } from './my-assessment/my-assessment';
 import { MyClasses } from './my-classes/my-classes';
-import { MyGrades } from "./my-grades/my-grades";
-
+import { MyGrades } from './my-grades/my-grades';
 
 export const StudentRoutes: Routes = [
   {
@@ -14,16 +13,16 @@ export const StudentRoutes: Routes = [
   {
     //noten
     path: 'my-profile',
-    component: MyGrades
+    component: MyGrades,
   },
   {
     //selbstfremd
     path: 'my-assessment',
-    component: MyAssessment
+    component: MyAssessment,
   },
   {
     //Gruppen
     path: 'my-classes',
-    component: MyClasses
+    component: MyClasses,
   },
 ];

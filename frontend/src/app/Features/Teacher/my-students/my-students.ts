@@ -31,7 +31,7 @@ export class MyStudents implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private studentService: MyStudentsService,
-    private router: Router
+    private router: Router,
   ) {}
 
   openStudentDetail(item: User) {
