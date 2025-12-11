@@ -265,7 +265,7 @@ public class ImportService {
 
                     TrainingModule module = new TrainingModule();
                     module.setName(name);
-                    module.setWeighting(weighting);
+                    module.setWeightingHours((int) weighting);
 
                     module.setDescription(name);
 
