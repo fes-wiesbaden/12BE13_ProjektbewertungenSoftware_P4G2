@@ -70,7 +70,7 @@ public class GradeController {
                         field.getId(),
                         field.getName(),
                         field.getDescription(),
-                        field.getWeighting(),
+                        field.getWeightingHours(),
                         field.getGrades().stream()
                                 .map(g -> new GradeDto(
                                         g.getId(),
@@ -167,10 +167,10 @@ public class GradeController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/user/{userId}/overall-grade")
-    public ResponseEntity<Double> getOverallGrade(@PathVariable UUID userId) {
-        User user = entityFinderService.findUser(userId);
-        double overallGrade = gradeCalculationService.calculateUserOverallGrade(user);
-        return ResponseEntity.ok(overallGrade);
-    }
+//    @GetMapping("/user/{userId}/overall-grade")
+//    public ResponseEntity<Double> getOverallGrade(@PathVariable UUID userId) {
+//        User user = entityFinderService.findUser(userId);
+//        double overallGrade = gradeCalculationService.calculateUserOverallGrade(user);
+//        return ResponseEntity.ok(overallGrade);
+//    }
 }
