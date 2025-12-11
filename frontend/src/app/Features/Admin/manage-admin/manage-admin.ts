@@ -184,9 +184,6 @@ export class ManageAdmins implements OnInit {
 
     const updatedAdmin = { ...this.editingAdmin, ...formData };
 
-    console.log(formData);
-    console.log(updatedAdmin.id);
-
     this.userService.updateUser(updatedAdmin).subscribe({
       next: (res: User) => {
         const index = this.admins.findIndex((s) => s.id === updatedAdmin.id);
