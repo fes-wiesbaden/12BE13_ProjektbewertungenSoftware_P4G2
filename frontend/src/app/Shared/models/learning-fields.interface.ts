@@ -2,18 +2,18 @@ export interface LearningField {
   id: string;
   name: string;
   description: string;
-  weighting: number;
+  weightingHours: number;
 }
 
 export interface AddLearningfield {
   name: string;
   description: string;
-  weighting: number;
+  weightingHours: number;
 }
 
 export interface LearningField {
   id: string;
   name: string;
   description: string;
-  weighting: number;
+  weightingHours: number;
 }

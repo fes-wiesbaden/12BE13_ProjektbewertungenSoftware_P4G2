@@ -25,7 +25,7 @@ export class MyGrades {
 
   columns: TableColumn<LearningField>[] = [
     { key: 'name', label: 'Lernfeldname' },
-    { key: 'weighting', label: 'Gewichtung' },
+    { key: 'weightingHours', label: 'Gewichtung' },
   ];
   showViewer: boolean = false;
 
