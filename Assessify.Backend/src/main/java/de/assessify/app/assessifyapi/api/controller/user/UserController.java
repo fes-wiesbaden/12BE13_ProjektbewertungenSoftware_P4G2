@@ -158,9 +158,8 @@ public class UserController {
         existingUser.setUsername(dto.username());
 
         if (dto.courseId() != null) {
-            // Optional: existierende Kurse löschen oder updaten
             List<SchoolClass> newCourses = schoolClassRepository.findAllById(dto.courseId());
-            existingUser.setSchoolClasses(newCourses); // assuming User hat eine List<Course> courses
+            existingUser.setSchoolClasses(newCourses);
         }
 
         User updatedUser = userRepository.save(existingUser);

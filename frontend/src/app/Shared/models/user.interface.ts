@@ -5,7 +5,7 @@ export interface User {
   username: string;
   roleName: string;
   courseId?: string[];
-  courseName: string[];
+  courseName?: string[];
 }
 
 export interface AddUser {

@@ -46,7 +46,7 @@ export class ManageTeachers implements OnInit {
     { key: 'firstName', label: 'First Name' },
     { key: 'lastName', label: 'Last Name' },
     { key: 'username', label: 'Username' },
-    { key: 'courseName', label: 'KursName' },
+    { key: 'courseName', label: 'Kursname' },
   ];
 
   fieldsNew: FormField[] = [
@@ -198,13 +198,7 @@ export class ManageTeachers implements OnInit {
 
   saveEdit(formData: any) {
     if (!this.editingTeacher) return;
-
-    const courseField = this.fieldsEdit.find((f) => f.key === 'courseId');
-    let selectedCourseIds: string[] = [];
-    if (courseField && courseField.options) {
-      selectedCourseIds = courseField.options.filter((opt) => opt.selected).map((opt) => opt.value);
-    }
-
+    
     const updatedTeacher: UpdateUser = {
       id: this.editingTeacher.id,
       firstName: formData.firstName,
@@ -212,6 +206,7 @@ export class ManageTeachers implements OnInit {
       username: formData.username,
       courseId: formData.courseId,
     };
+
     this.userService.updateUser(updatedTeacher).subscribe({
       next: (res: UpdateUser) => {
         const index = this.teachers.findIndex((s) => s.id === updatedTeacher.id);

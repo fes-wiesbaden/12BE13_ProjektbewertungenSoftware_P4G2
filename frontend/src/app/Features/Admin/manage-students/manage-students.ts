@@ -201,7 +201,7 @@ export class ManageStudents implements OnInit {
       lastName: formData.lastName,
       username: formData.username,
       courseId: formData.courseId ? [formData.courseId] : [],
-    }
+    };
 
     this.userService.updateUser(updatedStudent).subscribe({
       next: (res: UpdateUser) => {
