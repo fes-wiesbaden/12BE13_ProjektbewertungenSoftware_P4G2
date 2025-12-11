@@ -1,91 +1,207 @@
-# Assessify
+# 🎓 Assessify - Projekt-Bewertungs- und Verwaltungssystem
 
-# 🧾 Project Description
-Project Evaluation and Management System
+## 📋 Übersicht
 
-This system provides a digital platform for managing and evaluating student performance.
-Teachers can view, edit, and calculate student grades, while students can access their own grades and evaluate other students’ projects.
+**Assessify** ist eine digitale Plattform zur Verwaltung und Bewertung von Schülerleistungen. Das System ermöglicht Lehrkräften die effiziente Verwaltung von Noten und Projekten, während Schüler ihre eigenen Bewertungen einsehen und an Peer-Evaluationen teilnehmen können.
 
-The goal of this project is to simplify the grading process, enhance transparency, and encourage peer evaluation in academic environments.
-It combines administrative efficiency for teachers with interactive functionality for students.
+### 🎯 Ziele des Projekts
 
-## 📚 Table of Contents
-- [About the Project](#about-the-project)
-- [API](#api)
+- Vereinfachung des Bewertungsprozesses
+- Erhöhte Transparenz für Schüler und Lehrkräfte
+- Förderung von Peer-Evaluationen
+- Intuitive Benutzeroberfläche für alle Nutzertypen
 
-# 🧾 About the Project
+---
 
+## 📚 Inhaltsverzeichnis
 
-# API
-For detailed information about API endpoints, request/response format, see [API Documentation](API.md).
+- [Übersicht](#-assessify---projekt-bewertungs--und-verwaltungssystem)
+- [Technologie-Stack](#-technologie-stack)
+- [Benutzergruppen](#-benutzergruppen)
+- [Installation & Setup](#-installation--setup)
+- [Verwendung](#-verwendung)
+- [API Dokumentation](#-api-dokumentation)
+- [Projektstruktur](#-projektstruktur)
+- [Datenbankstruktur](#-datenbankstruktur)
+- [Entwicklung](#-entwicklung)
+- [Lizenz](#-lizenz)
 
-## Frameworks:
+---
 
-|num|name|Language|framework|
-|-|-|-|-|
-|1|Server|Java| |
-|2|Client|Typescript|Angular|
-|3|Database|sql|postgres|
-|4|Styling|CSS|TailwindCSS|
+## 🛠️ Technologie-Stack
 
+| Komponente | Technologie | Version |
+|-----------|------------|---------|
+| **Backend** | Java + Spring Boot | 3.2.3 |
+| **Frontend** | TypeScript + Angular | Latest |
+| **Datenbank** | PostgreSQL | 16 |
+| **Styling** | CSS + TailwindCSS | - |
+| **Containerisierung** | Docker & Docker Compose | - |
 
+### Backend-Dependencies
+- Spring Boot Web
+- Spring Data JPA
+- PostgreSQL Driver
+- Security & JWT Authentication
 
+---
 
-## Rest API Framework Auswahl
-- [x] [Spring Boot](https://medium.com/@ronaka2328/choosing-the-right-java-framework-for-rest-apis-a-comprehensive-guide-0816f2bfc89a)
-    - Is Muture
-    - Has more Docu
-    
-- [ ] Quarkus
-- [ ] Vert.x
+## 👥 Benutzergruppen
 
+Das System unterstützt drei verschiedene Benutzerrollen mit unterschiedlichen Berechtigungen:
 
+### 🔐 Admin
+- Verwaltung aller Benutzer (Lehrkräfte, Schüler)
+- Verwaltung von Klassen und Lernfeldern
+- Verwaltung von Fragen
+- Systemkonfiguration
 
-# App Components:
+### 👨‍🏫 Lehrkraft (Teacher)
+- Noten und Bewertungen verwalten
+- Schüler und ihre Leistungen überwachen
+- Projektgruppen erstellen und verwalten
+- Bewertungsberichte einsehen
 
-## Users:
+### 👨‍🎓 Schüler (Student)
+- Eigene Noten und Bewertungen einsehen
+- Klassen und Kurse anzeigen
+- Peer-Evaluationen durchführen
 
-    - Admin
-    - Teacher
-    - Student
+---
 
-# Database structure:
+## 🚀 Installation & Setup
 
-## Tables:
+### Voraussetzungen
+- Docker & Docker Compose
+- Java 21 (für lokale Backend-Entwicklung)
+- Node.js 18+ (für lokale Frontend-Entwicklung)
 
-### User
-    - uuid
-    - fullName
-    - username
-    - password
-    - role
-    - school
-    - class_id (classes)
-    - Note_ID (Noten)
+### Schnellstart mit Docker
 
-### Noten
-    - Note_ID
-    - LF_ID (Lerneflede)
+1. **Repository klonen**
+```bash
+git clone https://github.com/fes-wiesbaden/12BE13_ProjektbewertungenSoftware_P4G2.git
+cd 12BE13_ProjektbewertungenSoftware_P4G2
+```
 
-### Noten_Entries
-    - NE_ID
-    - Note
-    - Note_ID (Noten)
+2. **Docker Container starten**
+```bash
+docker-compose up -d
+```
 
-### Lerneflede
-    - LF_ID
-    - LF_Number
+3. **Zugriff auf die Anwendung**
+   - Frontend: `http://localhost:4200`
+   - Backend API: `http://localhost:4100`
+   - Datenbank: `postgresql://localhost:55432`
 
-### classes
-    - class_id
-    - class_name
+### Lokale Entwicklung
 
+#### Backend starten
+```bash
+cd Assessify.Backend
+mvn spring-boot:run
+```
 
+#### Frontend starten
+```bash
+cd frontend
+npm install
+ng serve --open
+```
 
+---
 
+## 💻 Verwendung
 
+### Anmeldung
+Alle Benutzer melden sich mit ihren Zugangsdaten an. Die Authentifizierung erfolgt über JWT-Token.
 
+---
 
+## 📡 API Dokumentation
 
+Für detaillierte Informationen zu API-Endpoints, Request/Response-Format und Beispiele siehe:
+- [Vollständige API Dokumentation](API.md)
 
+### Basis URL
+```
+http://localhost:4100/api
+```
 
+### Hauptendpunkte
+- `GET /api/users` - Alle Benutzer abrufen
+- `POST /api/user` - Neuen Benutzer erstellen
+- `GET /api/grades` - Noten abrufen
+- `GET /api/classes` - Klassen abrufen
+- Weitere Endpoints siehe [API.md](API.md)
+
+---
+
+## 📁 Projektstruktur
+
+```
+├── frontend/                          # Angular Frontend
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── Features/             # Feature Module (Admin, Teacher, Student)
+│   │   │   ├── layout/               # Layouts (Navbar, Sidebar, Main)
+│   │   │   ├── Shared/               # Gemeinsame Komponenten & Services
+│   │   │   └── core/                 # Guards, Services, Auth
+│   │   └── assets/                   # Bilder, Übersetzungen
+│   └── package.json
+│
+├── Assessify.Backend/                 # Spring Boot Backend
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/de/assessify/    # Java Source Code
+│   │       └── resources/            # Konfigurationsdateien
+│   └── pom.xml                       # Maven Konfiguration
+│
+├── docker-compose.yml                # Docker Orchestration
+├── API.md                            # API Dokumentation
+└── README.md                         # Diese Datei
+```
+
+---
+
+## 🗄️ Datenbankstruktur
+
+### Haupt-Tabellen
+
+#### `User`
+- `uuid` - Eindeutige Benutzer-ID
+- `fullName` - Vollständiger Name
+- `username` - Benutzername
+- `password` - Gehashtes Passwort (BCrypt)
+- `role` - Benutzerrolle (ADMIN, TEACHER, STUDENT)
+- `school` - Schule des Benutzers
+- `class_id` - Referenz zu Klasse (Fremdschlüssel)
+
+#### `Noten` (Bewertungen)
+- `Note_ID` - Eindeutige Noten-ID
+- `LF_ID` - Referenz zu Lernfeld
+
+#### `Noten_Entries` (Einzelne Einträge)
+- `NE_ID` - Eindeutige Eintrags-ID
+- `Note` - Bewertungswert
+- `Note_ID` - Referenz zu Noten
+
+#### `Lernfelder` (Learning Fields)
+- `LF_ID` - Eindeutige Lernfeld-ID
+- `LF_Number` - Lernfeldnummer
+
+#### `Classes` (Klassen)
+- `class_id` - Eindeutige Klassen-ID
+- `class_name` - Name der Klasse
+
+---
+
+## Code-Style
+- Frontend: TypeScript, Angular Best Practices
+- Backend: Java 21, Spring Framework Conventions
+
+---
+
+## 📝 Lizenz
+
+Dieses Projekt ist unter der [LICENSE](LICENSE) lizenziert.

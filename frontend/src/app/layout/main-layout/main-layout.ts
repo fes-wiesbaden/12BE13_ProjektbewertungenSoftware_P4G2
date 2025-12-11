@@ -8,8 +8,7 @@ import { Card } from '../../Shared/Components/card/card';
 @Component({
   selector: 'app-main-layout',
   imports: [Sidebar, DashboardNavbar, CommonModule, RouterOutlet],
-  templateUrl: './main-layout.html',
-  styleUrl: './main-layout.css',
+  templateUrl: './main-layout.html'
 })
 export class MainLayout {
   sidebarCollapsed = false;
@@ -19,7 +18,6 @@ export class MainLayout {
   }
 
   closeSidebar() {
-    // Only collapse on mobile
     if (window.innerWidth < 768) {
       this.sidebarCollapsed = true;
     }

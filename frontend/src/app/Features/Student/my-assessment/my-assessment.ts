@@ -94,7 +94,6 @@ export class MyAssessment {
   ratings: number[] = this.members.map((_) => 0);
 
   constructor(private fb: FormBuilder) {
-    // Für jedes Mitglied ein Pflichtfeld (required)
     this.form = this.fb.group({});
     this.members.forEach((m) => {
       this.form.addControl(`rating_${m.id}`, this.fb.control(null, Validators.required));

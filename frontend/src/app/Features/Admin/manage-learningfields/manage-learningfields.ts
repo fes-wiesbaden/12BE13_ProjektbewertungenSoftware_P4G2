@@ -164,7 +164,7 @@ export class ManageLearnfields implements OnInit {
     };
     this.learningFieldService.createLearningField(dto).subscribe({
       next: (learnfield) => {
-        this.learnfields.push(learnfield); // direkt zur Liste hinzufügen
+        this.learnfields.push(learnfield);
         this.closeAddModel();
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),

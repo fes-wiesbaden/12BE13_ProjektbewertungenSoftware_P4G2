@@ -131,9 +131,8 @@ export class ManageQuestions implements OnInit {
 
     this.questionService.createQuestion(dto).subscribe({
       next: (question) => {
-        this.questions.push(question); // direkt zur Liste hinzufügen
+        this.questions.push(question);
         this.closeAddModel();
-        // Reset Form
         this.questionText = '';
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),

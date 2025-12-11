@@ -51,11 +51,11 @@ export class AdminDashboard implements OnInit {
         this.studentAmount = result.students;
         this.adminAmount = result.admins;
         this.classAmount = result.classes;
-        this.loading = false; // Jetzt korrekt
+        this.loading = false;
       },
       error: (err) => {
         console.error('Fehler beim Laden der Dashboard-Daten', err);
-        this.loading = false; // Auch bei Fehler zurücksetzen
+        this.loading = false;
       },
     });
   }
