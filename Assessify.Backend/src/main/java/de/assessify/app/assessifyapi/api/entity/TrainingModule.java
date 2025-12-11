@@ -24,8 +24,8 @@ public class TrainingModule {
     @Column(name = "training-module_description", nullable = false)
     private String description;
 
-    @Column(name = "training-module_Weighting", nullable = false)
-    private float weighting;
+    @Column(name = "training-module_weighting", nullable = false)
+    private int weightingHours;
 
     @ManyToMany(mappedBy = "trainingModules")
     @JsonIgnore
@@ -54,12 +54,12 @@ public class TrainingModule {
         this.description = description;
     }
 
-    public float getWeighting() {
-        return weighting;
+    public int getWeightingHours() {
+        return weightingHours;
     }
 
-    public void setWeighting(float weighting) {
-        this.weighting = weighting;
+    public void setWeightingHours(int weightingHours) {
+        this.weightingHours = weightingHours;
     }
 
     public List<User> getUsers() {

@@ -6,5 +6,5 @@ public record TrainingModuleSummaryDto(
         UUID id,
         String name,
         String description,
-        float weighting
+        int weightingHours
 ) {}
