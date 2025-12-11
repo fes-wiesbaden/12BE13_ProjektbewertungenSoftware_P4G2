@@ -1,24 +1,34 @@
 package de.assessify.app.assessifyapi.api.controller.project;
 
-import de.assessify.app.assessifyapi.api.dtos.request.AddProjectDto;
-import de.assessify.app.assessifyapi.api.dtos.request.UpdateProjectDto;
-import de.assessify.app.assessifyapi.api.dtos.response.ProjectDto;
+import de.assessify.app.assessifyapi.api.dtos.request.ProjectCreateRequestDto;
+import de.assessify.app.assessifyapi.api.dtos.request.ProjectUpdateRequestDto;
+import de.assessify.app.assessifyapi.api.dtos.response.ProjectResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectWithTrainingModulesDto;
 import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleSummaryDto;
+import de.assessify.app.assessifyapi.api.entity.Group;
+import de.assessify.app.assessifyapi.api.entity.ProjectStatus;
+import de.assessify.app.assessifyapi.api.repository.GroupRepository;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.repository.TrainingModuleRepository;
 import de.assessify.app.assessifyapi.api.repository.ProjectRepository;
 import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.entity.TrainingModule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.stream.Collectors.toList;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/projects")
 public class ProjectController {
+
+    @Autowired
+    private GroupRepository groupRepository;
+
     private final ProjectRepository projectRepository;
     private final TrainingModuleRepository trainingModuleRepository;
     private final EntityFinderService entityFinderService;
@@ -29,90 +39,123 @@ public class ProjectController {
         this.entityFinderService = entityFinderService;
     }
 
-    @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDto>> getAllProjects() {
+    @GetMapping
+    public ResponseEntity<List<ProjectResponseDto>> getAllProjects() {
+        List<Group> groups = groupRepository.findAll();
         var modules = projectRepository.findAll()
                 .stream()
-                .map(field -> new ProjectDto(
+                .map(field -> new ProjectResponseDto(
                         field.getId(),
                         field.getProjectName(),
-                        field.getProjectDescription()
+                        field.getProjectDescription(),
+                        field.getStartDate(),
+                        field.getDueDate(),
+                        field.getStatus(),
+                        field.getCreatedAt(),
+                        field.getGroups() != null ? field.getGroups().size() : 0
                 ))
                 .toList();
 
         return ResponseEntity.ok(modules);
     }
 
-    @PostMapping("/project")
-    public ResponseEntity<ProjectDto> addProject(@RequestBody AddProjectDto dto) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectResponseDto> getProjectById(@PathVariable UUID id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+
+        ProjectResponseDto response = new ProjectResponseDto(
+                project.getId(),
+                project.getProjectName(),
+                project.getProjectDescription(),
+                project.getStartDate(),
+                project.getDueDate(),
+                project.getStatus(),
+                project.getCreatedAt(),
+                project.getGroups() != null ? project.getGroups().size() : 0
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping
+    public ResponseEntity<ProjectResponseDto> createProject(@RequestBody ProjectCreateRequestDto dto) {
 
         Project entity = new Project();
-        entity.setProjectName(dto.name());
-        entity.setProjectDescription(dto.description());
+        entity.setProjectName(dto.projectName());
+        entity.setProjectDescription(dto.projectDescription());
+        entity.setStartDate(dto.startDate());
+        entity.setDueDate(dto.dueDate());
+        entity.setStatus(dto.status() != null ? dto.status() : ProjectStatus.PENDING);
 
         Project saved = projectRepository.save(entity);
 
-        ProjectDto response = new ProjectDto(
+        ProjectResponseDto response = new ProjectResponseDto(
                 saved.getId(),
                 saved.getProjectName(),
-                saved.getProjectDescription()
+                saved.getProjectDescription(),
+                saved.getStartDate(),
+                saved.getDueDate(),
+                saved.getStatus(),
+                saved.getCreatedAt(),
+                0
         );
 
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("project/{projectId}/connect/training-module/{trainingModulesId}")
-    public ResponseEntity<ProjectWithTrainingModulesDto> addProjectToTrainingModule(
-            @PathVariable UUID projectId,
-            @PathVariable UUID trainingModulesId){
+//    @PostMapping("project/{projectId}/connect/training-module/{trainingModulesId}")
+//    public ResponseEntity<ProjectWithTrainingModulesDto> addProjectToTrainingModule(
+//            @PathVariable UUID projectId,
+//            @PathVariable UUID trainingModulesId){
+//
+//        TrainingModule trainingModule = entityFinderService.findTrainingModule(trainingModulesId);
+//        Project project = entityFinderService.findProject(projectId);
+//
+//        if (!trainingModule.getProjects().contains(project)) {
+//            trainingModule.getProjects().add(project);
+//            project.getTrainingModules().add(trainingModule);
+//        }
+//
+//        Project updated = projectRepository.save(project);
+//
+//        ProjectWithTrainingModulesDto response = new ProjectWithTrainingModulesDto(
+//                updated.getId(),
+//                updated.getProjectName(),
+//                updated.getProjectDescription(),
+//                updated.getTrainingModules().stream()
+//                        .map(r -> new TrainingModuleSummaryDto(
+//                                r.getId(),
+//                                r.getName(),
+//                                r.getDescription(),
+//                                r.getWeighting()
+//                        ))
+//                        .toList()
+//        );
+//
+//        return ResponseEntity.ok(response);
+//    }
 
-        TrainingModule trainingModule = entityFinderService.findTrainingModule(trainingModulesId);
-        Project project = entityFinderService.findProject(projectId);
-
-        if (!trainingModule.getProjects().contains(project)) {
-            trainingModule.getProjects().add(project);
-            project.getTrainingModules().add(trainingModule);
-        }
-
-        Project updated = projectRepository.save(project);
-
-        ProjectWithTrainingModulesDto response = new ProjectWithTrainingModulesDto(
-                updated.getId(),
-                updated.getProjectName(),
-                updated.getProjectDescription(),
-                updated.getTrainingModules().stream()
-                        .map(r -> new TrainingModuleSummaryDto(
-                                r.getId(),
-                                r.getName(),
-                                r.getDescription(),
-                                r.getWeighting()
-                        ))
-                        .toList()
-        );
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/project/{projectId}")
-    public ResponseEntity<ProjectDto> updateProject(
-            @PathVariable UUID projectId,
-            @RequestBody UpdateProjectDto dto) {
-
-        Project project = entityFinderService.findProject(projectId);
-
-        if (dto.name() != null) project.setProjectName(dto.name());
-        if (dto.description() != null) project.setProjectDescription(dto.description());
-
-        Project updated = projectRepository.save(project);
-
-        ProjectDto response = new ProjectDto(
-                updated.getId(),
-                updated.getProjectName(),
-                updated.getProjectDescription()
-        );
-
-        return ResponseEntity.ok(response);
-    }
+//    @PutMapping("/project/{projectId}")
+//    public ResponseEntity<ProjectResponseDto> updateProject(
+//            @PathVariable UUID projectId,
+//            @RequestBody ProjectUpdateRequestDto dto) {
+//
+//        Project project = entityFinderService.findProject(projectId);
+//
+//        if (dto.name() != null) project.setProjectName(dto.name());
+//        if (dto.description() != null) project.setProjectDescription(dto.description());
+//
+//        Project updated = projectRepository.save(project);
+//
+//        ProjectResponseDto response = new ProjectResponseDto(
+//                updated.getId(),
+//                updated.getProjectName(),
+//                updated.getProjectDescription()
+//        );
+//
+//        return ResponseEntity.ok(response);
+//    }
 
     @DeleteMapping("/project/{projectId}")
     public ResponseEntity<Void> deleteProject(
