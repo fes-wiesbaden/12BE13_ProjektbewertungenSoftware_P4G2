@@ -16,6 +16,7 @@ public class ProjectMapper {
                 project.getStartDate(),
                 project.getDueDate(),
                 project.getStatus(),
+                null,
                 project.getGroups() != null ? project.getGroups().size() : 0
         );
     }

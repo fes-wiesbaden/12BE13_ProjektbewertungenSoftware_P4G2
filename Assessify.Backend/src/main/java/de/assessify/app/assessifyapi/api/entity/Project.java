@@ -27,7 +27,6 @@ public class Project {
     @Column(name = "project_description", nullable = false)
     private String projectDescription;
 
-
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
@@ -74,6 +73,8 @@ public class Project {
         this.status = status;
     }
 
+
+
     public void addGroup(Group group) {
         groups.add(group);
         group.setProject(this);
@@ -83,4 +84,61 @@ public class Project {
         groups.remove(group);
         group.setProject(null);
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getProjectDescription() {
+        return projectDescription;
+    }
+
+    public void setProjectDescription(String projectDescription) {
+        this.projectDescription = projectDescription;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public ProjectStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProjectStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
 }
