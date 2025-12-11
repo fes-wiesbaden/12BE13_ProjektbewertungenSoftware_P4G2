@@ -69,6 +69,22 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
+
+    // members
+    @OneToMany(mappedBy="member", cascade= CascadeType.ALL, orphanRemoval=true)
+    @JsonIgnore
+    private List<GroupMember> groupMemberships = new ArrayList<>();
+
+    public List<GroupMember> getGroupMemberships(){
+        return groupMemberships;
+    
+    }
+
+    public void setGroupMemberships(List<GroupMember> groupMembership){
+        this.groupMemberships = groupMemberships;
+    }
+
+
     // @ManyToOne
     // @JoinColumn(name = "school_class_id")
     // private SchoolClass schoolClasses;

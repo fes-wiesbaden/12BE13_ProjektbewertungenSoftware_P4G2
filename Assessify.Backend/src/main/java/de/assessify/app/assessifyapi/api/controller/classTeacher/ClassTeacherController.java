@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.classTeacher;
+package de.assessify.app.assessifyapi.api.controller.classteacher;
 
 import de.assessify.app.assessifyapi.api.dtos.request.ClassTeacherAssignRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ClassTeacherResponseDto;
@@ -21,7 +21,7 @@ public class ClassTeacherController {
     @Autowired
     private ClassTeacherService classTeacherService;
     
-    // // Assign a teacher to a class
+    // Assign a teacher to a class
     // @PostMapping
     // public ResponseEntity<ClassTeacherResponseDto> assignTeacherToClass(
     //         @RequestBody ClassTeacherAssignRequestDto requestDto) {
@@ -39,12 +39,12 @@ public class ClassTeacherController {
     // }
     
     // Get all classes for a specific teacher
-    @GetMapping("/teacher/{teacherId}/classes")
-    public ResponseEntity<List<ClassTeacherResponseDto>> getClassesForTeacher(
-            @PathVariable UUID teacherId) {
-        List<ClassTeacherResponseDto> response = classTeacherService.getClassesForTeacher(teacherId);
-        return ResponseEntity.ok(response);
-    }
+    // @GetMapping("/teacher/{teacherId}/classes")
+    // public ResponseEntity<List<ClassTeacherResponseDto>> getClassesForTeacher(
+    //         @PathVariable UUID teacherId) {
+    //     List<ClassTeacherResponseDto> response = classTeacherService.getClassesForTeacher(teacherId);
+    //     return ResponseEntity.ok(response);
+    // }
     
     // // Get all teachers for a specific class
     // @GetMapping("/class/{classId}/teachers")

@@ -47,7 +47,11 @@ public class SecurityConfig {
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()  // Allow all auth endpoints
+                        .requestMatchers("/api/projects/**").permitAll()  // ✅ Allow project endpoints
+                        .requestMatchers("/api/groups/**").permitAll()  // ✅ Allow group endpoints
+                        .requestMatchers("/api/class-teachers/**").permitAll()
+                        .requestMatchers("/api/group-members/**").permitAll()  // ✅ Add this
                         .requestMatchers("/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 )
