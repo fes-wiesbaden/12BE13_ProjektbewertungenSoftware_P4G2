@@ -1,7 +1,0 @@
-{
-    "java.project.sourcePaths": [
-        "TestJavaProject/src",
-        "notebewertungsoftware/src/main/java/com/javaapp"
-    ],
-    "java.compile.nullAnalysis.mode": "automatic"
-}
