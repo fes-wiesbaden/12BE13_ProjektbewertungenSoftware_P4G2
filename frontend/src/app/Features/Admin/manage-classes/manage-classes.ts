@@ -13,8 +13,6 @@ import { ExportModalComponent } from '../../../Shared/Components/export-modal/ex
 
 import { CourseService } from '../../../Shared/Services/course.service';
 import { Course } from '../../../Shared/models/course.interface';
-import { User } from '../../../Shared/models/user.interface';
-import { UserService } from '../../../Shared/Services/user.service';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 
 @Component({
@@ -43,16 +41,15 @@ export class ManageClasses implements OnInit {
   onImportFile(file: File) {
     console.log('Import-Datei:', file);
   }
-  // Tabellen-Spalten: keys müssen zum Interface "Class" passen
+
   columns: TableColumn<Course>[] = [
     { key: 'courseName', label: 'Kursname' },
     { key: 'className', label: 'Klassenname' },
   ];
 
-  // Felder für "neu anlegen"
   fields: FormField[] = [
     {
-      key: 'courseName', // Name im Form-Objekt
+      key: 'courseName',
       label: 'Kursname',
       type: 'text',
       required: true,
@@ -61,7 +58,6 @@ export class ManageClasses implements OnInit {
     },
   ];
 
-  // Felder für "bearbeiten"
   fieldsEdit: FormField[] = [
     {
       key: 'courseName',
@@ -125,11 +121,9 @@ export class ManageClasses implements OnInit {
     });
   }
 
-  // Neues Objekt speichern
   saveClass(formData: any) {
-    // formData.courseName kommt vom FormModal
     const dto = {
-      name: formData.courseName, // Backend erwartet Feld "name"
+      name: formData.courseName,
     };
 
     this.courseService.createCourse(dto).subscribe({
@@ -141,13 +135,12 @@ export class ManageClasses implements OnInit {
     });
   }
 
-  // Bestehende Klasse bearbeiten
   saveEdit(formData: any) {
     if (!this.editingClass) return;
 
     const dto = {
       id: this.editingClass.id,
-      name: formData.courseName, // wieder Mapping zum Backend-DTO
+      name: formData.courseName,
     };
 
     this.courseService.updateCourse(dto).subscribe({
