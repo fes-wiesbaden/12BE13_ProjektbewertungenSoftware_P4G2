@@ -46,7 +46,7 @@ export class ManageStudents implements OnInit {
     { key: 'firstName', label: 'First Name' },
     { key: 'lastName', label: 'Last Name' },
     { key: 'username', label: 'Username' },
-    { key: 'roleName', label: 'Rollen Name' },
+    { key: 'courseName', label: 'Kursname' },
   ];
 
   fields: FormField[] = [

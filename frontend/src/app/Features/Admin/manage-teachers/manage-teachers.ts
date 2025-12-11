@@ -46,7 +46,7 @@ export class ManageTeachers implements OnInit {
     { key: 'firstName', label: 'First Name' },
     { key: 'lastName', label: 'Last Name' },
     { key: 'username', label: 'Username' },
-    { key: 'roleName', label: 'Role' },
+    { key: 'courseName', label: 'KursName' },
   ];
 
   fieldsNew: FormField[] = [

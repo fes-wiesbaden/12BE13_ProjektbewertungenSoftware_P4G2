@@ -11,5 +11,6 @@ public record UserDto(
         String username,
         LocalDateTime date,
         String roleName,
-        List<UUID> courseId
+        List<UUID> courseId,
+        List<String> courseName
 ) {}

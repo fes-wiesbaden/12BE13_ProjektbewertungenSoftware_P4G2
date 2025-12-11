@@ -57,6 +57,11 @@ public class UserController {
                             .map(SchoolClass::getId)
                             .toList();
 
+                    List<String> courseNames = user.getSchoolClasses()
+                            .stream()
+                            .map(SchoolClass::getCourseName)
+                            .toList();
+
                     return new UserDto(
                             user.getId(),
                             user.getFirstName(),
@@ -64,7 +69,8 @@ public class UserController {
                             user.getUsername(),
                             user.getCreatedAt(),
                             role != null ? role.getName() : null,
-                            courseIds
+                            courseIds,
+                            courseNames
                     );
                 })
                 .toList();
