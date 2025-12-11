@@ -17,7 +17,8 @@ import { User } from '../../../Shared/models/user.interface';
   templateUrl: './my-students.html',
 })
 export class MyStudents implements OnInit {
-  classId!: string;
+  courseId!: string;
+  courseName!: string;
   students: User[] = [];
   loading = true;
 
@@ -25,7 +26,7 @@ export class MyStudents implements OnInit {
     { key: 'firstName', label: 'Vorname' },
     { key: 'lastName', label: 'Nachname' },
     { key: 'username', label: 'Benutzername' },
-    { key: 'roleName', label: 'Rolle' },
+    { key: 'courseName', label: 'Kurs' },
   ];
 
   constructor(
@@ -40,20 +41,30 @@ export class MyStudents implements OnInit {
   }
 
   ngOnInit(): void {
-    const classIdParam = this.route.snapshot.paramMap.get('classId');
-    if (!classIdParam) {
-      console.error("Missing or invalid 'classId' route parameter.");
+    const courseIdParam = this.route.snapshot.paramMap.get('courseId');
+    const courseNameParam = this.route.snapshot.paramMap.get('courseName')
+    if (!courseIdParam) {
+      console.error("Missing or invalid 'courseId' route parameter.");
       this.loading = false;
       return;
     }
-    this.classId = classIdParam;
+    if (!courseNameParam) {
+      console.error("Missing or invalid 'courseName' route parameter.");
+      this.loading = false;
+      return;
+    }
+    this.courseId = courseIdParam;
+    this.courseName = courseNameParam;
     this.loadStudents();
   }
 
   loadStudents() {
-    this.studentService.getStudents(this.classId).subscribe({
+    this.studentService.getStudents(this.courseId).subscribe({
       next: (data) => {
-        this.students = data;
+        this.students = data.map(s => ({
+        ...s,
+        courseName: [this.courseName]
+      }));
         this.loading = false;
       },
       error: (err) => {
