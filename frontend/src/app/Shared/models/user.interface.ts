@@ -4,6 +4,7 @@ export interface User {
   lastName: string;
   username: string;
   roleName: string;
+  courseId?: string[];
 }
 
 export interface AddUser {
@@ -20,6 +21,7 @@ export interface UpdateUser {
   firstName: string;
   lastName: string;
   username: string;
+  courseId?: string[];
 }
 
 export interface UserResetPassword {
