@@ -45,7 +45,7 @@ export class ManageLearnfields implements OnInit {
   columns: TableColumn<LearningField>[] = [
     { key: 'name', label: 'Lernfeld' },
     { key: 'description', label: 'Beschreibung' },
-    { key: 'weighting', label: 'Gewichtung in %' },
+    { key: 'weightingHours', label: 'Stunden' },
   ];
 
   fields: FormField[] = [
@@ -67,11 +67,11 @@ export class ManageLearnfields implements OnInit {
     },
     {
       key: 'weighting',
-      label: 'Gewichtung',
+      label: 'Stunden',
       type: 'number',
       required: true,
-      placeholder: 'Gewichtung 0 - 99',
-      max: 99,
+      placeholder: 'Stunden',
+      max: 200,
       colSpan: 6,
     },
   ];
@@ -119,7 +119,7 @@ export class ManageLearnfields implements OnInit {
       id: this.editingLearningfields.id,
       name: formData.name,
       description: formData.description,
-      weighting: formData.weighting,
+      weightingHours: formData.weightingHours,
     };
 
     this.learningFieldService.updateLearningField(dtoLearningfield).subscribe({
@@ -160,7 +160,7 @@ export class ManageLearnfields implements OnInit {
     const dto = {
       name: formData.name,
       description: formData.description,
-      weighting: formData.weighting,
+      weightingHours: formData.weightingHours,
     };
     this.learningFieldService.createLearningField(dto).subscribe({
       next: (learnfield) => {

@@ -25,7 +25,7 @@ export class ManageLearningField implements OnInit {
 
   columns: TableColumn<LearningField>[] = [
     { key: 'name', label: 'Lernfeldname' },
-    { key: 'weighting', label: 'Gewichtung' },
+    { key: 'weightingHours', label: 'Gewichtung' },
   ];
 
   constructor(
