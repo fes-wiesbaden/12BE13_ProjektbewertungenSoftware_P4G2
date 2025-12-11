@@ -15,6 +15,8 @@ import { UserService } from '../../../Shared/Services/user.service';
 import { UpdateUser, User, UserResetPassword } from '../../../Shared/models/user.interface';
 import { CourseService } from '../../../Shared/Services/course.service';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
+import { userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
+import { courseAddFields, courseEditFields } from '../../../Shared/Components/form-modal/form-modal-fields';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -42,96 +44,10 @@ export class ManageTeachers implements OnInit {
   onImportFile(file: File) {
     console.log('Import-Datei:', file);
   }
-  columns: TableColumn<User>[] = [
-    { key: 'firstName', label: 'First Name' },
-    { key: 'lastName', label: 'Last Name' },
-    { key: 'username', label: 'Username' },
-    { key: 'courseName', label: 'Kursname' },
-  ];
-
-  fieldsNew: FormField[] = [
-    {
-      key: 'firstName',
-      label: 'Vorname',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Vorname',
-    },
-    {
-      key: 'lastName',
-      label: 'Nachname',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Nachname',
-    },
-    {
-      key: 'username',
-      label: 'Benutzername',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Benutzername',
-    },
-    {
-      key: 'courseId',
-      label: 'Kurs',
-      type: 'multiselect',
-      colSpan: 3,
-      options: [],
-    },
-    {
-      key: 'password',
-      label: 'Passwort',
-      type: 'password',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Passwort',
-    },
-    {
-      key: 'confirmPassword',
-      label: 'Passwort wiederholen',
-      type: 'password',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Passwort wiederholen',
-    },
-  ];
-
-  fieldsEdit: FormField[] = [
-    {
-      key: 'firstName',
-      label: 'Vorname',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Vorname',
-    },
-    {
-      key: 'lastName',
-      label: 'Nachname',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Nachname',
-    },
-    {
-      key: 'username',
-      label: 'Benutzername',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Benutzername',
-    },
-    {
-      key: 'courseId',
-      label: 'Kurs',
-      type: 'multiselect',
-      colSpan: 3,
-      options: [],
-    },
-  ];
+  
+  columns: TableColumn<User>[] = userCourseColumns;
+  addFields: FormField[] = courseAddFields;
+  editFields: FormField[] = courseEditFields;
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
@@ -154,7 +70,7 @@ export class ManageTeachers implements OnInit {
 
     const selectedIds = teacher.courseId ?? [];
 
-    const courseField = this.fieldsEdit.find((f) => f.key === 'courseId');
+    const courseField = this.editFields.find((f) => f.key === 'courseId');
     if (courseField && courseField.options) {
       courseField.options = courseField.options.map((opt) => ({
         ...opt,
@@ -285,11 +201,11 @@ export class ManageTeachers implements OnInit {
       next: (data) => {
         this.courses = data.map((c: any) => ({ label: c.courseName, value: c.id }));
 
-        const courseField = this.fieldsNew.find((f) => f.key === 'courseId');
+        const courseField = this.addFields.find((f) => f.key === 'courseId');
         if (courseField) {
           courseField.options = this.courses.map((c) => ({ ...c, selected: false }));
         }
-        const courseFieldEdit = this.fieldsEdit.find((f) => f.key === 'courseId');
+        const courseFieldEdit = this.editFields.find((f) => f.key === 'courseId');
         if (courseFieldEdit) {
           courseFieldEdit.options = this.courses.map((c) => ({ ...c, selected: false }));
         }

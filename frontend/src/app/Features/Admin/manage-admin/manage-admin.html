@@ -1,13 +1,14 @@
 <app-form-modal
   [showModal]="showAddModel"
   [title]="'Administrator anlegen'"
-  [fields]="fields"
+  [fields]="addFields"
   (close)="closeAddModel()"
   (save)="saveAdmin($event)"
 ></app-form-modal>
 
 <app-page-header
-  title="Administratoren"
+  title="Administratoren verwalten"
+  titleAdd="Administrator hinzufügen"
   [showAddButton]="true"
   (addClick)="openAddModel()"
   (importClick)="showImportModal = true"
@@ -28,7 +29,7 @@
 <app-form-modal
   [showModal]="showEditModal"
   [title]="'Administrator Editieren'"
-  [fields]="fieldsEdit"
+  [fields]="editFields"
   [record]="editingAdmin"
   (close)="closeEditModal()"
   (save)="saveEdit($event)"

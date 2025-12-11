@@ -13,7 +13,7 @@ export const TeacherRoutes: Routes = [
     component: TeacherDashboard,
   },
   {
-    path: 'my-students/:classId',
+    path: 'my-students/:courseId/:courseName',
     component: MyStudents,
   },
   {

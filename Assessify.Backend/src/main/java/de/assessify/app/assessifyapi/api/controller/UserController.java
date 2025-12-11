@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.user;
+package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.dtos.request.AddUserWithCourseDto;
 import de.assessify.app.assessifyapi.api.dtos.request.ResetPasswordDto;

@@ -60,13 +60,12 @@ export class Sidebar implements OnInit {
         { icon: 'school', label: 'Lernfelder', route: '/admin/manage-learningfields' },
       ],
       teacher: [
-        { icon: 'groups', label: 'Übersicht', route: '/teacher/dashboard' },
+        { icon: 'groups', label: 'Meine Kurse', route: '/teacher/dashboard' },
         {
           icon: 'manage_accounts',
           label: 'Verwaltung',
           route: '',
           subMenu: [
-            { icon: 'person', label: 'Schüler', route: '/teacher/my-students' },
             { icon: 'group', label: 'Projektgruppe', route: '/teacher/groups' },
             { icon: 'assignment', label: 'Projekte', route: '/teacher/projects' },
           ],

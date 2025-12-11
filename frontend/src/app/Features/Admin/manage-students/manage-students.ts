@@ -15,6 +15,8 @@ import { UserService } from '../../../Shared/Services/user.service';
 import { CourseService } from '../../../Shared/Services/course.service';
 import { AddUser, UpdateUser, User, UserResetPassword } from '../../../Shared/models/user.interface';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
+import { userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
+import { courseAddFields, courseEditFields } from '../../../Shared/Components/form-modal/form-modal-fields';
 
 @Component({
   selector: 'app-manage-students',
@@ -42,98 +44,10 @@ export class ManageStudents implements OnInit {
   onImportFile(file: File) {
     console.log('Import-Datei:', file);
   }
-  columns: TableColumn<User>[] = [
-    { key: 'firstName', label: 'First Name' },
-    { key: 'lastName', label: 'Last Name' },
-    { key: 'username', label: 'Username' },
-    { key: 'courseName', label: 'Kursname' },
-  ];
 
-  fields: FormField[] = [
-    {
-      key: 'firstName',
-      label: 'First Name',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Vorname',
-    },
-    {
-      key: 'lastName',
-      label: 'Last Name',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Nachname',
-    },
-    {
-      key: 'username',
-      label: 'Username',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Benutzername',
-    },
-    {
-      key: 'courseId',
-      label: 'Kursname',
-      type: 'select',
-      required: true,
-      colSpan: 3,
-      options: [],
-    },
-    {
-      key: 'password',
-      label: 'Password',
-      type: 'password',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Passwort',
-    },
-    {
-      key: 'confirmPassword',
-      label: 'Passwort wiederholen',
-      type: 'password',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Passwort wiederholen',
-    },
-  ];
-
-  fieldsEdit: FormField[] = [
-    {
-      key: 'firstName',
-      label: 'Vorname',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Vorname',
-    },
-    {
-      key: 'lastName',
-      label: 'Nachname',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Nachname',
-    },
-    {
-      key: 'username',
-      label: 'Benutzername',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Benutzername',
-    },
-    {
-      key: 'courseId',
-      label: 'Kursname',
-      type: 'select',
-      required: true,
-      colSpan: 3,
-      options: [],
-    },
-  ];
+  columns: TableColumn<User>[] = userCourseColumns;
+  addFields: FormField[] = courseAddFields;
+  editFields: FormField[] = courseEditFields;
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
@@ -286,11 +200,11 @@ export class ManageStudents implements OnInit {
 
         this.classes = formatted;
 
-        const courseField = this.fields.find((f) => f.key === 'courseId');
+        const courseField = this.addFields.find((f) => f.key === 'courseId');
         if (courseField) {
           courseField.options = formatted;
         }
-        const courseFieldEdit = this.fieldsEdit.find((f) => f.key === 'courseId');
+        const courseFieldEdit = this.editFields.find((f) => f.key === 'courseId');
         if (courseFieldEdit) {
           courseFieldEdit.options = this.classes.map((c) => ({ ...c, selected: false }));
         }

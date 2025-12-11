@@ -14,6 +14,8 @@ import { ExportModalComponent } from '../../../Shared/Components/export-modal/ex
 import { User, AddUser, UserResetPassword } from '../../../Shared/models/user.interface';
 import { UserService } from '../../../Shared/Services/user.service';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
+import { defaultAddFields, defaultEditFields } from '../../../Shared/Components/form-modal/form-modal-fields';
+import { userColumns } from '../../../Shared/Components/table-column/table-columns';
 
 @Component({
   selector: 'app-manage-admin',
@@ -47,90 +49,9 @@ export class ManageAdmins implements OnInit {
   showResetModal = false;
   tempPassword: string = '';
 
-  columns: TableColumn<User>[] = [
-    { key: 'firstName', label: 'First Name' },
-    { key: 'lastName', label: 'Last Name' },
-    { key: 'username', label: 'Username' },
-    { key: 'roleName', label: 'Role' },
-  ];
-
-  fields: FormField[] = [
-    {
-      key: 'firstName',
-      label: 'First Name',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Vorname',
-    },
-    {
-      key: 'lastName',
-      label: 'Last Name',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Nachname',
-    },
-    {
-      key: 'username',
-      label: 'Username',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Benutzername',
-    },
-    {
-      key: 'roleId',
-      label: 'Rolle',
-      type: 'text',
-      readonly: true,
-      colSpan: 3,
-      value: 'Administrator',
-    },
-    {
-      key: 'password',
-      label: 'Password',
-      type: 'password',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Passwort',
-    },
-    {
-      key: 'confirmPassword',
-      label: 'Passwort wiederholen',
-      type: 'password',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Passwort wiederholen',
-    },
-  ];
-
-  fieldsEdit: FormField[] = [
-    {
-      key: 'firstName',
-      label: 'Vorname',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Vorname',
-    },
-    {
-      key: 'lastName',
-      label: 'Nachname',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Nachname',
-    },
-    {
-      key: 'username',
-      label: 'Benutzername',
-      type: 'text',
-      required: true,
-      colSpan: 3,
-      placeholder: 'Benutzername',
-    },
-  ];
+  columns: TableColumn<User>[] = userColumns;
+  addFields: FormField[] = defaultAddFields;
+  editFields: FormField[] = defaultEditFields;
 
   editingAdmin: User | null = null;
   deletingAdmin: User | null = null;
