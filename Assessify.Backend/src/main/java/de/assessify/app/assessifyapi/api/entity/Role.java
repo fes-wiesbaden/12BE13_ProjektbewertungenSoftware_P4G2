@@ -2,11 +2,11 @@ package de.assessify.app.assessifyapi.api.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "role")
 public class Role {
     @Id
@@ -25,11 +25,6 @@ public class Role {
     }
 
     public void setName(String name) {
-        this.name = name;
-    }
-
-    public Role(Integer id, String name) {
-        this.id = id;
         this.name = name;
     }
 }
