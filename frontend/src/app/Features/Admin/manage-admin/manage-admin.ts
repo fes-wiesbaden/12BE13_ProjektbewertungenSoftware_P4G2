@@ -63,10 +63,10 @@ export class ManageAdmins implements OnInit {
   deletingAdmin: User | null = null;
 
   filterOptions = [
-  { key: 'firstName', label: 'Vorname' },
-  { key: 'lastName', label: 'Nachname' },
-  { key: 'username', label: 'Benutzername' }
-];
+    { key: 'firstName', label: 'Vorname' },
+    { key: 'lastName', label: 'Nachname' },
+    { key: 'username', label: 'Benutzername' },
+  ];
 
   constructor(private userService: UserService) {}
 
