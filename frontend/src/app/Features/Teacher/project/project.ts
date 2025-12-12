@@ -1,39 +1,131 @@
-import { Component, input, computed, signal, effect } from '@angular/core';
+import {Component, input, computed, signal, OnInit} from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import {IProject} from '../../../core/modals/project.modal';
+import {IProject, ProjectCreateRequestDto, ProjectStatus} from '../../../core/modals/project.modal';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {ProjectService} from '../../../core/services/project.service';
+import {ProjectMapperService} from '../../../core/services/project.mapper.service';
 
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [MatIcon, CommonModule],
+  imports: [MatIcon, CommonModule, ReactiveFormsModule],
   templateUrl: './project.html',
   styleUrls: ['./project.css'],
 })
-export class Project {
+export class Project implements OnInit {
   projectId = input.required<string>();
+  project = signal<IProject | undefined>(undefined); // ✅ Changed to signal
+  showNewModel = false;
+  isLoading = false;
+  errorMessage = '';
+  projectForm!: FormGroup;
+  isSubmitting = false;
 
-  projects = signal<IProject[]>([
+  constructor(
+    private router: Router,
+    private projectService: ProjectService,
+    private mapper: ProjectMapperService,
+    private fb: FormBuilder,
+  ) {
+    this.initForm();
+  }
 
-  ]);
+  initForm(): void {
+    this.projectForm = this.fb.group({
+      projectName: ['', [Validators.required, Validators.minLength(3)]],
+      startDate: ['', Validators.required],
+      dueDate: ['', Validators.required],
+      description: ['']
+    });
+  }
 
-  currentProject = computed(() => {
+  ngOnInit(): void {
+    this.loadProject();
+  }
+
+  loadProject(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
     const id = String(this.projectId());
-    return this.projects().find((p) => p.id === id);
+
+    this.projectService.getProjectById(id).subscribe({
+      next: (project: IProject) => {
+        this.project.set(project); // ✅ Use .set() for signal
+        this.isLoading = false;
+        console.log('Loaded project:', project);
+      },
+      error: (error) => {
+        console.error('Error fetching project:', error);
+        this.errorMessage = 'Failed to load project. Please try again.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  onSubmit(): void {
+    if (this.projectForm.invalid) {
+      this.projectForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting = true;
+    const formValue = this.projectForm.value;
+
+    const newProject: ProjectCreateRequestDto = {
+      projectName: formValue.projectName,
+      projectDescription: formValue.description || '',
+      startDate: this.mapper.serializeDate(new Date(formValue.startDate)),
+      dueDate: this.mapper.serializeDate(new Date(formValue.dueDate)),
+      ProjectStatus: ProjectStatus.PENDING
+    };
+
+    this.projectService.createProject(newProject).subscribe({
+      next: (createdProject) => {
+        console.log('Project created successfully:', createdProject);
+        this.isSubmitting = false;
+        this.closeNewModel();
+        this.loadProject();
+      },
+      error: (error) => {
+        console.error('Error creating project:', error);
+        this.errorMessage = 'Failed to create project. Please try again.';
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  closeNewModel(): void {
+    this.showNewModel = false;
+    this.projectForm.reset();
+    this.errorMessage = '';
+  }
+
+  openNewModel(): void {
+    this.showNewModel = true;
+  }
+
+  // ✅ Computed signal for current project
+  currentProject = computed(() => this.project());
+
+  // ✅ Computed signal for total members
+  totalMembers = computed(() => {
+    const proj = this.project();
+    if (!proj || !proj.groups) return 0;
+    return proj.groups.reduce((total, group) => total + (group.members?.length || 0), 0);
   });
 
-  projectNotFound = computed(() => !this.currentProject());
+  projectNotFound = computed(() => !this.project());
 
   // Calculate days until deadline
   daysUntilDeadline = computed(() => {
-    const project = this.currentProject();
+    const project = this.project();
     if (!project) return null;
-
     const today = new Date();
     const deadline = new Date(project.dueDate);
     const diffTime = deadline.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
     return diffDays;
   });
 
@@ -48,22 +140,6 @@ export class Project {
     const days = this.daysUntilDeadline();
     return days !== null && days < 0;
   });
-
-  // Total number of team members
-  totalMembers = computed(() => {
-    const project = this.currentProject();
-    if (!project) return 0;
-    return project.groups.reduce((sum, group) => sum + group.members.length, 0);
-  });
-
-  constructor() {
-    effect(() => {
-      const project = this.currentProject();
-      if (!project) {
-        console.warn(`Project with id ${this.projectId()} not found`);
-      }
-    });
-  }
 
   getDeadlineText(days: number | null): string {
     if (days === null) return '';

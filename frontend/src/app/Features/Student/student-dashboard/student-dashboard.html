@@ -3,17 +3,17 @@
   <div class="flex flex-row justify-between items-center mb-6">
     <!-- title and buttons -->
     <div class="flex items-center gap-10">
-      <span class="font-bold text-3xl">Dashboard</span>
+      <span class="font-bold text-3xl">{{ i18n.t('dashboard.title') }}</span>
 
       <!-- buttons -->
       <div class="flex items-center gap-2 cursor-pointer hover:text-indigo-500 transition-colors">
         <mat-icon>add_alert</mat-icon>
-        <a href="/" class="text-2xl font-normal">Benachrichtigungen</a>
+        <a href="/" class="text-2xl font-normal">{{ i18n.t('dashboard.notifications') }}</a>
       </div>
 
       <div class="flex items-center gap-2 cursor-pointer hover:text-indigo-500 transition-colors">
         <mat-icon>settings</mat-icon>
-        <span class="text-2xl font-normal">Theme</span>
+        <span class="text-2xl font-normal">{{ i18n.t('dashboard.theme') }}</span>
       </div>
     </div>
 
@@ -26,7 +26,7 @@
           id="searchbox"
           type="text"
           name="searchbox"
-          placeholder="Search Content..."
+          placeholder="i18n.t('dashboard.search.placeholder')"
           class="block w-full py-2 pr-3 pl-1 text-2xl text-black placeholder-gray-500 focus:outline-none sm:text-sm"
         />
         <mat-icon class="m-2">search</mat-icon>
@@ -39,7 +39,7 @@
 
   <!-- anfrage liste -->
   <div>
-    <span class="mx-3 font-semibold text-3xl">Anfragen</span>
+    <span class="mx-3 font-semibold text-3xl">{{ i18n.t('requests.title') }}</span>
     <p class="mx-3">
       Sed tortor, sed velit ridiculus ipsum pharetra lacus odio gravida augue enim.
     </p>
@@ -48,7 +48,7 @@
     <div
       class="flex flex-row gap-3 p-3 my-5 m-3 border-2 bg-red-50 text-red-900 border-red-400 rounded-sm"
     >
-      <mat-icon>error</mat-icon>
+      <mat-icon>{{ i18n.t('requests.error') }}</mat-icon>
       <p>Senectus malesuada suspendisse bibendum elit amet vitae.</p>
     </div>
   </div>

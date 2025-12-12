@@ -1,6 +1,6 @@
 <app-form-modal
   [showModal]="showAddModel"
-  [title]="'Schüler anlegen'"
+  [title]="i18n.t('student.create.title')"
   [fields]="addFields"
   [record]="null"
   (close)="closeAddModel()"
@@ -10,7 +10,7 @@
 
 <app-form-modal
   [showModal]="showEditModal"
-  [title]="'Schüler Editieren'"
+  [title]="i18n.t('student.edit.title')"
   [fields]="editFields"
   [record]="editingStudent"
   (close)="closeEditModal()"
@@ -19,8 +19,8 @@
 </app-form-modal>
 
 <app-page-header
-  title="Schüler verwalten"
-  [titleAdd]="'Schüler hinzufügen'"
+  [title]="i18n.t('student.manage.title')"
+  [titleAdd]="i18n.t('student.add.button')"
   [showAddButton]="true"
   (addClick)="openAddModel()"
   [filterOptions]="filterOptions"
@@ -44,7 +44,7 @@
 
 <app-delete-button
   [showModal]="showDeleteModal"
-  [title]="'Sind Sie sicher, dass sie den Schüler löschen wollen?'"
+  [title]="i18n.t('student.delete.confirm')"
   (close)="closeDeleteModal()"
   (delete)="deleteStudent()"
 >

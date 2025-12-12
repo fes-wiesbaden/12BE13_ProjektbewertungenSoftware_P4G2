@@ -13,6 +13,7 @@ import { ImportModalComponent } from '../../../Shared/Components/import-modal/im
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 import { LearningField } from '../../../Shared/models/learning-fields.interface';
 import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-learnfield',
@@ -82,12 +83,12 @@ export class ManageLearnfields implements OnInit {
     { key: 'name', label: 'Lernfeldname' },
   ];
 
-  selectedFilter = this.filterOptions[0].key; 
+  selectedFilter = this.filterOptions[0].key;
 
   editingLearningfields: LearningField | null = null;
   toDeleteLearnField: LearningField | null = null;
 
-  constructor(private learningFieldService: LearningFieldService) {}
+  constructor(private learningFieldService: LearningFieldService, public i18n: TranslationService) {}
 
   ngOnInit(): void {
     this.loadLearningfields();
@@ -136,6 +137,7 @@ export class ManageLearnfields implements OnInit {
         if (index !== -1) {
           this.learnfields[index] = res;
         }
+        this.filteredLearningFields = [...this.learnfields];
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
@@ -163,7 +165,7 @@ export class ManageLearnfields implements OnInit {
         return value ? value.toString().toLowerCase().includes(searchValue) : false;
       });
     }
-  
+
     onHeaderFilterChange(filterKey: string) {
       this.selectedFilter = filterKey;
       this.filteredLearningFields = [...this.learnfields];
@@ -186,6 +188,7 @@ export class ManageLearnfields implements OnInit {
     this.learningFieldService.createLearningField(dto).subscribe({
       next: (learnfield) => {
         this.learnfields.push(learnfield);
+        this.filteredLearningFields = [...this.learnfields];
         this.closeAddModel();
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
@@ -200,6 +203,7 @@ export class ManageLearnfields implements OnInit {
     this.learningFieldService.deleteLearnField(this.toDeleteLearnField).subscribe({
       next: () => {
         this.learnfields = this.learnfields.filter((s) => s.id !== idToDelete);
+        this.filteredLearningFields = [...this.learnfields];
         this.toDeleteLearnField = null;
       },
       error: (err) => console.error('Fehler beim Löschen', err),

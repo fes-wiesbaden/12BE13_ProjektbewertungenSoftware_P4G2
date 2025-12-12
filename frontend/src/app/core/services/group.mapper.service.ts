@@ -16,8 +16,21 @@ export class GroupMapperService {
       id: dto.id,
       name: dto.name,
       projectName: dto.projectName,
-      members: dto.members
+      projectId: dto.projectId,
+      members: dto.members,
+      memberCount: dto.memberCount,
     };
+  }
+
+  createDtoToGroup(dto: GroupResponseDto): IGroup {
+    return {
+      id: dto.id,
+      name: dto.groupName,
+      projectId: dto.projectId,
+      projectName: dto.projectName,
+      members: [],
+      memberCount: 0,
+    }
   }
 
   // Convert array of DTOs to IProject array

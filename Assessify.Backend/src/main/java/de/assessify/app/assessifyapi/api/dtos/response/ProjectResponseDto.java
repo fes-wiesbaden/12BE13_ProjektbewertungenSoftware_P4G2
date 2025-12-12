@@ -14,11 +14,11 @@ public record ProjectResponseDto(
 
         String projectDescription,
 
-        @JsonFormat(pattern = "yyyy-MM-dd")
-        LocalDate startDate,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        LocalDateTime startDate,
 
-        @JsonFormat(pattern = "yyyy-MM-dd")
-        LocalDate dueDate,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        LocalDateTime dueDate,
 
 
         ProjectStatus status,

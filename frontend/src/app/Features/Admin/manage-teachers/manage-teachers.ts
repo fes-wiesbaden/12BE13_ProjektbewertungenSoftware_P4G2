@@ -20,6 +20,7 @@ import {
   courseAddFields,
   courseEditFields,
 } from '../../../Shared/Components/form-modal/form-modal-fields';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -54,7 +55,7 @@ export class ManageTeachers implements OnInit {
   editFields: FormField[] = courseEditFields;
   filterOptions: FilterOption[] = filterOptionColumn;
 
-  selectedFilter = this.filterOptions[0].key; 
+  selectedFilter = this.filterOptions[0].key;
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
@@ -65,7 +66,7 @@ export class ManageTeachers implements OnInit {
   editingTeacher: UpdateUser | null = null;
   deletingTeacher: User | null = null;
 
-  constructor(private userService: UserService, private courseService: CourseService) {}
+  constructor(private userService: UserService, private courseService: CourseService, public i18n: TranslationService) {}
 
   ngOnInit(): void {
     this.loadTeachers();
@@ -139,6 +140,7 @@ export class ManageTeachers implements OnInit {
             ...res,
           };
         }
+        this.filteredTeachers= [...this.teachers];
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
@@ -196,6 +198,7 @@ export class ManageTeachers implements OnInit {
     this.userService.createUserByRoleId(1, dto).subscribe({
       next: (teacher) => {
         this.teachers.push(teacher);
+        this.filteredTeachers= [...this.teachers];
         this.closeAddModel();
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
@@ -209,6 +212,7 @@ export class ManageTeachers implements OnInit {
     this.userService.deleteUser(this.deletingTeacher).subscribe({
       next: () => {
         this.teachers = this.teachers.filter((s) => s.id !== idToDelete);
+        this.filteredTeachers= [...this.teachers];
         this.deletingTeacher = null;
         this.closeDeleteModal();
       },

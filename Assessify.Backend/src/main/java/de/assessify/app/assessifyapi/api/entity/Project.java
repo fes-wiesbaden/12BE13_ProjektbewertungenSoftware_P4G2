@@ -28,10 +28,10 @@ public class Project {
     private String projectDescription;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "due_date", nullable = false)
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -65,7 +65,7 @@ public class Project {
         this.projectName = projectName;
     }
 
-    public Project(String projectName, String projectDescription, LocalDate startDate, LocalDate dueDate,  ProjectStatus status) {
+    public Project(String projectName, String projectDescription, LocalDateTime startDate, LocalDateTime dueDate,  ProjectStatus status) {
         this.projectName = projectName;
         this.projectDescription = projectDescription;
         this.startDate = startDate;
@@ -97,11 +97,11 @@ public class Project {
         this.projectName = projectName;
     }
 
-    public LocalDate getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
@@ -113,11 +113,11 @@ public class Project {
         this.projectDescription = projectDescription;
     }
 
-    public LocalDate getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 

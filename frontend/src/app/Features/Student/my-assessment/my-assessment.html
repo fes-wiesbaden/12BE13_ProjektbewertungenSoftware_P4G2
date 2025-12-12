@@ -10,8 +10,8 @@
 <!-- Rating Card -->
 <div class="rating-card flex flex-col rounded-lg p-6 mb-4 dark:bg-gray-800" *ngIf="members.length > 0">
   <div class="mb-4">
-    <h2 class="text-lg dark:text-white font-semibold">{{ question[frage].questionText }}</h2>
-    <p class="text-sm dark:text-white">Bitte wähle eine Bewertung</p>
+    <h2 class="text-lg dark:text-white font-semibold">{{ questions[frage].question }}</h2>
+    <p class="text-sm dark:text-white">{{ i18n.t('rating.choose') }}</p>
   </div>
 
   <div>
@@ -39,14 +39,14 @@
       class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg rounded-lg text-sm px-5 py-2.5 text-center"
       (click)="deleteAll()"
     >
-      Zurücksetzen
+      {{ i18n.t('rating.reset') }}
     </button>
 
     <button
       class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg rounded-lg text-sm px-5 py-2.5 text-center"
       (click)="submitRating()"
     >
-      Bewertung speichern
+      {{ i18n.t('rating.save') }}
     </button>
   </div>
 </div>

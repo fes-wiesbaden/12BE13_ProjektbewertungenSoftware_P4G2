@@ -2,7 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AddGrade, Grade } from '../../../Interfaces/grade.interface';
-import { LearningField } from '../../../Shared/models/learning-fields.interface';
+import {
+  LearningField,
+  TrainingModuleWithAverageDto,
+} from '../../../Shared/models/learning-fields.interface';
+
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +16,16 @@ export class ManageLearningFieldService {
 
   constructor(private http: HttpClient) {}
 
-  getLearningField(studentId: string): Observable<LearningField[]> {
-    return this.http.get<LearningField[]>(`${this.apiUrl}/user/${studentId}/training-modules`);
+  getLearningField(studentId: string) {
+    return this.http.get<LearningField[]>(
+      `${this.apiUrl}/user/${studentId}/training-modules`
+    );
+  }
+
+  getAverageGrade(studentId: string, learningFieldId: string) {
+    return this.http.get<TrainingModuleWithAverageDto>(
+      `${this.apiUrl}/user/${studentId}/training-modules/${learningFieldId}/average`
+    );
   }
 
   getGrades(learningFieldId: string, studentId: string): Observable<Grade[]> {

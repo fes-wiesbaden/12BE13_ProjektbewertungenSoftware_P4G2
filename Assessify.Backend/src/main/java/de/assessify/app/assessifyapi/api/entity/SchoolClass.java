@@ -37,6 +37,14 @@ public class SchoolClass {
     @JsonIgnore
     private List<ClassTeacherList> classTeacherAssignments = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "schoolclass_trainingmodule",
+            joinColumns = @JoinColumn(name = "schoolclass_id"),
+            inverseJoinColumns = @JoinColumn(name = "trainingmodule_id")
+    )
+    private List<TrainingModule> trainingModules = new ArrayList<>();
+
     public void setClassName(String className) {
         this.className = className;
     }

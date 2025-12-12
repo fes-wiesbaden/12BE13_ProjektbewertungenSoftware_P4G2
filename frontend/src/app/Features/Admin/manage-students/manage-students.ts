@@ -17,6 +17,7 @@ import { AddUser, UpdateUser, User, UserResetPassword } from '../../../Shared/mo
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 import { FilterOption, filterOptionColumn, userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
 import { courseAddFields, courseAddSingleOptionFields, courseEditFields, courseEditSingleOptionFields } from '../../../Shared/Components/form-modal/form-modal-fields';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-manage-students',
@@ -61,13 +62,14 @@ export class ManageStudents implements OnInit {
   editingStudent: User | null = null;
   deletingStudent: User | null = null;
 
-  selectedFilter = this.filterOptions[0].key; 
+  selectedFilter = this.filterOptions[0].key;
 
   delete: any;
 
   constructor(
     private userService: UserService,
     private courseService: CourseService,
+    public i18n: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -131,6 +133,7 @@ export class ManageStudents implements OnInit {
             ...res,
           };
         }
+        this.filteredStudents = [...this.students];
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
@@ -175,6 +178,7 @@ export class ManageStudents implements OnInit {
     this.userService.createUserByRoleId(2, dto).subscribe({
       next: (student) => {
         this.students.push(student);
+        this.filteredStudents = [...this.students];
         this.closeAddModel();
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
@@ -188,6 +192,7 @@ export class ManageStudents implements OnInit {
     this.userService.deleteUser(this.deletingStudent).subscribe({
       next: () => {
         this.students = this.students.filter((s) => s.id !== idToDelete);
+        this.filteredStudents = [...this.students];
         this.deletingStudent = null;
         this.closeDeleteModal();
       },

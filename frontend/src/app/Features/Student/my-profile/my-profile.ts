@@ -3,6 +3,7 @@ import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-my-profile',
@@ -36,6 +37,9 @@ export class MyProfile {
     { id: 2, name: 'Torsten Sommerfeld' },
     { id: 3, name: 'Nicole Elborg' },
   ];
+   constructor(
+      public i18n: TranslationService
+    ) {}
 
   grades = [
     { id: 0, grade: 2 },

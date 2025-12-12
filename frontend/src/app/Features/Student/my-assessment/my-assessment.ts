@@ -19,6 +19,7 @@ export interface Group {
   groupId: string;
   groupName: string;
 }
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-my-results',
@@ -120,7 +121,7 @@ export class MyAssessment {
     private authService: AuthService,
     private http: HttpClient,
     private reviewService: MyAssessmentService,
-  ) {
+     public i18n: TranslationService) {
     this.form = this.fb.group({});
   }
 

@@ -1,5 +1,6 @@
 package de.assessify.app.assessifyapi.api.mapper;
 
+import de.assessify.app.assessifyapi.api.dtos.response.ProjectNamesResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectResponseDto;
 import de.assessify.app.assessifyapi.api.entity.Project;
 
@@ -19,5 +20,9 @@ public class ProjectMapper {
                 null,
                 project.getGroups() != null ? project.getGroups().size() : 0
         );
+    }
+
+    public static ProjectNamesResponseDto toNamesResponseDTO(Project project) {
+        return new ProjectNamesResponseDto(project.getId(), project.getProjectName());
     }
 }

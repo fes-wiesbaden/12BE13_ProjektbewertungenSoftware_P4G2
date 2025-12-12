@@ -1,6 +1,6 @@
 <app-form-modal
   [showModal]="showAddModel"
-  [title]="'Kurs anlegen'"
+  [title]="i18n.t('course.create.title')"
   [fields]="fields"
   (close)="closeAddModel()"
   (save)="saveClass($event)"
@@ -8,8 +8,8 @@
 </app-form-modal>
 
 <app-page-header
-  title="Klassen verwalten"
-  titleAdd="Klasse hinzufügen"
+  [title]="i18n.t('course.manage.title')"
+  [titleAdd]="i18n.t('course.add.button')"
   [showAddButton]="true"
   (addClick)="openAddModel()"
   [filterOptions]="filterOptions"
@@ -30,7 +30,7 @@
 
 <app-form-modal
   [showModal]="showEditModal"
-  [title]="'Kurs Editieren'"
+  [title]="i18n.t('course.edit.title')"
   [fields]="fieldsEdit"
   [record]="editingClass"
   (close)="closeEditModal()"
@@ -40,7 +40,7 @@
 
 <app-delete-button
   [showModal]="showDeleteModal"
-  [title]="'Sind Sie sicher, dass sie den Kurs löschen wollen?'"
+  [title]="i18n.t('course.delete.confirm')"
   (close)="closeDeleteModal()"
   (delete)="deleteCourse()"
 ></app-delete-button>

@@ -1,4 +1,4 @@
-<app-page-header title="Note"></app-page-header>
+<app-page-header [title]="i18n.t('grade.page.title')"></app-page-header>
 
 <app-table-column
   [items]="learningFields"
@@ -11,6 +11,6 @@
 <app-grade-viewer-modal
   [showModal]="showViewer"
   [grades]="myGrades"
-  title="Noten anzeigen"
+  [title]="i18n.t('grade.view.title')"
   (close)="showViewer = false"
 ></app-grade-viewer-modal>

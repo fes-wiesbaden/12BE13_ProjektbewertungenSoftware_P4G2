@@ -55,7 +55,7 @@
     >
       <div
         *ngFor="let proj of projects"
-        (click)="viewProjectDetails(proj.id)"
+        routerLink="{{proj.id}}"
         class="bg-white shadow rounded-lg p-4 dark:bg-gray-700 hover:shadow-lg transition-all cursor-pointer hover:ring-2 hover:ring-blue-500 hover:scale-[1.02] duration-200"
       >
         <div class="flex justify-between items-start mb-3">
@@ -209,37 +209,70 @@
               </p>
             </div>
 
-            <!-- Deadline -->
+            <!-- StartDate -->
             <div>
               <label
-                for="deadline"
+                for="startDate"
                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                Deadline <span class="text-red-500">*</span>
+                Start Date <span class="text-red-500">*</span>
               </label>
               <input
                 type="date"
-                formControlName="deadline"
-                id="deadline"
+                formControlName="startDate"
+                id="startDate"
                 class="shadow-sm bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                 [ngClass]="{
                   'border-gray-300':
-                    !projectForm.get('deadline')?.invalid ||
-                    !projectForm.get('deadline')?.touched,
+                    !projectForm.get('startDate')?.invalid ||
+                    !projectForm.get('startDate')?.touched,
                   'border-red-500':
-                    projectForm.get('deadline')?.invalid &&
-                    projectForm.get('deadline')?.touched
+                    projectForm.get('startDate')?.invalid &&
+                    projectForm.get('startDate')?.touched
                 }"
               />
               <p
                 *ngIf="
-                  projectForm.get('deadline')?.invalid &&
-                  projectForm.get('deadline')?.touched
+                  projectForm.get('startDate')?.invalid &&
+                  projectForm.get('startDate')?.touched
                 "
                 class="mt-1 text-sm text-red-600 dark:text-red-400"
               >
-                Deadline is required
+                Start Date is required
               </p>
+            </div>
+
+            <!-- Deadline -->
+            <div>
+              <label
+                for="dueDate"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Due Date <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                formControlName="dueDate"
+                id="dueDate"
+                class="shadow-sm bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                [ngClass]="{
+                  'border-gray-300':
+                    !projectForm.get('dueDate')?.invalid ||
+                    !projectForm.get('dueDate')?.touched,
+                  'border-red-500':
+                    projectForm.get('dueDate')?.invalid &&
+                    projectForm.get('dueDate')?.touched
+                }"
+              />
+              <p
+                *ngIf="
+                  projectForm.get('dueDate')?.invalid &&
+                  projectForm.get('dueDate')?.touched
+                "
+                class="mt-1 text-sm text-red-600 dark:text-red-400"
+              >
+                Due Date is required
+              </p>\
             </div>
 
             <!-- Description -->

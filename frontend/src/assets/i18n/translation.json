@@ -1,35 +1,85 @@
 {
-  "export.title": {
-    "de": "Export",
-    "en": "Export"
-  },
-  "students.title": {
-    "de": "Schüler",
-    "en": "Students"
-  },
-    "teacher.title": {
-    "de": "Lehrer",
-    "en": "Teacher"
-  },
-  "selectAll.title": {
-    "de": "Alle auswählen",
-    "en": "select All"
-  },
-  "search.title": {
-    "de": "Suche...",
-    "en": "Search..."
-  },
-  "optionsSt.title": {
-    "de": "Schüler-optionen",
-    "en": "Student-Options"
-  },
-  "optionsTe.title": {
-    "de": "Lehrer-optionen",
-    "en": "Teacher-Options"
-  },
+  "dashboard.title": { "de": "Übersicht", "en": "Dashboard" },
+  "dashboard.students": { "de": "Anzahl Schüler", "en": "Number of students" },
+  "dashboard.teachers": { "de": "Anzahl Lehrer", "en": "Number of teachers" },
+  "dashboard.admins": { "de": "Anzahl Administratoren", "en": "Number of admins" },
+  "dashboard.courses": { "de": "Anzahl Kurse", "en": "Number of courses" },
 
-  "filter.title": {
-    "de": "Filter",
-    "en": "Filter"
+  "admin.create.title": { "de": "Administrator anlegen", "en": "Create administrator" },
+  "admin.edit.title": { "de": "Administrator editieren", "en": "Edit administrator" },
+  "admin.manage.title": { "de": "Administratoren verwalten", "en": "Manage administrators" },
+  "admin.add.button": { "de": "Administrator hinzufügen", "en": "Add administrator" },
+  "admin.delete.confirm": {
+    "de": "Sind Sie sicher, dass Sie den Admin löschen wollen?",
+    "en": "Are you sure you want to delete the admin?"},
+
+  "course.create.title": { "de": "Kurs anlegen", "en": "Create course" },
+  "course.edit.title": { "de": "Kurs editieren", "en": "Edit course" },
+  "course.manage.title": { "de": "Klassen verwalten", "en": "Manage classes" },
+  "course.add.button": { "de": "Klasse hinzufügen", "en": "Add class" },
+  "course.delete.confirm": {
+    "de": "Sind Sie sicher, dass Sie den Kurs löschen wollen?",
+    "en": "Are you sure you want to delete the course?"},
+
+  "learningField.create.title": { "de": "Lernfeld anlegen", "en": "Create learning field" },
+  "learningField.edit.title": { "de": "Lernfelder editieren", "en": "Edit learning fields" },
+  "learningField.manage.title": { "de": "Lernfelder verwalten", "en": "Manage learning fields" },
+  "learningField.add.button": { "de": "Lernfeld hinzufügen", "en": "Add learning field" },
+  "learningField.delete.confirm": {
+    "de": "Sind Sie sicher, dass Sie das Lernfeld löschen wollen?",
+    "en": "Are you sure you want to delete the learning field?"},
+
+  "question.create.title": { "de": "Frage anlegen", "en": "Create question" },
+  "question.edit.title": { "de": "Frage editieren", "en": "Edit question" },
+  "question.manage.title": { "de": "Fragen verwalten", "en": "Manage questions" },
+  "question.add.button": { "de": "Frage hinzufügen", "en": "Add question" },
+  "question.delete.confirm": {
+    "de": "Sind Sie sicher, dass Sie die Frage löschen wollen?",
+    "en": "Are you sure you want to delete the question?"},
+
+  "student.create.title": { "de": "Schüler anlegen", "en": "Create student" },
+  "student.edit.title": { "de": "Schüler editieren", "en": "Edit student" },
+  "student.manage.title": { "de": "Schüler verwalten", "en": "Manage students" },
+  "student.add.button": { "de": "Schüler hinzufügen", "en": "Add student" },
+  "student.delete.confirm": {
+    "de": "Sind Sie sicher, dass Sie den Schüler löschen wollen?",
+    "en": "Are you sure you want to delete the student?"},
+
+   "teacher.create.title": { "de": "Lehrer anlegen", "en": "Create teacher" },
+  "teacher.edit.title": { "de": "Lehrer editieren", "en": "Edit teacher" },
+  "teacher.manage.title": { "de": "Lehrer verwalten", "en": "Manage teachers" },
+  "teacher.add.button": { "de": "Lehrer hinzufügen", "en": "Add teacher" },
+  "teacher.delete.confirm": {
+    "de": "Sind Sie sicher, dass Sie den Lehrer löschen wollen?",
+    "en": "Are you sure you want to delete the teacher?"},
+
+"rating.choose": { "de": "Bitte wähle eine Bewertung", "en": "Please choose a rating" },
+  "rating.reset": { "de": "Zurücksetzen", "en": "Reset" },
+  "rating.save": { "de": "Bewertung speichern", "en": "Save rating" },
+
+  "group.my.title": { "de": "Meine Gruppe", "en": "My group" },
+  "group.table.firstname": { "de": "Vorname", "en": "First name" },
+  "group.table.lastname": { "de": "Nachname", "en": "Last name" },
+  "group.table.email": { "de": "E-Mail", "en": "Email" },
+
+
+    "grade.page.title": { "de": "Note", "en": "Grade" },
+  "grade.view.title": { "de": "Noten anzeigen", "en": "View grades" },
+
+    "grades.teachers.title": { "de": "Lehrer", "en": "Teachers" },
+  "grades.grades.title": { "de": "Noten", "en": "Grades" },
+  "grades.overall.title": { "de": "Gesamtnote", "en": "Overall grade" },
+
+  "dashboard.notifications": { "de": "Benachrichtigungen", "en": "Notifications" },
+  "dashboard.theme": { "de": "Theme", "en": "Theme" },
+  "dashboard.search.placeholder": { "de": "Inhalte suchen...", "en": "Search content..." },
+  "requests.title": { "de": "Anfragen", "en": "Requests" },
+  "requests.description": {
+    "de": "Sed tortor, sed velit ridiculus ipsum pharetra lacus odio gravida augue enim.",
+    "en": "Sed tortor, sed velit ridiculus ipsum pharetra lacus odio gravida augue enim."
+  },
+  "requests.error": {
+    "de": "Senectus malesuada suspendisse bibendum elit amet vitae.",
+    "en": "Senectus malesuada suspendisse bibendum elit amet vitae."}
+
   }
-}

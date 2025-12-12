@@ -1,112 +1,102 @@
-import { Component, input, computed } from '@angular/core';
+import {Component, input, computed, signal, OnInit} from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { DatePipe, TitleCasePipe, NgClass, CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-
-interface IMember {
-  id: number;
-  name: string;
-  username?: string;
-}
-
-interface IGroup {
-  id: number;
-  name: string;
-  description?: string;
-  projectId: number;
-  projectName: string;
-  members: IMember[];
-  createdDate: Date;
-  deadline: Date;
-}
+import { DatePipe, NgClass, CommonModule } from '@angular/common';
+import {Router, RouterLink} from '@angular/router';
+import {GroupCreateRequestDto, IGroup} from '../../../core/modals/group.modal';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {GroupService} from '../../../core/services/group.service';
+import {GroupMapperService} from '../../../core/services/group.mapper.service';
+import {ProjectService} from '../../../core/services/project.service';
 
 @Component({
   selector: 'app-group',
   standalone: true,
-  imports: [MatIcon, DatePipe, TitleCasePipe, NgClass, CommonModule, RouterLink],
+  imports: [MatIcon, DatePipe, NgClass, CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './group.html',
   styleUrls: ['./group.css'],
 })
-export class Group {
+export class Group implements OnInit {
   groupId = input.required<string>();
+  showAddGroupModal: boolean = false;
+  group = signal<IGroup | undefined>(undefined);
+  isLoading = false;
+  errorMessage= '';
+  groupForm!: FormGroup;
+  isSubmitting = false;
 
-  groups: IGroup[] = [
-    {
-      id: 1,
-      name: 'Group 1',
-      description: '',
-      projectId: 1,
-      projectName: 'Project 1',
-      createdDate: new Date('2024-01-15'),
-      deadline: new Date('2024-06-30'),
-      members: [
-        { id: 1, name: 'Alice Johnson', username: 'alice@example.com' },
-        { id: 2, name: 'Bob Smith', username: 'bob@example.com' },
-        { id: 3, name: 'Carol White', username: 'carol@example.com' },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Group 2',
-      description: '',
-      projectId: 1,
-      projectName: 'Project 1',
-      createdDate: new Date('2024-01-15'),
-      deadline: new Date('2024-05-30'),
-      members: [
-        { id: 4, name: 'David Brown', username: 'david@example.com' },
-        { id: 5, name: 'Eve Davis', username: 'eve@example.com' },
-      ],
-    },
-    {
-      id: 3,
-      name: 'Group 3',
-      description: '',
-      projectId: 2,
-      projectName: 'Project 2',
-      createdDate: new Date('2024-02-01'),
-      deadline: new Date('2024-07-15'),
-      members: [
-        { id: 6, name: 'Frank Miller', username: 'frank@example.com' },
-        { id: 7, name: 'Grace Lee', username: 'grace@example.com' },
-        { id: 8, name: 'Henry Wilson', username: 'henry@example.com' },
-      ],
-    },
-  ];
-
-  currentGroup = computed(() => {
-    const id = Number(this.groupId());
-    return this.groups.find((g) => g.id === id);
-  });
-
-  daysUntilDeadline = computed(() => {
-    const group = this.currentGroup();
-    if (!group) return 0;
-
-    const today = new Date();
-    const deadline = new Date(group.deadline);
-    const diffTime = deadline.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    return diffDays;
-  });
-
-  isOverdue = computed(() => this.daysUntilDeadline() < 0);
-  isDeadlineApproaching = computed(
-    () => this.daysUntilDeadline() >= 0 && this.daysUntilDeadline() <= 7,
-  );
-
-  getDeadlineText(days: number): string {
-    if (days < 0) {
-      return `${Math.abs(days)} day${Math.abs(days) !== 1 ? 's' : ''} overdue`;
-    } else if (days === 0) {
-      return 'Due today';
-    } else if (days === 1) {
-      return 'Due tomorrow';
-    } else {
-      return `${days} days remaining`;
-    }
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private groupService: GroupService,
+    private mapper: GroupMapperService,
+    private projectService: ProjectService
+  ) {
+    this.initForm();
   }
+
+  private initForm() {
+    this.groupForm = this.fb.group({
+      groupName: new FormControl('', [Validators.required]),
+      projectId: new FormControl('', [Validators.required]),
+    })
+  }
+
+  ngOnInit(): void {
+    this.loadGroups();
+  }
+
+  loadGroups(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    const id = String(this.groupId());
+
+    this.groupService.getGroupById(id).subscribe({
+      next: (group: IGroup) => {
+        this.group.set(group);
+        this.isLoading = false;
+        console.log('Loaded Group: ', group)
+      },
+      error: (error) => {
+        console.log('Error fetching group: ', error)
+        this.errorMessage = 'Failed to load group. Please try again';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  onSubmit() {
+    if (this.groupForm.invalid) {
+      this.groupForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    const formValue = this.groupForm.value;
+    const newGroup: GroupCreateRequestDto = {
+      groupName: formValue.groupName,
+      projectId: formValue.projectId
+    };
+
+    console.log("Creating new group:", newGroup);
+
+    this.groupService.createGroup(newGroup).subscribe({
+      next: (createdGroup) => {
+        console.log('Group created successfully', createdGroup);
+        this.isSubmitting = false;
+        this.closeAddGroupModal();
+        this.loadGroups();
+      },
+      error: (error) => {
+        console.log('Error creating group: ', error)
+        this.errorMessage = 'Failed to create group. Please try again';
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  // ✅ Computed signal
+  currentGroup = computed(() => this.group());
 
   getTaskStatusColor(status: string): string {
     switch (status) {
@@ -131,5 +121,15 @@ export class Group {
 
   addTask() {
     console.log('Add task to group', this.groupId());
+  }
+
+  openAddGroupModal(): void {
+    this.showAddGroupModal = true;
+  }
+
+  closeAddGroupModal(): void {
+    this.showAddGroupModal = false;
+    this.groupForm.reset();
+    this.errorMessage = '';
   }
 }
