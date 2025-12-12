@@ -3,9 +3,11 @@ package de.assessify.app.assessifyapi.api.controller.schoolclass;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import de.assessify.app.assessifyapi.api.dtos.request.AddSchoolClassDto;
-import de.assessify.app.assessifyapi.api.dtos.request.AddUserWithCourseDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateSchoolClassDto;
-import de.assessify.app.assessifyapi.api.dtos.response.*;
+import de.assessify.app.assessifyapi.api.dtos.response.SchoolClassAndLearningFieldDto;
+import de.assessify.app.assessifyapi.api.dtos.response.SchoolClassDto;
+import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleSummaryDto;
+import de.assessify.app.assessifyapi.api.dtos.response.UserWithSchoolClassDto;
 import de.assessify.app.assessifyapi.api.entity.TrainingModule;
 import de.assessify.app.assessifyapi.api.repository.TrainingModuleRepository;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
@@ -72,7 +74,6 @@ public class SchoolClassController {
         return ResponseEntity.ok(classes);
     }
 
-
     @GetMapping("/school-class")
     public ResponseEntity<List<SchoolClassDto>> getSchoolClassesForCurrentUser(@RequestHeader("Authorization") String authHeader) {
         try {
@@ -80,20 +81,7 @@ public class SchoolClassController {
 
             var classes = schoolClassRepository.findByUsers_Id(userId)
                     .stream()
-                    .map(c -> new SchoolClassDto(
-        c.getId(),
-        c.getCourseName(),
-        c.getClassName(),
-        c.getTrainingModules().stream()
-                .map(tm -> new TrainingModuleSummaryDto(
-                        tm.getId(),
-                        tm.getName(),
-                        tm.getDescription(),
-                        tm.getWeightingHours()
-                ))
-                .toList()
-))
-
+                    .map(c -> new SchoolClassDto(c.getId(), c.getCourseName(), c.getClassName()))
                     .toList();
 
             return ResponseEntity.ok(classes);
@@ -118,19 +106,10 @@ public class SchoolClassController {
                             .noneMatch(u -> u.getId().equals(userId))
                     )
                     .map(c -> new SchoolClassDto(
-        c.getId(),
-        c.getCourseName(),
-        c.getClassName(),
-        c.getTrainingModules().stream()
-                .map(tm -> new TrainingModuleSummaryDto(
-                        tm.getId(),
-                        tm.getName(),
-                        tm.getDescription(),
-                        tm.getWeightingHours()
-                ))
-                .toList()
-))
-
+                            c.getId(),
+                            c.getCourseName(),
+                            c.getClassName()
+                    ))
                     .toList();
 
             return ResponseEntity.ok(result);
@@ -141,33 +120,14 @@ public class SchoolClassController {
         }
     }
 
-    // @PostMapping("/school-class")
-    // public ResponseEntity<SchoolClassDto> addSchoolClass(@RequestBody AddSchoolClassDto dto) {
-    //    SchoolClass entity = new SchoolClass();
-    //    entity.setCourseName(dto.name());
-
-    //    SchoolClass saved = schoolClassRepository.save(entity);
-
-    //    SchoolClassDto response = new SchoolClassDto(
-    //            saved.getId(),
-    //            saved.getCourseName(),
-    //            saved.getClassName(),
-    //            saved.setTrainingModules(dto.)
-    //    );
-
-    //    return ResponseEntity.ok(response);
-    // }
     @PostMapping("/school-class")
     public ResponseEntity<SchoolClassAndLearningFieldDto> addSchoolClass(@RequestBody AddSchoolClassDto dto) {
 
-        // Entity anlegen
         SchoolClass entity = new SchoolClass();
         entity.setCourseName(dto.name());
 
-        // Liste für gefundene TrainingModules (Lernfelder)
         List<TrainingModule> learningFields = new ArrayList<>();
 
-        // Wenn IDs übergeben wurden, einzeln laden und in die Liste packen
         if (dto.learningFieldsIds() != null && !dto.learningFieldsIds().isEmpty()) {
             for (UUID learningFieldId : dto.learningFieldsIds()) {
                 TrainingModule trainingModule = trainingModuleRepository.findById(learningFieldId)
@@ -177,10 +137,8 @@ public class SchoolClassController {
             entity.setTrainingModules(learningFields);
         }
 
-        // Speichern
         SchoolClass saved = schoolClassRepository.save(entity);
 
-        // Response bauen: falls keine Lernfelder, werden leere Listen zurückgegeben
         SchoolClassAndLearningFieldDto response = new SchoolClassAndLearningFieldDto(
                 saved.getId(),
                 saved.getCourseName(),
@@ -196,7 +154,7 @@ public class SchoolClassController {
     public ResponseEntity<UserWithSchoolClassDto> addSchoolClassToUser(
             @PathVariable UUID schoolClassId,
             @RequestHeader("Authorization") String authHeader
-            ){
+    ){
         try {
             UUID userId = extractUserId(authHeader);
 
@@ -215,20 +173,8 @@ public class SchoolClassController {
                     updatedUser.getFirstName(),
                     updatedUser.getUsername(),
                     updatedUser.getSchoolClasses().stream()
-                            .map(r -> new SchoolClassDto(
-        r.getId(),
-        r.getCourseName(),
-        r.getClassName(),
-        r.getTrainingModules().stream()
-                .map(tm -> new TrainingModuleSummaryDto(
-                        tm.getId(),
-                        tm.getName(),
-                        tm.getDescription(),
-                        tm.getWeightingHours()
-                ))
-                .toList()
-))
-.toList()
+                            .map(r -> new SchoolClassDto(r.getId(), r.getCourseName(), r.getClassName()))
+                            .toList()
             );
 
             return ResponseEntity.ok(response);
@@ -239,49 +185,40 @@ public class SchoolClassController {
     }
 
     @PutMapping("/school-class/{schoolClassId}")
-    public ResponseEntity<SchoolClassDto> updateRole(
+    public ResponseEntity<SchoolClassAndLearningFieldDto> updateRole(
             @PathVariable UUID schoolClassId,
             @RequestBody UpdateSchoolClassDto dto) {
 
         SchoolClass schoolClass = entityFinderService.findSchoolClass(schoolClassId);
 
-        // 2. Kursname updaten
         schoolClass.setCourseName(dto.name());
 
-        // 3. Lernfelder aktualisieren (falls übergeben)
+        List<TrainingModule> learningFields;
         if (dto.learningFieldsIds() != null && !dto.learningFieldsIds().isEmpty()) {
-            List<TrainingModule> learningFields = trainingModuleRepository.findAllById(dto.learningFieldsIds());
+            learningFields = trainingModuleRepository.findAllById(dto.learningFieldsIds());
 
             if (learningFields.size() != dto.learningFieldsIds().size()) {
-                return ResponseEntity.badRequest().body(null); // manche Ids nicht gefunden
+                return ResponseEntity.badRequest().build(); // manche IDs nicht gefunden
             }
-
             schoolClass.setTrainingModules(learningFields);
         } else {
-            // Optional: falls leer, bestehende Lernfelder entfernen
-            schoolClass.setTrainingModules(Collections.emptyList());
+            learningFields = Collections.emptyList();
+            schoolClass.setTrainingModules(learningFields);
         }
 
-        // 4. Speichern
         SchoolClass updated = schoolClassRepository.save(schoolClass);
 
-        // 5. DTO zurückgeben
-        SchoolClassDto response = new SchoolClassDto(
+        SchoolClassAndLearningFieldDto response = new SchoolClassAndLearningFieldDto(
                 updated.getId(),
                 updated.getCourseName(),
                 updated.getClassName(),
-                updated.getTrainingModules().stream()
-                        .map(tm -> new TrainingModuleSummaryDto(
-                                tm.getId(),
-                                tm.getName(),
-                                tm.getDescription(),
-                                tm.getWeightingHours()
-                        ))
-                        .toList()
+                learningFields.stream().map(TrainingModule::getId).toList(),
+                learningFields.stream().map(TrainingModule::getName).toList()
         );
 
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/school-class/amount")
     public ResponseEntity<Long> getSchoolClassAmount() {
         long amount = schoolClassRepository.count();
