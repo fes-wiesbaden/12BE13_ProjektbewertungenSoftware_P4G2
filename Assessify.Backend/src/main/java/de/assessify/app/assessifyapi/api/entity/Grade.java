@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @Data
 @Table(name = "grade")
 public class Grade {
@@ -27,7 +31,7 @@ public class Grade {
     private float value;
 
     @Column(name = "grade_weighting", nullable = false)
-    private float gradeWeighting;
+    private int gradeWeighting;
 
     @Column(name = "date", nullable = false)
     private Date date;

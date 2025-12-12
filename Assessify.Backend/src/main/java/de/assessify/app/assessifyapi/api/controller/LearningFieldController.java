@@ -13,6 +13,9 @@ import de.assessify.app.assessifyapi.api.entity.TrainingModule;
 import de.assessify.app.assessifyapi.api.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import de.assessify.app.assessifyapi.api.repository.GradeRepository;
+import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleWithAverageDto;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -24,12 +27,14 @@ public class LearningFieldController {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final EntityFinderService entityFinderService;
+    private final GradeRepository gradeRepository;
 
-    public LearningFieldController(TrainingModuleRepository learningFieldRepository, UserRepository userRepository, ProjectRepository projectRepository, EntityFinderService entityFinderService) {
+    public LearningFieldController(TrainingModuleRepository learningFieldRepository, UserRepository userRepository, ProjectRepository projectRepository, EntityFinderService entityFinderService, GradeRepository gradeRepository) {
         this.trainingModuleRepository = learningFieldRepository;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.entityFinderService = entityFinderService;
+        this.gradeRepository = gradeRepository;
     }
 
     @GetMapping("/training-modules")
@@ -91,6 +96,9 @@ public class LearningFieldController {
     public ResponseEntity<UserWithModulesDto> addGradeToTrainingModule(
             @PathVariable UUID userId,
             @PathVariable UUID trainingModulesId){
+
+        System.out.println(">>> addGradeToTrainingModule called: userId="
+                + userId + ", moduleId=" + trainingModulesId);
 
         User user = entityFinderService.findUser(userId);
         TrainingModule trainingModule = entityFinderService.findTrainingModule(trainingModulesId);
@@ -170,4 +178,61 @@ public class LearningFieldController {
         trainingModuleRepository.delete(trainingModule);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user/{userId}/training-modules/{trainingModuleId}/average")
+    public ResponseEntity<TrainingModuleWithAverageDto> getAverageGradeForUserAndModule(
+            @PathVariable UUID userId,
+            @PathVariable UUID trainingModuleId
+    ) {
+        var user = entityFinderService.findUser(userId);
+        var module = entityFinderService.findTrainingModule(trainingModuleId);
+
+        var grades = gradeRepository.findByUser_IdAndTrainingModules_Id(user.getId(), module.getId());
+
+        if (grades.isEmpty()) {
+            TrainingModuleWithAverageDto emptyResponse = new TrainingModuleWithAverageDto(
+                    userId,
+                    trainingModuleId,
+                    0.0,
+                    0,
+                    0
+            );
+            return ResponseEntity.ok(emptyResponse);
+        }
+
+        int weightSum = grades.stream()
+                .mapToInt(g -> g.getGradeWeighting())
+                .sum();
+
+        if (weightSum == 0) {
+            TrainingModuleWithAverageDto zeroResponse = new TrainingModuleWithAverageDto(
+                    userId,
+                    trainingModuleId,
+                    0.0,
+                    0,
+                    grades.size()
+            );
+            return ResponseEntity.ok(zeroResponse);
+        }
+
+        double weightedSum = grades.stream()
+                .mapToDouble(g -> g.getValue() * g.getGradeWeighting())
+                .sum();
+
+        double average = weightedSum / weightSum;
+
+        double roundedAverage = Math.round(average * 100.0) / 100.0;
+
+        TrainingModuleWithAverageDto response = new TrainingModuleWithAverageDto(
+                userId,
+                trainingModuleId,
+                roundedAverage,
+                weightSum,
+                grades.size()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+
 }
