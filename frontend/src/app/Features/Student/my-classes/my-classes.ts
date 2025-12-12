@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { MatIcon } from '@angular/material/icon';
 import { DashboardNavbar } from '../../../layout/dashboard-navbar/dashboard-navbar';
+import { TranslationService } from '../../../core/services/translation.service';
 
 export interface Student {
   id: number;
@@ -24,4 +25,7 @@ export class MyClasses {
     { id: 4, firstName: 'Anna', lastName: 'Log', email: 'e@mail.txt' },
     { id: 5, firstName: 'Mona', lastName: 'Lisa', email: 'mona@lisa.koop' },
   ];
+  constructor(
+      public i18n: TranslationService
+    ) {}
 }

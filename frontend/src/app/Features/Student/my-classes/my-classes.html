@@ -3,7 +3,7 @@
 >
   <div class="w-full mb-1">
     <div class="mb-4">
-      <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Meine Gruppe</h1>
+      <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">{{ i18n.t('group.my.title') }}</h1>
     </div>
   </div>
 </div>
@@ -15,19 +15,19 @@
         scope="col"
         class="p-4 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400"
       >
-        Vorname
+        {{ i18n.t('group.table.firstname') }}
       </th>
       <th
         scope="col"
         class="p-4 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400"
       >
-        Nachname
+        {{ i18n.t('group.table.lastname') }}
       </th>
       <th
         scope="col"
         class="p-4 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400"
       >
-        Email
+        {{ i18n.t('group.table.email') }}
       </th>
     </tr>
   </thead>

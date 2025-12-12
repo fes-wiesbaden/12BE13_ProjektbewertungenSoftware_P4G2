@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -7,4 +8,10 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './student-dashboard.html',
   styleUrl: './student-dashboard.css',
 })
-export class StudentDashboard {}
+export class StudentDashboard {
+
+
+  constructor(
+      public i18n: TranslationService
+    ) {}
+}
