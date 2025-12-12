@@ -221,10 +221,12 @@ public class LearningFieldController {
 
         double average = weightedSum / weightSum;
 
+        double roundedAverage = Math.round(average * 100.0) / 100.0;
+
         TrainingModuleWithAverageDto response = new TrainingModuleWithAverageDto(
                 userId,
                 trainingModuleId,
-                average,
+                roundedAverage,
                 weightSum,
                 grades.size()
         );
