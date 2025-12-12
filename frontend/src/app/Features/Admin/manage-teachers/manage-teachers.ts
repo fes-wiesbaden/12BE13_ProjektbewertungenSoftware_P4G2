@@ -140,6 +140,7 @@ export class ManageTeachers implements OnInit {
             ...res,
           };
         }
+        this.filteredTeachers= [...this.teachers];
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
@@ -197,6 +198,7 @@ export class ManageTeachers implements OnInit {
     this.userService.createUserByRoleId(1, dto).subscribe({
       next: (teacher) => {
         this.teachers.push(teacher);
+        this.filteredTeachers= [...this.teachers];
         this.closeAddModel();
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
@@ -210,6 +212,7 @@ export class ManageTeachers implements OnInit {
     this.userService.deleteUser(this.deletingTeacher).subscribe({
       next: () => {
         this.teachers = this.teachers.filter((s) => s.id !== idToDelete);
+        this.filteredTeachers= [...this.teachers];
         this.deletingTeacher = null;
         this.closeDeleteModal();
       },

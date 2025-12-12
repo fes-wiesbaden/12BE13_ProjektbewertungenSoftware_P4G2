@@ -133,6 +133,7 @@ export class ManageStudents implements OnInit {
             ...res,
           };
         }
+        this.filteredStudents = [...this.students];
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
@@ -177,6 +178,7 @@ export class ManageStudents implements OnInit {
     this.userService.createUserByRoleId(2, dto).subscribe({
       next: (student) => {
         this.students.push(student);
+        this.filteredStudents = [...this.students];
         this.closeAddModel();
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
@@ -190,6 +192,7 @@ export class ManageStudents implements OnInit {
     this.userService.deleteUser(this.deletingStudent).subscribe({
       next: () => {
         this.students = this.students.filter((s) => s.id !== idToDelete);
+        this.filteredStudents = [...this.students];
         this.deletingStudent = null;
         this.closeDeleteModal();
       },

@@ -209,6 +209,7 @@ export class ManageClasses implements OnInit {
     this.courseService.createCourse(dto).subscribe({
       next: (schoolclass) => {
         this.classes.push(schoolclass);
+        this.filteredCourses = [...this.classes];
         this.closeAddModel();
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
@@ -228,8 +229,8 @@ export class ManageClasses implements OnInit {
       next: (res: Course) => {
         const index = this.classes.findIndex((s) => s.id === res.id);
         if (index !== -1) this.classes[index] = res;
+        this.filteredCourses = [...this.classes];
         this.closeEditModal();
-        this.loadClasses();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
     });
@@ -242,6 +243,7 @@ export class ManageClasses implements OnInit {
     this.courseService.deleteCourse(idToDelete).subscribe({
       next: () => {
         this.classes = this.classes.filter((s) => s.id !== idToDelete);
+        this.filteredCourses = [...this.classes];
         this.deletingClass = null;
         this.closeDeleteModal();
       },

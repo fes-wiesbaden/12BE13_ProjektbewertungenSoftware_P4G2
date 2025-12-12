@@ -137,6 +137,7 @@ export class ManageLearnfields implements OnInit {
         if (index !== -1) {
           this.learnfields[index] = res;
         }
+        this.filteredLearningFields = [...this.learnfields];
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
@@ -187,6 +188,7 @@ export class ManageLearnfields implements OnInit {
     this.learningFieldService.createLearningField(dto).subscribe({
       next: (learnfield) => {
         this.learnfields.push(learnfield);
+        this.filteredLearningFields = [...this.learnfields];
         this.closeAddModel();
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
@@ -201,6 +203,7 @@ export class ManageLearnfields implements OnInit {
     this.learningFieldService.deleteLearnField(this.toDeleteLearnField).subscribe({
       next: () => {
         this.learnfields = this.learnfields.filter((s) => s.id !== idToDelete);
+        this.filteredLearningFields = [...this.learnfields];
         this.toDeleteLearnField = null;
       },
       error: (err) => console.error('Fehler beim Löschen', err),

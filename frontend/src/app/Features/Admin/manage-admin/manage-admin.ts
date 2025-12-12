@@ -119,6 +119,7 @@ export class ManageAdmins implements OnInit {
       next: (res: User) => {
         const index = this.admins.findIndex((s) => s.id === updatedAdmin.id);
         if (index !== -1) this.admins[index] = res;
+        this.filteredAdmins = [...this.admins];
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
@@ -176,6 +177,7 @@ export class ManageAdmins implements OnInit {
     this.userService.createUserByRoleId(3, dto).subscribe({
       next: (adminUser) => {
         this.admins.push(adminUser);
+        this.filteredAdmins = [...this.admins];
         this.closeAddModel();
       },
       error: (err) => console.error('Fehler beim Erstellen:', err),
@@ -189,6 +191,7 @@ export class ManageAdmins implements OnInit {
     this.userService.deleteUser(this.deletingAdmin).subscribe({
       next: () => {
         this.admins = this.admins.filter((s) => s.id !== idToDelete);
+        this.filteredAdmins = [...this.admins];
         this.deletingAdmin = null;
         this.closeDeleteModal();
       },
