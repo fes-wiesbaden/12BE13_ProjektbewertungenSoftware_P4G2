@@ -10,29 +10,24 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { MyStudentsService } from './my-students.service';
 import { User } from '../../../Shared/models/user.interface';
-import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
-import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 
 @Component({
   selector: 'app-my-students',
-  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponents, TableColumnComponent,ExportModalComponent, ImportModalComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponents, TableColumnComponent],
   templateUrl: './my-students.html',
 })
 export class MyStudents implements OnInit {
   classId!: string;
   students: User[] = [];
   loading = true;
-  showImportModal = false;
-  showExportModal = false;
+
   columns: TableColumn<User>[] = [
     { key: 'firstName', label: 'Vorname' },
     { key: 'lastName', label: 'Nachname' },
     { key: 'username', label: 'Benutzername' },
     { key: 'roleName', label: 'Rolle' },
   ];
-  onImportFile(file: File) {
-    console.log('Import-Datei:', file);
-  }
+
   constructor(
     private route: ActivatedRoute,
     private studentService: MyStudentsService,
