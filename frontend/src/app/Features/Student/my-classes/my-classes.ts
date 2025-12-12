@@ -17,7 +17,6 @@ export interface Group {
   groupId: string;
 }
 
-
 @Component({
   selector: 'app-my-classes',
   standalone: true,
@@ -41,29 +40,27 @@ export class MyClasses {
     // Alle Gruppen des aktuellen Benutzers laden
     this.groupService.getAllGroupsForMember(this.authService.getUserId()).subscribe({
       next: (groups: Group[]) => {
-        this.groupsWithMembers = groups.map(g => ({
+        this.groupsWithMembers = groups.map((g) => ({
           ...g,
           open: false, // für das Accordion
-          members: []  // Platzhalter für Mitglieder
+          members: [], // Platzhalter für Mitglieder
         }));
 
         // Für jede Gruppe die Mitglieder laden
-        this.groupsWithMembers.forEach(group => {
-          console.log(group);
+        this.groupsWithMembers.forEach((group) => {
           this.groupService.getMembersByGroupId(group.groupId).subscribe({
             next: (members: any[]) => {
-              console.log('lllll',members)
-              group.members = members.map(m => ({
+              group.members = members.map((m) => ({
                 id: m.id,
-                fullName: m.fullName
+                fullName: m.fullName,
               }));
             },
-            error: (err) => console.error(`Fehler beim Laden der Mitglieder für Gruppe ${group.id}`, err)
+            error: (err) =>
+              console.error(`Fehler beim Laden der Mitglieder für Gruppe ${group.id}`, err),
           });
         });
-        console.log(this.groupsWithMembers);
       },
-      error: (err) => console.error("Fehler beim Laden der Gruppen", err)
+      error: (err) => console.error('Fehler beim Laden der Gruppen', err),
     });
   }
 }

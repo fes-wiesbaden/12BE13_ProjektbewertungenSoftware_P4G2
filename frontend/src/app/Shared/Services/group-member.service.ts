@@ -12,7 +12,6 @@ export class GroupService {
   ) {}
 
 getMembersByGroupId(groupId: string) {
-    console.log('service',groupId);
   return this.http.get<any[]>(`${this.apiUrl}group-members/group/${groupId}/members`);
 }
 
