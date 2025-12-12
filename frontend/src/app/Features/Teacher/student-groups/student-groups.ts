@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { IGroup, IProject } from '../project/project';
 import { RouterLink } from '@angular/router';
+import {IGroup} from '../../../core/modals/project.modal';
 
 export interface Student {
   id: number;
@@ -28,13 +28,13 @@ export class StudentGroups implements OnInit {
   }
 
   loadGroups(): void {
-    this.groups = [
-      { id: 1, name: 'Group 1', members: ['Alice', 'Bob', 'Charlie'] },
-      { id: 2, name: 'Group 2', members: ['Alice', 'Bob', 'Charlie'] },
-      { id: 3, name: 'Group 3', members: ['Alice', 'Bob', 'Charlie'] },
-      { id: 4, name: 'Group 4', members: ['Alice', 'Bob', 'Charlie'] },
-      { id: 5, name: 'Group 5', members: ['Alice', 'Bob', 'Charlie'] },
-    ];
+    // this.groups = [
+    //   { id: 1, name: 'Group 1', members: ['Alice', 'Bob', 'Charlie'] },
+    //   { id: 2, name: 'Group 2', members: ['Alice', 'Bob', 'Charlie'] },
+    //   { id: 3, name: 'Group 3', members: ['Alice', 'Bob', 'Charlie'] },
+    //   { id: 4, name: 'Group 4', members: ['Alice', 'Bob', 'Charlie'] },
+    //   { id: 5, name: 'Group 5', members: ['Alice', 'Bob', 'Charlie'] },
+    // ];
   }
 
   openAddGroupModal(): void {

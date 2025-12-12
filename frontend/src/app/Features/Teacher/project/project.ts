@@ -1,22 +1,7 @@
 import { Component, input, computed, signal, effect } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-
-export interface IGroup {
-  id: number;
-  name: string;
-  members: string[];
-}
-
-export interface IProject {
-  id: number;
-  title: string;
-  description?: string;
-  status?: 'active' | 'completed' | 'pending' | 'overdue';
-  deadline: Date;
-  groups: IGroup[];
-  createdAt?: Date;
-}
+import {IProject} from '../../../core/modals/project.modal';
 
 @Component({
   selector: 'app-project',
@@ -29,66 +14,11 @@ export class Project {
   projectId = input.required<string>();
 
   projects = signal<IProject[]>([
-    {
-      id: 1,
-      title: 'Project 1',
-      description: 'Einrichtung eines IT-geschützten Arbeitsplatzes I',
-      status: 'completed',
-      deadline: new Date('2023-03-15'),
-      groups: [
-        { id: 1, name: 'Group 1', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 2, name: 'Group 2', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 3, name: 'Group 3', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 4, name: 'Group 4', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 5, name: 'Group 5', members: ['Alice', 'Bob', 'Charlie'] },
-      ],
-    },
-    {
-      id: 2,
-      title: 'Project 2',
-      description: 'Einrichtung eines IT-geschützten Arbeitsplatzes II',
-      status: 'completed',
-      deadline: new Date('2024-04-20'),
-      groups: [
-        { id: 1, name: 'Group 1', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 2, name: 'Group 2', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 3, name: 'Group 3', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 4, name: 'Group 4', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 5, name: 'Group 5', members: ['Alice', 'Bob', 'Charlie'] },
-      ],
-    },
-    {
-      id: 3,
-      title: 'Project 3',
-      description: 'IOT',
-      status: 'completed',
-      deadline: new Date('2024-01-10'),
-      groups: [
-        { id: 1, name: 'Group 1', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 2, name: 'Group 2', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 3, name: 'Group 3', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 4, name: 'Group 4', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 5, name: 'Group 5', members: ['Alice', 'Bob', 'Charlie'] },
-      ],
-    },
-    {
-      id: 4,
-      title: 'Project 4',
-      description: 'Projektbewertung Software',
-      status: 'pending',
-      deadline: new Date('2025-12-17'),
-      groups: [
-        { id: 1, name: 'Group 1', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 2, name: 'Group 2', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 3, name: 'Group 3', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 4, name: 'Group 4', members: ['Alice', 'Bob', 'Charlie'] },
-        { id: 5, name: 'Group 5', members: ['Alice', 'Bob', 'Charlie'] },
-      ],
-    },
+
   ]);
 
   currentProject = computed(() => {
-    const id = Number(this.projectId());
+    const id = String(this.projectId());
     return this.projects().find((p) => p.id === id);
   });
 
@@ -100,7 +30,7 @@ export class Project {
     if (!project) return null;
 
     const today = new Date();
-    const deadline = new Date(project.deadline);
+    const deadline = new Date(project.dueDate);
     const diffTime = deadline.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 

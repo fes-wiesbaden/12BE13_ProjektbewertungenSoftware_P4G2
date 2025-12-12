@@ -44,7 +44,8 @@ public class DataInitializer implements CommandLineRunner {
         String username = firstName + "."  + lastName;
 
         if (!userRepository.existsByUsername(username)) {
-            String rawPassword = generateRandomPassword();
+            // String rawPassword = generateRandomPassword();
+            String rawPassword = "123";
 
             User user = new User();
             user.setFirstName(firstName);

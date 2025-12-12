@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,13 +46,22 @@ public class User {
     )
     private List<TrainingModule> trainingModules = new ArrayList<>();
 
+
+    // many to many with schoolclass (for students)
     @ManyToMany
     @JoinTable(
             name = "user_schoolclass",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "class_id")
     )
+    @JsonIgnore
     private List<SchoolClass> schoolClasses = new ArrayList<>();
+
+
+    // teachers assigned to classes (bidirectional)
+    @OneToMany(mappedBy = "teacher" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ClassTeacherList> teacherClassAssignments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> grades = new ArrayList<>();
@@ -58,9 +69,44 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
+
+    // members
+    @OneToMany(mappedBy="member", cascade= CascadeType.ALL, orphanRemoval=true)
+    @JsonIgnore
+    private List<GroupMember> groupMemberships = new ArrayList<>();
+
+    public List<GroupMember> getGroupMemberships(){
+        return groupMemberships;
+    
+    }
+
+    public void setGroupMemberships(List<GroupMember> groupMembership){
+        this.groupMemberships = groupMemberships;
+    }
+
+
+    // @ManyToOne
+    // @JoinColumn(name = "school_class_id")
+    // private SchoolClass schoolClasses;
+
     public String getPassword() { return password; }
 
     public void setPassword(String password) { this.password = password; }
+
+
+    // Helper methods
+    public void addSchoolClass(SchoolClass schoolClass) {
+        schoolClasses.add(schoolClass);
+        schoolClass.getUsers().add(this);
+    }
+    
+    public void removeSchoolClass(SchoolClass schoolClass) {
+        schoolClasses.remove(schoolClass);
+        schoolClass.getUsers().remove(this);
+    }
+
+
+
 
     public UUID getId() {
         return id;
@@ -136,5 +182,17 @@ public class User {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public List<SchoolClass> getSchoolClass (){
+        return schoolClasses;
+    }
+
+    public void setSchoolClass (List<SchoolClass> schoolClasses){
+        this.schoolClasses = schoolClasses;
+    }
+
+    public List<ClassTeacherList> getTeacherClassAssignments (){
+        return teacherClassAssignments;
     }
 }
