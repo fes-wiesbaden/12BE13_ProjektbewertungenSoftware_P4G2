@@ -22,6 +22,7 @@ import { ExportModalComponent } from '../../../Shared/Components/export-modal/ex
 export class MyStudents implements OnInit {
   courseId!: string;
   courseName!: string;
+  public classId: string = '';
   students: User[] = [];
   loading = true;
   showImportModal = false;
@@ -62,6 +63,7 @@ export class MyStudents implements OnInit {
     }
     this.courseId = courseIdParam;
     this.courseName = courseNameParam;
+    this.classId = courseIdParam;
     this.loadStudents();
   }
 
