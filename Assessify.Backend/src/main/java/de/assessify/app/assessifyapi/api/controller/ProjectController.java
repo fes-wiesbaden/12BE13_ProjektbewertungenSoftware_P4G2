@@ -1,6 +1,7 @@
 package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.dtos.request.ProjectCreateRequestDto;
+import de.assessify.app.assessifyapi.api.dtos.response.ProjectNamesResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectResponseDto;
 import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.ProjectStatus;
@@ -10,6 +11,7 @@ import de.assessify.app.assessifyapi.api.repository.TrainingModuleRepository;
 import de.assessify.app.assessifyapi.api.repository.ProjectRepository;
 import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.entity.TrainingModule;
+import de.assessify.app.assessifyapi.api.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,8 @@ public class ProjectController {
     private final ProjectRepository projectRepository;
     private final TrainingModuleRepository trainingModuleRepository;
     private final EntityFinderService entityFinderService;
+    @Autowired
+    private ProjectService projectService;
 
     public ProjectController(ProjectRepository projectRepository, TrainingModuleRepository trainingModuleRepository, EntityFinderService entityFinderService) {
         this.projectRepository = projectRepository;
@@ -54,6 +58,12 @@ public class ProjectController {
         return ResponseEntity.ok(modules);
     }
 
+    @GetMapping("/names")
+    public ResponseEntity<List<ProjectNamesResponseDto>> getAllProjectNames() {
+        List<ProjectNamesResponseDto> response = projectService.getAllProjectsName();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponseDto> getProjectById(@PathVariable UUID id) {
         Project project = projectRepository.findById(id)
@@ -75,6 +85,8 @@ public class ProjectController {
 
     @PostMapping
     public ResponseEntity<ProjectResponseDto> createProject(@RequestBody ProjectCreateRequestDto dto) {
+
+//        var parsedDate = dto.
 
         Project entity = new Project();
         entity.setProjectName(dto.projectName());

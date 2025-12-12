@@ -6,6 +6,7 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {IProject, ProjectCreateRequestDto, ProjectStatus} from '../../../core/modals/project.modal';
 import {ProjectService} from '../../../core/services/project.service';
 import {ProjectMapperService} from '../../../core/services/project.mapper.service';
+import {AuthService} from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-projects-list',
@@ -26,7 +27,7 @@ export class Projects implements OnInit {
     private router: Router,
     private projectService: ProjectService,
     private mapper: ProjectMapperService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.initForm();
   }
@@ -35,13 +36,7 @@ export class Projects implements OnInit {
     this.loadProjects();
   }
 
-  initForm(): void {
-    this.projectForm = this.fb.group({
-      projectName: ['', [Validators.required, Validators.minLength(3)]],
-      deadline: ['', Validators.required],
-      description: ['']
-    });
-  }
+
 
   loadProjects(): void {
     this.isLoading = true;
@@ -86,6 +81,14 @@ export class Projects implements OnInit {
     this.showNewModel = false;
     this.projectForm.reset();
   }
+  initForm(): void {
+    this.projectForm = this.fb.group({
+      projectName: ['', [Validators.required, Validators.minLength(3)]],
+      startDate: ['', Validators.required],
+      dueDate: ['', Validators.required],
+      description: ['']
+    });
+  }
 
   onSubmit(): void {
     if (this.projectForm.invalid) {
@@ -94,13 +97,13 @@ export class Projects implements OnInit {
     }
 
     this.isSubmitting = true;
-
     const formValue = this.projectForm.value;
+
     const newProject: ProjectCreateRequestDto = {
       projectName: formValue.projectName,
       projectDescription: formValue.description || '',
-      startDate: new Date(),
-      dueDate: new Date(formValue.deadline),
+      startDate: this.mapper.serializeDate(new Date(formValue.startDate)),
+      dueDate: this.mapper.serializeDate(new Date(formValue.dueDate)),
       ProjectStatus: ProjectStatus.PENDING
     };
 
@@ -117,6 +120,11 @@ export class Projects implements OnInit {
         this.isSubmitting = false;
       }
     });
+  }
+
+// ✅ Add this helper method to your component
+  private toLocalDateTime(date: Date): string {
+    return date.toISOString().slice(0, -1); // Removes the 'Z'
   }
 
   editProject(id: number): void {

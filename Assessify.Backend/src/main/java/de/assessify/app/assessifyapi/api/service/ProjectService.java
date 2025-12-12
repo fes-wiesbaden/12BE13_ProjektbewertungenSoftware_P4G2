@@ -2,6 +2,7 @@ package de.assessify.app.assessifyapi.api.service;
 
 import de.assessify.app.assessifyapi.api.dtos.request.ProjectCreateRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.request.ProjectUpdateRequestDto;
+import de.assessify.app.assessifyapi.api.dtos.response.ProjectNamesResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectResponseDto;
 import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.mapper.ProjectMapper;
@@ -48,6 +49,12 @@ public class ProjectService {
     public List<ProjectResponseDto> getAllProjects() {
         return projectRepository.findAll().stream()
                 .map(ProjectMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProjectNamesResponseDto> getAllProjectsName() {
+        return projectRepository.findAll().stream()
+                .map(ProjectMapper::toNamesResponseDTO)
                 .collect(Collectors.toList());
     }
 

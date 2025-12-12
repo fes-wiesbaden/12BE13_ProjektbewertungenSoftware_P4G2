@@ -11,8 +11,8 @@ export enum ProjectStatus {
 export interface ProjectCreateRequestDto {
   projectName: string;
   projectDescription: string;
-  startDate: Date;
-  dueDate: Date;
+  startDate: string;
+  dueDate: string;
   ProjectStatus: ProjectStatus;
 }
 
@@ -26,7 +26,10 @@ export interface ProjectResponseDto {
   groupCount: number;
 }
 
-
+export interface ProjectNamesResponseDto {
+  id: string;
+  name: string;
+}
 
 // frontend
 // project.modal.ts
