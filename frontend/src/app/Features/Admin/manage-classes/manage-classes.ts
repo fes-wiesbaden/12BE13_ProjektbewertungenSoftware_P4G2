@@ -15,7 +15,6 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
 import { CourseService } from '../../../Shared/Services/course.service';
 import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
 import { AddCourse, Course } from '../../../Shared/models/course.interface';
-import { LearningField } from '../../../Shared/models/learning-fields.interface';
 
 @Component({
   selector: 'app-manage-classes',
@@ -34,9 +33,10 @@ import { LearningField } from '../../../Shared/models/learning-fields.interface'
   templateUrl: './manage-classes.html',
 })
 export class ManageClasses implements OnInit {
-  classes: (Course & { learnfieldNames?: string })[] = [];
+  classes: Course[] = [];
   schoolClass: AddCourse[] = [];
-  learningFields: LearningField[] = [];
+  learningFields: { label: string; value: String }[] = [];
+
   loading = true;
   showAddModel = false;
   showEditModal = false;
@@ -46,10 +46,10 @@ export class ManageClasses implements OnInit {
   editingClass: Course | null = null;
   deletingClass: Course | null = null;
 
-  columns: TableColumn<Course & { learnfieldNames?: string }>[] = [
+  columns: TableColumn<Course>[] = [
     { key: 'courseName', label: 'Kursname' },
     { key: 'className', label: 'Klassenname' },
-    { key: 'learnfieldNames', label: 'Lernfelder' },
+    { key: 'learningFieldNames', label: 'Lernfelder' },
   ];
 
   fields: FormField[] = [
@@ -62,7 +62,7 @@ export class ManageClasses implements OnInit {
       placeholder: 'z.B. 23FIIRG1',
     },
     {
-      key: 'learnfields',
+      key: 'learningFieldIds',
       label: 'Lernfelder',
       type: 'multiselect',
       required: true,
@@ -81,7 +81,7 @@ export class ManageClasses implements OnInit {
       placeholder: 'z.B. 23FIIRG1',
     },
     {
-      key: 'learnfields',
+      key: 'learningFieldIds',
       label: 'Lernfelder',
       type: 'multiselect',
       required: true,
@@ -92,7 +92,7 @@ export class ManageClasses implements OnInit {
 
   constructor(
     private courseService: CourseService,
-    private learningFieldService: LearningFieldService,
+    private learningFieldService: LearningFieldService
   ) {}
 
   onImportFile(file: File) {
@@ -100,51 +100,34 @@ export class ManageClasses implements OnInit {
   }
   ngOnInit(): void {
     this.loadLearningFields();
+    this.loadClasses();
   }
 
   loadLearningFields() {
     this.learningFieldService.getAllLearningFields().subscribe({
-      next: (fields) => {
-        this.learningFields = fields;
+      next: (data) => {
+        this.learningFields = data.map((c: any) => ({ label: c.name, value: c.id }));
 
-        const options = fields.map((lf) => ({ label: lf.name, value: lf.id }));
-        this.fields.find((f) => f.key === 'learnfields')!.options = options;
-        this.fieldsEdit.find((f) => f.key === 'learnfields')!.options = options;
-
-        // Kurse laden, nachdem Lernfelder verfügbar sind
-        this.loadClasses();
+        const courseField = this.fields.find((f) => f.key === 'learningFieldIds');
+        if (courseField) {
+          courseField.options = this.learningFields.map((c) => ({ ...c, selected: false }));
+        }
+        const courseFieldEdit = this.fieldsEdit.find((f) => f.key === 'learningFieldIds');
+        if (courseFieldEdit) {
+          courseFieldEdit.options = this.learningFields.map((c) => ({ ...c, selected: false }));
+        }
       },
-      error: (err) => console.error('Fehler beim Laden der Lernfelder', err),
+      error: (err) => {
+        console.error('Fehler beim Laden der Lehrer', err);
+        this.loading = false;
+      },
     });
   }
 
-  private getLearnfieldNames(ids: string[]): string {
-    return (ids ?? [])
-      .map((id) => this.learningFields.find((lf) => lf.id === id)?.name)
-      .filter(Boolean)
-      .join(', ');
-  }
-
-  private loadClasses() {
+  loadClasses() {
     this.courseService.getAllCourses().subscribe({
       next: (data) => {
-        console.log(data);
-        // Learnfield-Namen setzen
-        this.classes = data.map((course) => ({
-          ...course,
-          learnfieldNames: this.getLearnfieldNames(course.learnfields ?? []),
-        }));
-
-        console.log('dwd', this.classes[0].learnfieldNames);
-        // schoolClass für DTO vorbereiten
-        this.schoolClass = data.map((course) => ({
-          name: course.courseName ?? 'Unbekannt',
-          learnfields: (course.learnfields ?? []).map((id) => {
-            const lf = this.learningFields.find((lf) => lf.id === id);
-            return lf ?? { id, name: 'Unbekannt', description: '', weightingHours: 0 };
-          }),
-        }));
-
+        this.classes = data;
         this.loading = false;
       },
       error: (err) => {
@@ -155,21 +138,17 @@ export class ManageClasses implements OnInit {
   }
 
   saveClass(formData: any) {
-    const dto: AddCourse = { name: formData.courseName, learnfields: formData.learnfields };
+    const dto = {
+      name: formData.courseName,
+      learningFieldsIds: formData.learningFieldIds,
+    };
 
     this.courseService.createCourse(dto).subscribe({
-      next: (res) => {
-        const course: Course & { learnfieldNames?: string } = {
-          id: res.id ?? Math.random().toString(36).slice(2, 9),
-          courseName: res.courseName ?? dto.name,
-          className: res.className ?? '',
-          learnfields: res.learnfields ?? dto.learnfields,
-          learnfieldNames: this.getLearnfieldNames(res.learnfields ?? dto.learnfields),
-        };
-        this.classes.push(course);
+      next: (schoolclass) => {
+        this.classes.push(schoolclass);
         this.closeAddModel();
       },
-      error: (err) => console.error('Fehler beim Erstellen', err),
+      error: (err) => console.error('Fehler beim Erstellen:', err),
     });
   }
 
@@ -179,23 +158,17 @@ export class ManageClasses implements OnInit {
     const dto = {
       id: this.editingClass.id,
       name: formData.courseName,
-      learnfields: formData.learnfields,
+      learningFieldsIds: formData.learningFieldIds,
     };
 
     this.courseService.updateCourse(dto).subscribe({
-      next: (res: any) => {
-        const index = this.classes.findIndex((c) => c.id === res.id);
-        if (index !== -1) {
-          this.classes[index] = {
-            ...this.classes[index],
-            courseName: res.courseName ?? dto.name,
-            learnfields: res.learnfields ?? dto.learnfields,
-            learnfieldNames: this.getLearnfieldNames(res.learnfields ?? dto.learnfields),
-          };
-        }
+      next: (res: Course) => {
+        const index = this.classes.findIndex((s) => s.id === res.id);
+        if (index !== -1) this.classes[index] = res;
         this.closeEditModal();
+        this.loadClasses();
       },
-      error: (err) => console.error('Fehler beim Aktualisieren', err),
+      error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
     });
   }
 
@@ -222,6 +195,16 @@ export class ManageClasses implements OnInit {
   openEditModal(course: Course) {
     this.editingClass = course;
     this.showEditModal = true;
+
+    const selectedIds = course.learningFieldIds ?? [];
+
+    const learningFieldField = this.fieldsEdit.find((f) => f.key === 'learningFieldIds');
+    if (learningFieldField && learningFieldField.options) {
+      learningFieldField.options = learningFieldField.options.map((opt) => ({
+        ...opt,
+        selected: selectedIds.includes(opt.value),
+      }));
+    }
   }
   closeEditModal() {
     this.editingClass = null;

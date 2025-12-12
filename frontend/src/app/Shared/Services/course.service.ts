@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AddCourse, Course } from '../models/course.interface';
+import { AddCourse, Course, UpdateCourse } from '../models/course.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 
@@ -23,7 +23,7 @@ export class CourseService {
   return this.http.post<Course>(`${this.apiUrl}`, dto);
 }
 
-  updateCourse(dto: { id: string; name: string }): Observable<Course> {
+  updateCourse(dto: UpdateCourse): Observable<Course> {
     return this.http.put<Course>(`${this.apiUrl}/${dto.id}`, dto);
   }
 

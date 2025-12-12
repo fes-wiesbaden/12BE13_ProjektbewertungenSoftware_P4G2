@@ -1,17 +1,22 @@
-import { LearningField } from "./learning-fields.interface";
-
 export interface AddCourse {
   name: string;
-  learnfields: LearningField[];
+  learningFieldsIds: String[];
 }
 
 export interface Course {
   id: string;
   courseName: string;
   className: string;
-  learnfields: string[];
+  learningFieldIds: string[];
+  learningFieldNames: string[];
 }
 
 export interface ConnectCourse {
   id: string;
+}
+
+export interface UpdateCourse {
+  id: string;
+  name: string;
+  learningFieldsIds: String[];
 }

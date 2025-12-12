@@ -12,7 +12,8 @@
   [showAddButton]="true"
   (addClick)="openAddModel()"
   (exportClick)="showExportModal = true"
-  (importClick)="showImportModal = true">
+  (importClick)="showImportModal = true"
+>
 </app-page-header>
 
 <app-table-column
@@ -47,7 +48,4 @@
   (fileSelected)="onImportFile($event)"
 ></app-import-modal>
 
-<app-export-modal
-  [show]="showExportModal"
-  (close)="showExportModal = false"
-></app-export-modal>
+<app-export-modal [show]="showExportModal" (close)="showExportModal = false"></app-export-modal>
