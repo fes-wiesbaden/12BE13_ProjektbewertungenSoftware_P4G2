@@ -1,3 +1,3 @@
 package de.assessify.app.assessifyapi.api.dtos.request;
 
-public record AddGradeDto(String gradeName, float value, int gradeWeighting) {}
+public record AddGradeDto(String gradeName, Float value, Integer gradeWeighting) {}
