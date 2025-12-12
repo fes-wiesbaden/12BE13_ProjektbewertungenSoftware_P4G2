@@ -34,6 +34,8 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
 })
 export class ManageClasses implements OnInit {
   classes: Course[] = [];
+  filteredCourses: Course[] = [];
+
   loading = true;
   showImportModal = false;
   showExportModal = false;
@@ -46,6 +48,13 @@ export class ManageClasses implements OnInit {
     { key: 'courseName', label: 'Kursname' },
     { key: 'className', label: 'Klassenname' },
   ];
+
+  filterOptions = [
+    { key: 'courseName', label: 'Kursname' },
+    { key: 'className', label: 'Klassenname' },
+  ];
+
+  selectedFilter = this.filterOptions[0].key; 
 
   fields: FormField[] = [
     {
@@ -112,6 +121,7 @@ export class ManageClasses implements OnInit {
     this.courseService.getAllCourses().subscribe({
       next: (data) => {
         this.classes = data;
+        this.filteredCourses = [...data];
         this.loading = false;
       },
       error: (err) => {
@@ -120,6 +130,19 @@ export class ManageClasses implements OnInit {
       },
     });
   }
+
+  onHeaderSearch(searchValue: string) {
+      searchValue = searchValue.toLowerCase();
+      this.filteredCourses = this.classes.filter((course) => {
+        const value = course[this.selectedFilter as keyof Course];
+        return value ? value.toString().toLowerCase().includes(searchValue) : false;
+      });
+    }
+  
+    onHeaderFilterChange(filterKey: string) {
+      this.selectedFilter = filterKey;
+      this.filteredCourses = [...this.classes];
+    }
 
   saveClass(formData: any) {
     const dto = {

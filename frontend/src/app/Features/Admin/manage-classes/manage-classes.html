@@ -12,12 +12,15 @@
   titleAdd="Klasse hinzufügen"
   [showAddButton]="true"
   (addClick)="openAddModel()"
+  [filterOptions]="filterOptions"
   (exportClick)="showExportModal = true"
-  (importClick)="showImportModal = true">
-</app-page-header>
+  (importClick)="showImportModal = true"
+  (search)="onHeaderSearch($event)"
+  (filterChange)="onHeaderFilterChange($event)"
+></app-page-header>
 
 <app-table-column
-  [items]="classes"
+  [items]="filteredCourses"
   [columns]="columns"
   [showEditButtons]="true"
   [showDeleteButtons]="true"
@@ -48,7 +51,4 @@
   (fileSelected)="onImportFile($event)"
 ></app-import-modal>
 
-<app-export-modal
-  [show]="showExportModal"
-  (close)="showExportModal = false"
-></app-export-modal>
+<app-export-modal [show]="showExportModal" (close)="showExportModal = false"></app-export-modal>
