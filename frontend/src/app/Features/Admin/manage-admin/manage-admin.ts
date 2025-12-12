@@ -151,7 +151,6 @@ export class ManageAdmins implements OnInit {
 
   onHeaderFilterChange(filterKey: string) {
     this.selectedFilter = filterKey;
-    // Optional: Suche zurücksetzen
     this.filteredAdmins = [...this.admins];
   }
 
