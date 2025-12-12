@@ -16,7 +16,9 @@ export class GroupMapperService {
       id: dto.id,
       name: dto.name,
       projectName: dto.projectName,
-      members: dto.members
+      projectId: dto.projectId,
+      members: dto.members,
+      memberCount: dto.memberCount,
     };
   }
 
@@ -24,8 +26,10 @@ export class GroupMapperService {
     return {
       id: dto.id,
       name: dto.groupName,
+      projectId: dto.projectId,
       projectName: dto.projectName,
-      members: []
+      members: [],
+      memberCount: 0,
     }
   }
 
