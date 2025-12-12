@@ -161,3 +161,87 @@ export const courseEditFields: FormField[] = [
     options: [],
   },
 ];
+
+export const courseAddSingleOptionFields: FormField[] = [
+  {
+    key: 'firstName',
+    label: 'Vorname',
+    type: 'text',
+    required: true,
+    colSpan: 3,
+    placeholder: 'Vorname',
+  },
+  {
+    key: 'lastName',
+    label: 'Nachname',
+    type: 'text',
+    required: true,
+    colSpan: 3,
+    placeholder: 'Nachname',
+  },
+  {
+    key: 'username',
+    label: 'Benutzername',
+    type: 'text',
+    required: true,
+    colSpan: 3,
+    placeholder: 'Benutzername',
+  },
+  {
+    key: 'courseId',
+    label: 'Kurs',
+    type: 'select',
+    colSpan: 3,
+    options: [],
+  },
+  {
+    key: 'password',
+    label: 'Passwort',
+    type: 'password',
+    required: true,
+    colSpan: 3,
+    placeholder: 'Passwort',
+  },
+  {
+    key: 'confirmPassword',
+    label: 'Passwort wiederholen',
+    type: 'password',
+    required: true,
+    colSpan: 3,
+    placeholder: 'Passwort wiederholen',
+  },
+];
+
+export const courseEditSingleOptionFields: FormField[] = [
+  {
+    key: 'firstName',
+    label: 'Vorname',
+    type: 'text',
+    required: true,
+    colSpan: 3,
+    placeholder: 'Vorname',
+  },
+  {
+    key: 'lastName',
+    label: 'Nachname',
+    type: 'text',
+    required: true,
+    colSpan: 3,
+    placeholder: 'Nachname',
+  },
+  {
+    key: 'username',
+    label: 'Benutzername',
+    type: 'text',
+    required: true,
+    colSpan: 3,
+    placeholder: 'Benutzername',
+  },
+  {
+    key: 'courseId',
+    label: 'Kurs',
+    type: 'select',
+    colSpan: 3,
+    options: [],
+  },
+];
