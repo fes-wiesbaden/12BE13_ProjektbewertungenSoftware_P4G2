@@ -8,5 +8,6 @@ import de.assessify.app.assessifyapi.api.entity.TrainingModule;
 public record SchoolClassDto (
         UUID id,
         String courseName,
-        String className
+        String className,
+        List<TrainingModuleSummaryDto> trainingModules
 ) {}

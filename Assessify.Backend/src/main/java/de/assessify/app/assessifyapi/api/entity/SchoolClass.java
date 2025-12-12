@@ -44,6 +44,10 @@ public class SchoolClass {
 
     public List<TrainingModule> getTrainingModules() {
     return trainingModules;
+    }
+
+    public List<TrainingModule> setTrainingModules(List<TrainingModule> trainingModules) {
+    return this.trainingModules = trainingModules;
 }
 
     @PrePersist
