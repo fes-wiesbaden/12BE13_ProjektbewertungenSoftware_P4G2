@@ -1,31 +1,37 @@
-<div class="rating-card flex flex-col rounded-lg p-6 mb-4 dark:bg-gray-800">
+<!-- Gruppe auswählen -->
+<div>
+  <label for="groupSelect" class="dark:text-white">Gruppe auswählen:</label>
+  <select id="groupSelect" [(ngModel)]="selectedGroupId" (change)="onGroupChange()" class="p-2 rounded border">
+    <option value="" disabled>-- Bitte wählen --</option>
+    <option *ngFor="let group of groups" [value]="group.groupId">{{ group.groupName }}</option>
+  </select>
+</div>
+
+<!-- Rating Card -->
+<div class="rating-card flex flex-col rounded-lg p-6 mb-4 dark:bg-gray-800" *ngIf="members.length > 0">
   <div class="mb-4">
     <h2 class="text-lg dark:text-white font-semibold">{{ questions[frage].question }}</h2>
     <p class="text-sm dark:text-white">Bitte wähle eine Bewertung</p>
   </div>
 
   <div>
-    @for (member of members; track $index) {
-      <div class="mb-4">
-        <h3 class="font-medium dark:text-white">{{ member.fullName }}</h3>
-        <div class="rating flex space-x-2">
-          @for (val of [1, 2, 3, 4, 5, 6]; track $index) {
-            <button (click)="setRating(member.memberNumberId, val)" type="button">
-              <mat-icon
-                [class.active1]="ratings[member.memberNumberId] === 1 && val === 1"
-                [class.active2]="ratings[member.memberNumberId] === 2 && val === 2"
-                [class.active3]="ratings[member.memberNumberId] === 3 && val === 3"
-                [class.active4]="ratings[member.memberNumberId] === 4 && val === 4"
-                [class.active5]="ratings[member.memberNumberId] === 5 && val === 5"
-                [class.active6]="ratings[member.memberNumberId] === 6 && val === 6"
-              >
-                filter_{{ val }}
-              </mat-icon>
-            </button>
-          }
-        </div>
+    <div *ngFor="let member of members; let i = index" class="mb-4">
+      <h3 class="font-medium dark:text-white">{{ member.fullName }}</h3>
+      <div class="rating flex space-x-2">
+        <button *ngFor="let val of [1,2,3,4,5,6]" (click)="setRating(member.memberNumberId, val)" type="button">
+          <mat-icon
+            [class.active1]="ratings[member.memberNumberId] === 1 && val === 1"
+            [class.active2]="ratings[member.memberNumberId] === 2 && val === 2"
+            [class.active3]="ratings[member.memberNumberId] === 3 && val === 3"
+            [class.active4]="ratings[member.memberNumberId] === 4 && val === 4"
+            [class.active5]="ratings[member.memberNumberId] === 5 && val === 5"
+            [class.active6]="ratings[member.memberNumberId] === 6 && val === 6"
+          >
+            filter_{{ val }}
+          </mat-icon>
+        </button>
       </div>
-    }
+    </div>
   </div>
 
   <div class="mat-card-actions mt-4 flex space-x-2">

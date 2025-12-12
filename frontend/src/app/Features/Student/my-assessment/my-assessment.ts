@@ -1,15 +1,21 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { GroupService } from '../../../Shared/Services/group-member.service';
+import { AuthService } from '../../../core/auth/auth.service';
+
+export interface Group {
+  groupId: string;
+  groupName: string;
+}
 
 @Component({
   selector: 'app-my-results',
   standalone: true,
-  imports: [ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, CommonModule],
+  imports: [ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, CommonModule, FormsModule],
   templateUrl: './my-assessment.html',
   styleUrl: './my-assessment.css',
 })
@@ -29,32 +35,50 @@ export class MyAssessment {
     // ... weitere Fragen
   ];
 
-  // Members bekommen nun eine number-id für das Frontend
+  groups: Group[] = [];
+  selectedGroupId: string = '';
+
   members: { id: string; fullName: string; memberNumberId: number }[] = [];
   ratings: number[] = [];
 
-  constructor(private fb: FormBuilder, private groupService: GroupService) {
+  constructor(private fb: FormBuilder, private groupService: GroupService,private authService: AuthService,) {
     this.form = this.fb.group({});
   }
 
   ngOnInit() {
-    this.loadMembers('33799e78-135d-404f-951b-976d20aa397f'); // Beispiel: groupId
+    this.loadGroups();
+  }
+
+  // Alle Gruppen laden
+  loadGroups() {
+    this.groupService.getAllGroupsForMember(this.authService.getUserId()).subscribe({
+      next: (data: any[]) => {
+        this.groups = data.map(g => ({
+          groupId: g.groupId,
+          groupName: g.groupName
+        }));
+      },
+      error: err => console.error('Fehler beim Laden der Gruppen', err)
+    });
+  }
+
+  // Wird aufgerufen, wenn der Benutzer eine Gruppe auswählt
+  onGroupChange() {
+    if (!this.selectedGroupId) return;
+    this.loadMembers(this.selectedGroupId);
   }
 
   loadMembers(groupId: string) {
     this.groupService.getMembersByGroupId(groupId).subscribe({
       next: (data: any[]) => {
-        console.log(data);
         this.members = data.map((m, idx) => ({
-          id: m.memberId,           // UUID vom Backend
+          id: m.memberId,
           fullName: m.fullName,
-          memberNumberId: idx       // fortlaufende Number-ID fürs Frontend
+          memberNumberId: idx
         }));
-console.log("Mapped members:", this.members);
-        // Ratings-Array nach memberNumberId
         this.ratings = this.members.map(() => 0);
 
-        // FormControls optional (falls du reactive forms benutzt)
+        // FormControls
         this.members.forEach(m => {
           this.form.addControl(`rating_${m.memberNumberId}`, this.fb.control(null, Validators.required));
         });
@@ -88,7 +112,7 @@ console.log("Mapped members:", this.members);
 
   createJson(currentQuestion: number, members: { id: string; fullName: string; memberNumberId: number }[], ratings: number[]) {
     const students = members.map(m => ({
-      studentID: m.id,      // UUID wird weiterhin im Backend genutzt
+      studentID: m.id,
       grade: ratings[m.memberNumberId]
     }));
 
