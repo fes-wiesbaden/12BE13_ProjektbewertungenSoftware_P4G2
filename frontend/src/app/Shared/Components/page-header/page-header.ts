@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class PageHeaderComponents {
   @Input() title = '';
+  @Input() titleAdd = '';
   @Output() addClick = new EventEmitter<void>();
   @Output() importClick = new EventEmitter<void>();
   @Output() exportClick = new EventEmitter<void>();

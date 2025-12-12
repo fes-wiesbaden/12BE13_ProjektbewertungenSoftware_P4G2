@@ -1,25 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, firstValueFrom, map, Observable, of } from 'rxjs';
-import users from './users.json';
 import { Router } from '@angular/router';
 
 interface LoginResponseDto {
   accessToken: string;
-  tokenType: string; // z.B. "Bearer"
+  refreshToken: string;
+  tokenType: string;
+  expiresInSeconds: number;
 }
 
 interface StoredUserData {
   token: string;
+  refreshToken: string;
   tokenType: string;
   claims: Record<string, any>;
+  expiresAt: number;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:4100/api/auth/login';
+  private loginUrl = 'http://localhost:4100/api/auth/login';
+  private refreshUrl = 'http://localhost:4100/api/auth/refresh';
   private readonly storageKey = 'user';
 
   constructor(
@@ -27,7 +31,21 @@ export class AuthService {
     private router: Router,
   ) {}
 
-  // Hilfsmethode: JWT-Token dekodieren
+
+  private getStored(): StoredUserData | null {
+    const raw = localStorage.getItem(this.storageKey);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as StoredUserData;
+    } catch {
+      return null;
+    }
+  }
+
+  private saveStored(data: StoredUserData): void {
+    localStorage.setItem(this.storageKey, JSON.stringify(data));
+  }
+
   private decodeToken(token: string): Record<string, any> | null {
     try {
       const base64Url = token.split('.')[1];
@@ -46,11 +64,10 @@ export class AuthService {
     }
   }
 
-  // Login-Methode
   async login(username: string, password: string): Promise<boolean> {
     try {
       const res = await firstValueFrom(
-        this.http.post<LoginResponseDto>(this.apiUrl, { username, password }),
+        this.http.post<LoginResponseDto>(this.loginUrl, { username, password }),
       );
 
       console.log('Request vom Backend', res);
@@ -60,22 +77,74 @@ export class AuthService {
         return false;
       }
 
-      // Nur den reinen JWT-Token dekodieren
       const claims = this.decodeToken(res.accessToken) || {};
-      console.log('JWT Claims:', claims); // ✅ Debug: alles aus dem JWT
+      console.log('JWT Claims:', claims);
+
+      const now = Date.now();
+      const expiresAt = now + res.expiresInSeconds * 1000;
 
       const stored: StoredUserData = {
         token: res.accessToken,
+        refreshToken: res.refreshToken,
         tokenType: res.tokenType,
         claims,
+        expiresAt,
       };
 
-      localStorage.setItem(this.storageKey, JSON.stringify(stored));
+      this.saveStored(stored);
       return true;
     } catch (error) {
       console.error('Login fehlgeschlagen:', error);
       return false;
     }
+  }
+
+
+  getRefreshToken(): string {
+    const stored = this.getStored();
+    return stored?.refreshToken ?? '';
+  }
+
+  getTokenExpiry(): number {
+    const stored = this.getStored();
+    return stored?.expiresAt ?? 0;
+  }
+
+  refreshToken(): Observable<boolean> {
+    const stored = this.getStored();
+    if (!stored?.refreshToken) {
+      return of(false);
+    }
+
+    return this.http
+      .post<LoginResponseDto>(this.refreshUrl, {
+        refreshToken: stored.refreshToken,
+      })
+      .pipe(
+        map((res) => {
+          if (!res.accessToken) return false;
+
+          const claims = this.decodeToken(res.accessToken) || {};
+          const now = Date.now();
+          const expiresAt = now + res.expiresInSeconds * 1000;
+
+          const newStored: StoredUserData = {
+            token: res.accessToken,
+            refreshToken: res.refreshToken,
+            tokenType: res.tokenType,
+            claims,
+            expiresAt,
+          };
+
+          this.saveStored(newStored);
+          return true;
+        }),
+        catchError((err) => {
+          console.error('Refresh fehlgeschlagen', err);
+          this.logout();
+          return of(false);
+        }),
+      );
   }
 
   logout() {
@@ -84,15 +153,13 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    const stored = localStorage.getItem(this.storageKey);
-    return stored != null;
+    return this.getStored() != null;
   }
 
-  // Zugriff auf Claims
+
   getClaim(claimName: string): any {
-    const stored = localStorage.getItem(this.storageKey);
-    if (!stored) return null;
-    const claims = JSON.parse(stored).claims;
+    const stored = this.getStored();
+    const claims = stored?.claims;
     return claims?.[claimName] ?? null;
   }
 
@@ -105,21 +172,33 @@ export class AuthService {
   }
 
   getRole(): string {
-    const stored = JSON.parse(localStorage.getItem('user') || '{}');
-    return stored.claims?.roleName?.toLowerCase() || '';
-  }
-  getRoleId(): number {
-    const stored = JSON.parse(localStorage.getItem('user') || '{}');
-    return stored.claims?.roleId || 0;
+    const storedRaw = localStorage.getItem(this.storageKey);
+    if (!storedRaw) return '';
+
+    const stored = JSON.parse(storedRaw) as StoredUserData;
+    const roleName = stored.claims?.['roleName'];
+
+    return typeof roleName === 'string' ? roleName.toLowerCase() : '';
   }
 
+  getRoleId(): number {
+    const storedRaw = localStorage.getItem(this.storageKey);
+    if (!storedRaw) return 0;
+
+    const stored = JSON.parse(storedRaw) as StoredUserData;
+    const roleId = stored.claims?.['roleId'];
+
+    return typeof roleId === 'number' ? roleId : 0;
+  }
+
+
   getAllClaims(): Record<string, any> {
-    const stored = localStorage.getItem(this.storageKey);
-    return stored ? JSON.parse(stored).claims : {};
+    const stored = this.getStored();
+    return stored?.claims ?? {};
   }
 
   getToken(): string {
-    const stored = localStorage.getItem(this.storageKey);
-    return stored ? JSON.parse(stored).token : '';
+    const stored = this.getStored();
+    return stored?.token ?? '';
   }
 }

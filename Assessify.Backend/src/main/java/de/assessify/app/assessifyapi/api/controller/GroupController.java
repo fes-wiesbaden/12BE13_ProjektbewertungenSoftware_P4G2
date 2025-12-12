@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.group;
+package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.dtos.request.GroupCreateRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.request.GroupUpdateRequestDto;

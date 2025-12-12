@@ -1,7 +1,7 @@
 <app-form-modal
   [showModal]="showAddModel"
   [title]="'Lehrer anlegen'"
-  [fields]="fieldsNew"
+  [fields]="addFields"
   [record]="null"
   (close)="closeAddModel()"
   (save)="saveTeacher($event)"
@@ -11,16 +11,16 @@
 <app-form-modal
   [showModal]="showEditModal"
   [title]="'Lehrer Editieren'"
-  [fields]="fieldsEdit"
+  [fields]="editFields"
   [record]="editingTeacher"
   (close)="closeEditModal()"
   (save)="saveEdit($event)"
 >
 </app-form-modal>
 
-<!-- ✅ PAGE HEADER MIT IMPORT / EXPORT -->
 <app-page-header
-  title="Lehrer"
+  title="Lehrer verwalten"
+  [titleAdd]="'Lehrer hinzufügen'"
   [showAddButton]="true"
   (addClick)="openAddModel()"
   (importClick)="showImportModal = true"

@@ -11,21 +11,21 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "training-module")
+@Table(name = "training_module")
 public class TrainingModule {
     @Id
     @UuidGenerator
-    @Column(name = "training-module_id", nullable = false, unique = true)
+    @Column(name = "training_module_id", nullable = false, unique = true)
     private UUID id;
 
-    @Column(name = "training-module_name", nullable = false)
+    @Column(name = "training_module_name", nullable = false)
     private String name;
 
-    @Column(name = "training-module_description", nullable = false)
+    @Column(name = "training_module_description", nullable = false)
     private String description;
 
-    @Column(name = "training-module_Weighting", nullable = false)
-    private float weighting;
+    @Column(name = "training_module_weighting_hours", nullable = false)
+    private int weightingHours;
 
     @ManyToMany(mappedBy = "trainingModules")
     @JsonIgnore
@@ -54,12 +54,12 @@ public class TrainingModule {
         this.description = description;
     }
 
-    public float getWeighting() {
-        return weighting;
+    public int getWeightingHours() {
+        return weightingHours;
     }
 
-    public void setWeighting(float weighting) {
-        this.weighting = weighting;
+    public void setWeightingHours(int weightingHours) {
+        this.weightingHours = weightingHours;
     }
 
     public List<User> getUsers() {

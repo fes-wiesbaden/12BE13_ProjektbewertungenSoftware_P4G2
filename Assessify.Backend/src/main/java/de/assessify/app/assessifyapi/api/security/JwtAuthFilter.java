@@ -14,6 +14,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
+
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -40,6 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+
         try {
             String username = jwtService.getUsernameFromToken(token);
 
@@ -58,10 +61,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
 
+
+            filterChain.doFilter(request, response);
+
+        } catch (TokenExpiredException ex) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
         } catch (Exception ex) {
-
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
         }
-
-        filterChain.doFilter(request, response);
     }
 }

@@ -1,7 +1,7 @@
 <app-form-modal
   [showModal]="showAddModel"
   [title]="'Schüler anlegen'"
-  [fields]="fields"
+  [fields]="addFields"
   [record]="null"
   (close)="closeAddModel()"
   (save)="saveStudent($event)"
@@ -11,7 +11,7 @@
 <app-form-modal
   [showModal]="showEditModal"
   [title]="'Schüler Editieren'"
-  [fields]="fieldsEdit"
+  [fields]="editFields"
   [record]="editingStudent"
   (close)="closeEditModal()"
   (save)="saveEdit($event)"
@@ -19,7 +19,8 @@
 </app-form-modal>
 
 <app-page-header
-  title="Schüler"
+  title="Schüler verwalten"
+  [titleAdd]="'Schüler hinzufügen'"
   [showAddButton]="true"
   (addClick)="openAddModel()"
   (importClick)="showImportModal = true"

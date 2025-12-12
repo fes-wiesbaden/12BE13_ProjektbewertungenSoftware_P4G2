@@ -1,9 +1,13 @@
 package de.assessify.app.assessifyapi.api.service;
 
+import de.assessify.app.assessifyapi.api.dtos.request.AddLoginDto;
+import de.assessify.app.assessifyapi.api.dtos.response.LoginDto;
 import de.assessify.app.assessifyapi.api.entity.User;
 import de.assessify.app.assessifyapi.api.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -22,25 +26,73 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    public String loginAndGetJwt(String username, String rawPassword) {
+    public LoginDto login(AddLoginDto loginDto) {
+        String username = loginDto.username();
+        String rawPassword = loginDto.password();
+
         if (username == null || rawPassword == null) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username oder Passwort fehlt");
         }
 
         Optional<User> optionalUser =
                 userRepository.findByUsernameIgnoreCase(username.trim());
 
         if (optionalUser.isEmpty()) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
 
         User user = optionalUser.get();
 
         boolean matches = passwordEncoder.matches(rawPassword, user.getPassword());
         if (!matches) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
 
-        return jwtService.generateToken(user);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        return new LoginDto(
+                accessToken,
+                refreshToken,
+                "Bearer",
+                jwtService.getAccessTokenExpirationInSeconds()
+        );
     }
+
+    public String loginAndGetJwt(String username, String rawPassword) {
+        AddLoginDto dto = new AddLoginDto(username, rawPassword);
+        return login(dto).accessToken();
+    }
+
+    public LoginDto refreshTokens(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Refresh-Token fehlt");
+        }
+
+        if (!jwtService.validateRefreshToken(refreshToken)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Ungültiger Refresh-Token");
+        }
+
+        String username = jwtService.getUsernameFromToken(refreshToken);
+
+        Optional<User> optionalUser =
+                userRepository.findByUsernameIgnoreCase(username.trim());
+
+        if (optionalUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User nicht gefunden");
+        }
+
+        User user = optionalUser.get();
+
+        String newAccessToken = jwtService.generateAccessToken(user);
+        String newRefreshToken = jwtService.generateRefreshToken(user);
+
+        return new LoginDto(
+                newAccessToken,
+                newRefreshToken,
+                "Bearer",
+                jwtService.getAccessTokenExpirationInSeconds()
+        );
+    }
+
 }

@@ -43,9 +43,9 @@ public class Project {
 
     @ManyToMany
     @JoinTable(
-            name = "project_training-module",
+            name = "project_training_module",
             joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "training-module_id")
+            inverseJoinColumns = @JoinColumn(name = "training_module_id")
     )
     private List<TrainingModule> trainingModules = new ArrayList<>();
 

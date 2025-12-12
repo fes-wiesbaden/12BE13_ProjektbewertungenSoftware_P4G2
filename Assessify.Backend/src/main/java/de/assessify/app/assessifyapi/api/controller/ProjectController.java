@@ -1,10 +1,7 @@
-package de.assessify.app.assessifyapi.api.controller.project;
+package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.dtos.request.ProjectCreateRequestDto;
-import de.assessify.app.assessifyapi.api.dtos.request.ProjectUpdateRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectResponseDto;
-import de.assessify.app.assessifyapi.api.dtos.response.ProjectWithTrainingModulesDto;
-import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleSummaryDto;
 import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.ProjectStatus;
 import de.assessify.app.assessifyapi.api.repository.GroupRepository;
@@ -19,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api/projects")
