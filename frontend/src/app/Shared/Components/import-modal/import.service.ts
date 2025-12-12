@@ -28,10 +28,4 @@ export class ImportService {
     formData.append('file', file);
     return this.http.post<ImportResult>(`${this.baseUrl}/classes`, formData);
   }
-
-  importTrainingModules(file: File): Observable<ImportResult> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.http.post<ImportResult>(`${this.baseUrl}/training-modules`, formData);
-  }
 }

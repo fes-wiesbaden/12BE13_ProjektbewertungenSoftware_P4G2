@@ -10,18 +10,26 @@ import {
 } from '../../../Shared/Components/table-column/table-column';
 import { MyStudentsService } from './my-students.service';
 import { User } from '../../../Shared/models/user.interface';
+import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
+import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 
 @Component({
   selector: 'app-my-students',
-  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponents, TableColumnComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponents, TableColumnComponent,    ImportModalComponent,
+      ExportModalComponent,],
   templateUrl: './my-students.html',
 })
 export class MyStudents implements OnInit {
   courseId!: string;
   courseName!: string;
+  public classId: string = '';
   students: User[] = [];
   loading = true;
-
+  showImportModal = false;
+  showExportModal = false;
+   onImportFile(file: File) {
+    console.log('Import-Datei:', file);
+  }
   columns: TableColumn<User>[] = [
     { key: 'firstName', label: 'Vorname' },
     { key: 'lastName', label: 'Nachname' },
@@ -55,6 +63,7 @@ export class MyStudents implements OnInit {
     }
     this.courseId = courseIdParam;
     this.courseName = courseNameParam;
+    this.classId = courseIdParam;
     this.loadStudents();
   }
 

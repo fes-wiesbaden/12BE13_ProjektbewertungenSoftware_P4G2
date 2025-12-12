@@ -11,12 +11,15 @@
   titleAdd="Administrator hinzufügen"
   [showAddButton]="true"
   (addClick)="openAddModel()"
+  [filterOptions]="filterOptions"
   (importClick)="showImportModal = true"
   (exportClick)="showExportModal = true"
+  (search)="onHeaderSearch($event)"
+  (filterChange)="onHeaderFilterChange($event)"
 ></app-page-header>
 
 <app-table-column
-  [items]="admins"
+  [items]="filteredAdmins"
   [columns]="columns"
   [showEditButtons]="true"
   [showDeleteButtons]="true"

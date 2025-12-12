@@ -15,8 +15,8 @@ import { UserService } from '../../../Shared/Services/user.service';
 import { CourseService } from '../../../Shared/Services/course.service';
 import { AddUser, UpdateUser, User, UserResetPassword } from '../../../Shared/models/user.interface';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
-import { userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
-import { courseAddFields, courseEditFields } from '../../../Shared/Components/form-modal/form-modal-fields';
+import { FilterOption, filterOptionColumn, userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
+import { courseAddFields, courseAddSingleOptionFields, courseEditFields, courseEditSingleOptionFields } from '../../../Shared/Components/form-modal/form-modal-fields';
 
 @Component({
   selector: 'app-manage-students',
@@ -37,6 +37,8 @@ import { courseAddFields, courseEditFields } from '../../../Shared/Components/fo
 })
 export class ManageStudents implements OnInit {
   students: User[] = [];
+  filteredStudents: User[] = [];
+
   classes: { label: string; value: any }[] = [];
   loading = true;
   showImportModal = false;
@@ -46,8 +48,9 @@ export class ManageStudents implements OnInit {
   }
 
   columns: TableColumn<User>[] = userCourseColumns;
-  addFields: FormField[] = courseAddFields;
-  editFields: FormField[] = courseEditFields;
+  addFields: FormField[] = courseAddSingleOptionFields;
+  editFields: FormField[] = courseEditSingleOptionFields;
+  filterOptions: FilterOption[] = filterOptionColumn;
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
@@ -57,6 +60,8 @@ export class ManageStudents implements OnInit {
 
   editingStudent: User | null = null;
   deletingStudent: User | null = null;
+
+  selectedFilter = this.filterOptions[0].key; 
 
   delete: any;
 
@@ -135,8 +140,8 @@ export class ManageStudents implements OnInit {
   loadStudents() {
     this.userService.getUsersByRoleId(2).subscribe({
       next: (data) => {
-        console.log('API Data:', data);
         this.students = data;
+        this.filteredStudents = [...data];
         this.loading = false;
       },
       error: (err) => {
@@ -216,6 +221,19 @@ export class ManageStudents implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  onHeaderSearch(searchValue: string) {
+    searchValue = searchValue.toLowerCase();
+    this.filteredStudents = this.students.filter((student) => {
+      const value = student[this.selectedFilter as keyof User];
+      return value ? value.toString().toLowerCase().includes(searchValue) : false;
+    });
+  }
+
+  onHeaderFilterChange(filterKey: string) {
+    this.selectedFilter = filterKey;
+    this.filteredStudents = [...this.students];
   }
 
   onResetPassword(user: User) {

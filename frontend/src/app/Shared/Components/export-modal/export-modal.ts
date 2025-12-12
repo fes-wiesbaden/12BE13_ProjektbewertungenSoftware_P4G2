@@ -31,6 +31,8 @@ interface ExportOption {
 export class ExportModalComponent implements OnInit {
   @Input() show = false;
   @Output() close = new EventEmitter<void>();
+  @Input() mode: 'admin' | 'teacher' = 'admin';
+  @Input() classId: string | null = null;
 
   private readonly ROLE_STUDENT = 2;
   private readonly ROLE_TEACHER = 1;
@@ -87,7 +89,14 @@ export class ExportModalComponent implements OnInit {
     this.courseService.getAllCourses().subscribe({
       next: (data) => (this.courses = data),
       error: (err) => console.error('Fehler beim Laden der Kurse für Export', err),
-    });
+
+    }
+  );
+  if (this.mode === 'teacher') {
+    this.selectedKey = 'CLASS_WITH_STUDENTS';
+    this.selectedClassId = this.classId;
+
+  }
   }
 
   onClose() {
@@ -100,12 +109,33 @@ export class ExportModalComponent implements OnInit {
   }
 
   selectOption(option: ExportOption) {
-
+    if (this.mode === 'teacher') return;
     this.selectedKey = option.key;
   }
 
   onExport() {
     this.errorMessage = null;
+
+     if (this.mode === 'teacher') {
+    if (!this.classId) {
+      this.errorMessage = 'Keine Klasse gefunden.';
+      return;
+    }
+    this.exporting = true;
+    this.exportService.exportUsers({ roleId: this.ROLE_STUDENT, classId: this.classId }).subscribe({
+      next: (blob) => {
+        this.triggerDownload(blob, 'my_class_students_export.xlsx');
+        this.exporting = false;
+        this.onClose();
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = 'Export fehlgeschlagen.';
+        this.exporting = false;
+      },
+    });
+    return;
+  }
 
     if (!this.selectedKey) {
       this.errorMessage = 'Bitte wählen Sie eine Exportoption aus.';

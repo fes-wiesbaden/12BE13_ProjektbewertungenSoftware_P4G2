@@ -1,4 +1,8 @@
-<app-page-header title="Meine Kurse" [showAddButton]="false"> </app-page-header>
+<app-page-header title="Meine Kurse" [showAddButton]="false"
+ [showImportButton]="false"
+  [showExportButton]="true"
+  (exportClick)="showExportModal = true"
+  > </app-page-header>
 
 <app-table-column
   [items]="myClasses"
@@ -9,3 +13,10 @@
   (edit)="openEditModal($event)"
   (view)="openClassDetail($event)"
 ></app-table-column>
+
+<app-export-modal
+  [show]="showExportModal"
+  [mode]="'teacher'"
+  [classId]="classId"
+  (close)="showExportModal = false"
+></app-export-modal>

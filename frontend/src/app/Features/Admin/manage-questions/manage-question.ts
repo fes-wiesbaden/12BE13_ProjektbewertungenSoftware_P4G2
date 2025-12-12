@@ -32,6 +32,8 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
 })
 export class ManageQuestions implements OnInit {
   questions: Question[] = [];
+  filteredQuestions: Question[] = [];
+
   loading = true;
   showAddModel: boolean = false;
   showEditModal: boolean = false;
@@ -58,6 +60,12 @@ export class ManageQuestions implements OnInit {
 
   editingQuestions: Question | null = null;
   deletingQuestion: Question | null = null;
+
+  filterOptions = [
+    { key: 'questionText', label: 'Text' },
+  ];
+
+  selectedFilter = this.filterOptions[0].key; 
 
   questionText = '';
 
@@ -113,8 +121,8 @@ export class ManageQuestions implements OnInit {
   loadQuestions() {
     this.questionService.getAllQuestions().subscribe({
       next: (data) => {
-        console.log('API Data:', data);
         this.questions = data;
+        this.filteredQuestions = [...data];
         this.loading = false;
       },
       error: (err) => {
@@ -123,6 +131,19 @@ export class ManageQuestions implements OnInit {
       },
     });
   }
+
+  onHeaderSearch(searchValue: string) {
+      searchValue = searchValue.toLowerCase();
+      this.filteredQuestions = this.questions.filter((question) => {
+        const value = question[this.selectedFilter as keyof Question];
+        return value ? value.toString().toLowerCase().includes(searchValue) : false;
+      });
+    }
+  
+    onHeaderFilterChange(filterKey: string) {
+      this.selectedFilter = filterKey;
+      this.filteredQuestions = [...this.questions];
+    }
 
   saveQuestion(formData: any) {
     const dto = {

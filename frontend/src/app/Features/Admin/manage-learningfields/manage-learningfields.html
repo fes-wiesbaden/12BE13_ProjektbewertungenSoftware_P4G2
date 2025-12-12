@@ -11,13 +11,18 @@
   title="Lernfelder verwalten"
   titleAdd="Lernfeld hinzufügen"
   [showAddButton]="true"
+  [filterOptions]="filterOptions"
   (addClick)="openAddModel()"
   (importClick)="showImportModal = true"
   (exportClick)="showExportModal = true"
+  (search)="onHeaderSearch($event)"
+  (filterChange)="onHeaderFilterChange($event)"
+  [showImportButton]="false"
+  [showExportButton]="false"
 ></app-page-header>
 
 <app-table-column
-  [items]="learnfields"
+  [items]="filteredLearningFields"
   [columns]="columns"
   [showEditButtons]="true"
   [showDeleteButtons]="true"

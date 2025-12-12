@@ -35,7 +35,13 @@
         >
           <mat-icon class="h-5 w-5">{{ theme === 'dark' ? 'dark_mode' : 'light_mode' }}</mat-icon>
         </button>
-
+        <button
+            type="button"
+            (click)="toggleLang()"
+            class="ml-1 text-gray-500 flex items-center dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 rounded-lg text-sm px-3 py-2"
+            aria-label="Sprache wechseln">
+            {{ i18n.getLang() === 'de' ? 'EN' : 'DE' }}
+        </button>
         <div class="flex items-center ml-3 relative">
           <div>
             <button

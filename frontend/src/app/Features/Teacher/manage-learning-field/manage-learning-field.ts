@@ -9,23 +9,32 @@ import {
 import { AddGradeForm } from '../../../Shared/Components/add-grade-form/add-grade-form';
 import { Grade } from '../../../Interfaces/grade.interface';
 import { LearningField } from '../../../Shared/models/learning-fields.interface';
+import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
+import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 
 @Component({
   selector: 'app-manage-learning-field',
-  imports: [PageHeaderComponents, TableColumnComponent, AddGradeForm],
+  imports: [PageHeaderComponents, TableColumnComponent, AddGradeForm, ImportModalComponent,
+        ExportModalComponent,],
   templateUrl: './manage-learning-field.html',
 })
 export class ManageLearningField implements OnInit {
   studentId!: string;
   currentLearningFieldId!: string;
+  public classId: string = '';
   learningFields: LearningField[] = [];
   grades: Grade[] = [];
   loading = true;
   isAddModalVisible = false;
-
+  showImportModal = false;
+  showExportModal = false;
+   onImportFile(file: File) {
+    console.log('Import-Datei:', file);
+  }
   columns: TableColumn<LearningField>[] = [
     { key: 'name', label: 'Lernfeldname' },
     { key: 'weightingHours', label: 'Gewichtung' },
+    { key: 'averageGrade', label: 'Durchschnittsnote' },
   ];
 
   constructor(
@@ -103,11 +112,47 @@ export class ManageLearningField implements OnInit {
     this.loadLearningFields();
   }
 
+private calculateAverage(grades?: Grade[]): number | null {
+    if (!grades || grades.length === 0) return null;
+
+    const sum = grades.reduce(
+      (acc, g) => acc + g.value * g.gradeWeighting,
+      0,
+    );
+    const weightSum = grades.reduce(
+      (acc, g) => acc + g.gradeWeighting,
+      0,
+    );
+
+    if (weightSum === 0) return null;
+
+    const avg = sum / weightSum;
+    return Math.round(avg * 100) / 100;
+  }
+
   loadLearningFields() {
     this.manageLearningFieldService.getLearningField(this.studentId).subscribe({
       next: (data) => {
+        console.log('LearningFields API response:', data);
         this.learningFields = data;
         this.loading = false;
+        this.learningFields.forEach((lf) => {
+          this.manageLearningFieldService
+            .getAverageGrade(this.studentId, lf.id)
+            .subscribe({
+              next: (avg) => {
+                lf.averageGrade = avg.averageGrade;
+                lf.weightSum = avg.weightSum;
+                lf.gradeCount = avg.gradeCount;
+              },
+              error: (err) => {
+                console.error(
+                  `Fehler beim Laden der Durchschnittsnote für Lernfeld ${lf.id}`,
+                  err,
+                );
+              },
+            });
+        });
       },
       error: (err) => {
         console.error('Fehler beim Laden der Lernfelder', err);
@@ -115,4 +160,6 @@ export class ManageLearningField implements OnInit {
       },
     });
   }
+
+
 }

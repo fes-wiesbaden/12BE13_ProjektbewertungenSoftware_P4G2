@@ -23,13 +23,16 @@
   [titleAdd]="'Schüler hinzufügen'"
   [showAddButton]="true"
   (addClick)="openAddModel()"
+  [filterOptions]="filterOptions"
   (importClick)="showImportModal = true"
   (exportClick)="showExportModal = true"
+  (search)="onHeaderSearch($event)"
+  (filterChange)="onHeaderFilterChange($event)"
 >
 </app-page-header>
 
 <app-table-column
-  [items]="students"
+  [items]="filteredStudents"
   [columns]="columns"
   [showEditButtons]="true"
   [showDeleteButtons]="true"
