@@ -37,11 +37,12 @@ export class MyAssessment {
 
   groups: Group[] = [];
   selectedGroupId: string = '';
+  evaluatedGroups: Set<string> = new Set(); // speichert bereits bewertete Gruppen
 
   members: { id: string; fullName: string; memberNumberId: number }[] = [];
   ratings: number[] = [];
 
-  constructor(private fb: FormBuilder, private groupService: GroupService,private authService: AuthService,) {
+  constructor(private fb: FormBuilder, private groupService: GroupService, private authService: AuthService) {
     this.form = this.fb.group({});
   }
 
@@ -49,7 +50,6 @@ export class MyAssessment {
     this.loadGroups();
   }
 
-  // Alle Gruppen laden
   loadGroups() {
     this.groupService.getAllGroupsForMember(this.authService.getUserId()).subscribe({
       next: (data: any[]) => {
@@ -62,9 +62,16 @@ export class MyAssessment {
     });
   }
 
-  // Wird aufgerufen, wenn der Benutzer eine Gruppe auswählt
   onGroupChange() {
     if (!this.selectedGroupId) return;
+
+    // Prüfen, ob Gruppe schon bewertet wurde
+    if (this.evaluatedGroups.has(this.selectedGroupId)) {
+      alert('Diese Gruppe wurde bereits bewertet.');
+      this.members = [];
+      return;
+    }
+
     this.loadMembers(this.selectedGroupId);
   }
 
@@ -88,10 +95,13 @@ export class MyAssessment {
   }
 
   setRating(memberNumberId: number, value: number) {
+    if (this.frage >= this.questions.length) return; // keine Bewertung möglich
     this.ratings[memberNumberId] = value;
   }
 
   submitRating() {
+    if (this.frage >= this.questions.length) return;
+
     const missing: string[] = [];
     this.members.forEach((m, idx) => {
       if (this.ratings[idx] === 0) missing.push(m.fullName);
@@ -103,11 +113,21 @@ export class MyAssessment {
       return;
     }
 
+    // Bewertung speichern
     this.bewertung.set(this.questions[this.frage].question, this.ratings);
     this.createJson(this.questions[this.frage].id, this.members, this.ratings);
 
     this.ratings = this.members.map(() => 0);
-    if (this.frage < this.questions.length - 1) this.frage++;
+
+    // Nächste Frage oder fertig
+    if (this.frage < this.questions.length - 1) {
+      this.frage++;
+    } else {
+      // Alle Fragen beantwortet -> Gruppe als bewertet markieren
+      if (this.selectedGroupId) this.evaluatedGroups.add(this.selectedGroupId);
+      alert('Alle Fragen für diese Gruppe wurden beantwortet.');
+      this.members = []; // Bewertung nicht mehr möglich
+    }
   }
 
   createJson(currentQuestion: number, members: { id: string; fullName: string; memberNumberId: number }[], ratings: number[]) {
