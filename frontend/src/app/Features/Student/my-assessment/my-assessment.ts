@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { GroupService } from '../../../Shared/Services/group-member.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { HttpClient } from '@angular/common/http';
 
 export interface Group {
   groupId: string;
@@ -42,7 +43,7 @@ export class MyAssessment {
   members: { id: string; fullName: string; memberNumberId: number }[] = [];
   ratings: number[] = [];
 
-  constructor(private fb: FormBuilder, private groupService: GroupService, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private groupService: GroupService, private authService: AuthService,private http: HttpClient,) {
     this.form = this.fb.group({});
   }
 
@@ -53,6 +54,7 @@ export class MyAssessment {
   loadGroups() {
     this.groupService.getAllGroupsForMember(this.authService.getUserId()).subscribe({
       next: (data: any[]) => {
+        console.log(data);
         this.groups = data.map(g => ({
           groupId: g.groupId,
           groupName: g.groupName
@@ -125,6 +127,7 @@ export class MyAssessment {
     } else {
       // Alle Fragen beantwortet -> Gruppe als bewertet markieren
       if (this.selectedGroupId) this.evaluatedGroups.add(this.selectedGroupId);
+      this.sendReviewToBackend(this.authService.getUserId(),this.selectedGroupId, this.fullJson);
       alert('Alle Fragen für diese Gruppe wurden beantwortet.');
       this.members = []; // Bewertung nicht mehr möglich
     }
@@ -149,4 +152,23 @@ export class MyAssessment {
     this.fullJson = [];
     this.frage = 0;
   }
+
+  sendReviewToBackend(userId: string, groupId: string, reviewData: any) {
+  if (!userId || !groupId) {
+    console.error('UserId oder GroupId fehlt.');
+    return;
+  }
+
+  const url = `http://localhost:4100/api/user/${userId}/project/${groupId}/review`;
+
+  this.http.post(url, reviewData).subscribe({
+    next: () => {
+    },
+    error: (err) => {
+      console.error('Fehler beim Senden der Review', err);
+      alert('Fehler beim Senden der Bewertung!');
+    }
+  });
+}
+
 }
