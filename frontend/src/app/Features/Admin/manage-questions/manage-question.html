@@ -1,6 +1,6 @@
 <app-form-modal
   [showModal]="showAddModel"
-  [title]="'Frage anlegen'"
+  [title]="i18n.t('question.create.title')"
   [fields]="fields"
   (close)="closeAddModel()"
   (save)="saveQuestion($event)"
@@ -8,8 +8,8 @@
 </app-form-modal>
 
 <app-page-header
-  title='Fragen verwalten'
-  titleAdd="Frage hinzufügen"
+  [title]="i18n.t('question.manage.title')"
+  [titleAdd]="i18n.t('question.add.button')"
   [showAddButton]="true"
   (addClick)="openAddModel()"
   [filterOptions]="filterOptions"
@@ -32,7 +32,7 @@
 
 <app-form-modal
   [showModal]="showEditModal"
-  [title]="'Frage Editieren'"
+  [title]="i18n.t('question.edit.title')"
   [fields]="fields"
   [record]="editingQuestions"
   (close)="closeEditModal()"
@@ -50,7 +50,7 @@
 
 <app-delete-button
   [showModal]="showDeleteModal"
-  [title]="'Sind Sie sicher, dass sie den Admin löschen wollen?'"
+  [title]="i18n.t('question.delete.confirm')"
   (close)="closeDeleteModal()"
   (delete)="deleteQuestion()"
 ></app-delete-button>

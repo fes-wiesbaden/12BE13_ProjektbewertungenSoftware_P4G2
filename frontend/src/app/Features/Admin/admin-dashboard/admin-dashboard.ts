@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../../Shared/Services/user.service';
 import { CourseService } from '../../../Shared/Services/course.service';
 import { forkJoin } from 'rxjs';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -32,6 +33,7 @@ export class AdminDashboard implements OnInit {
   constructor(
     private courseService: CourseService,
     private userService: UserService,
+    public i18n: TranslationService
   ) {}
 
   ngOnInit(): void {

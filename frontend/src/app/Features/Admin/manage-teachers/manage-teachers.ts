@@ -20,6 +20,7 @@ import {
   courseAddFields,
   courseEditFields,
 } from '../../../Shared/Components/form-modal/form-modal-fields';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -54,7 +55,7 @@ export class ManageTeachers implements OnInit {
   editFields: FormField[] = courseEditFields;
   filterOptions: FilterOption[] = filterOptionColumn;
 
-  selectedFilter = this.filterOptions[0].key; 
+  selectedFilter = this.filterOptions[0].key;
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
@@ -65,7 +66,7 @@ export class ManageTeachers implements OnInit {
   editingTeacher: UpdateUser | null = null;
   deletingTeacher: User | null = null;
 
-  constructor(private userService: UserService, private courseService: CourseService) {}
+  constructor(private userService: UserService, private courseService: CourseService, public i18n: TranslationService) {}
 
   ngOnInit(): void {
     this.loadTeachers();

@@ -1,6 +1,6 @@
 <app-form-modal
   [showModal]="showAddModel"
-  [title]="'Lehrer anlegen'"
+  [title]="i18n.t('teacher.create.title')"
   [fields]="addFields"
   [record]="null"
   (close)="closeAddModel()"
@@ -10,7 +10,7 @@
 
 <app-form-modal
   [showModal]="showEditModal"
-  [title]="'Lehrer Editieren'"
+  [title]="i18n.t('teacher.edit.title')"
   [fields]="editFields"
   [record]="editingTeacher"
   (close)="closeEditModal()"
@@ -19,8 +19,8 @@
 </app-form-modal>
 
 <app-page-header
-  title="Lehrer verwalten"
-  [titleAdd]="'Lehrer hinzufügen'"
+  [title]="i18n.t('teacher.manage.title')"
+  [titleAdd]="i18n.t('teacher.add.button')"
   [showAddButton]="true"
   [filterOptions]="filterOptions"
   (addClick)="openAddModel()"
@@ -44,7 +44,7 @@
 
 <app-delete-button
   [showModal]="showDeleteModal"
-  [title]="'Sind Sie sicher, dass sie den Lehrer löschen wollen?'"
+  [title]="i18n.t('teacher.delete.confirm')"
   (close)="closeDeleteModal()"
   (delete)="deleteTeacher()"
 >

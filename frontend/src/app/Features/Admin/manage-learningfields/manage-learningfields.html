@@ -1,6 +1,6 @@
 <app-form-modal
   [showModal]="showAddModel"
-  [title]="'Lernfeld anlegen'"
+  [title]="i18n.t('learningField.create.title')"
   [fields]="fields"
   (close)="closeAddModel()"
   (save)="saveLearningfields($event)"
@@ -8,8 +8,8 @@
 </app-form-modal>
 
 <app-page-header
-  title="Lernfelder verwalten"
-  titleAdd="Lernfeld hinzufügen"
+  [title]="i18n.t('learningField.manage.title')"
+  [titleAdd]="i18n.t('learningField.add.button')"
   [showAddButton]="true"
   [filterOptions]="filterOptions"
   (addClick)="openAddModel()"
@@ -32,7 +32,7 @@
 
 <app-form-modal
   [showModal]="showEditModal"
-  [title]="'Lernfelder Editieren'"
+  [title]="i18n.t('learningField.edit.title')"
   [fields]="fields"
   [record]="editingLearningfields"
   (close)="closeEditModal()"
@@ -42,7 +42,7 @@
 
 <app-delete-button
   [showModal]="showDeleteModal"
-  [title]="'Sind Sie sicher, dass sie das Lernfeld löschen wollen?'"
+  [title]="i18n.t('learningField.delete.confirm')"
   (close)="closeDeleteModal()"
   (delete)="deleteLearningField()"
 >

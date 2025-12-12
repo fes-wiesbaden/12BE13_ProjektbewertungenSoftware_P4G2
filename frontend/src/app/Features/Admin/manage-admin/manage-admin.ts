@@ -19,6 +19,7 @@ import {
   defaultEditFields,
 } from '../../../Shared/Components/form-modal/form-modal-fields';
 import { FilterOption, filterOptionColumn, userColumns } from '../../../Shared/Components/table-column/table-columns';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-manage-admin',
@@ -41,6 +42,7 @@ export class ManageAdmins implements OnInit {
   admins: User[] = [];
   filteredAdmins: User[] = [];
 
+
   classes: { label: string; value: any }[] = [];
   loading = true;
   showImportModal = false;
@@ -62,9 +64,9 @@ export class ManageAdmins implements OnInit {
   editingAdmin: User | null = null;
   deletingAdmin: User | null = null;
 
-  selectedFilter = this.filterOptions[0].key; 
+  selectedFilter = this.filterOptions[0].key;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,public i18n: TranslationService) {}
 
   ngOnInit(): void {
     this.loadAdmin();
