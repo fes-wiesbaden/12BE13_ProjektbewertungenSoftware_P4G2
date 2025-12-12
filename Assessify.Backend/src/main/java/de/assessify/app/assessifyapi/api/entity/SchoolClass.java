@@ -34,6 +34,18 @@ public class SchoolClass {
         this.className = className;
     }
 
+    @ManyToMany
+    @JoinTable(
+            name = "schoolclass_trainingmodule",
+            joinColumns = @JoinColumn(name = "schoolclass_id"),
+            inverseJoinColumns = @JoinColumn(name = "trainingmodule_id")
+    )
+    private List<TrainingModule> trainingModules = new ArrayList<>();
+
+    public List<TrainingModule> getTrainingModules() {
+    return trainingModules;
+}
+
     @PrePersist
     @PreUpdate
     private void updateClassName() {

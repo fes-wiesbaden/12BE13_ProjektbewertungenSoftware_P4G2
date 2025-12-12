@@ -9,7 +9,7 @@ export interface Course {
   id: string;
   courseName: string;
   className: string;
-  learnfields: LearningField[];
+  learnfields: string[];
 }
 
 export interface ConnectCourse {

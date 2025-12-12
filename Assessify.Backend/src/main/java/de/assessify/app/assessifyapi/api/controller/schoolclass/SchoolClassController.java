@@ -5,6 +5,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import de.assessify.app.assessifyapi.api.dtos.request.AddSchoolClassDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateSchoolClassDto;
 import de.assessify.app.assessifyapi.api.dtos.response.SchoolClassDto;
+import de.assessify.app.assessifyapi.api.dtos.response.SchoolClassWithLearningFieldDto;
+import de.assessify.app.assessifyapi.api.dtos.response.TrainingModuleSummaryDto;
 import de.assessify.app.assessifyapi.api.dtos.response.UserWithSchoolClassDto;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.repository.SchoolClassRepository;
@@ -37,18 +39,28 @@ public class SchoolClassController {
     private static final Logger logger = Logger.getLogger(SchoolClassController.class.getName());
 
     @GetMapping("/school-class/all")
-    public ResponseEntity<List<SchoolClassDto>> getAllSchoolClasses() {
-        var modules = schoolClassRepository.findAll()
-                .stream()
-                .map(field -> new SchoolClassDto(
-                        field.getId(),
-                        field.getCourseName(),
-                        field.getClassName()
-                ))
-                .toList();
+public ResponseEntity<List<SchoolClassWithLearningFieldDto>> getAllSchoolClasses() {
 
-        return ResponseEntity.ok(modules);
-    }
+    var classes = schoolClassRepository.findAll()
+            .stream()
+            .map(sc -> new SchoolClassWithLearningFieldDto(
+                    sc.getId(),
+                    sc.getCourseName(),
+                    sc.getClassName(),
+                    sc.getTrainingModules()
+                            .stream()
+                            .map(tm -> new TrainingModuleSummaryDto(
+                                    tm.getId(),
+                                    tm.getName(),
+                                    tm.getDescription(),
+                                    tm.getWeightingHours()
+                            ))
+                            .toList()
+            ))
+            .toList();
+
+    return ResponseEntity.ok(classes);
+}
 
     @GetMapping("/school-class")
     public ResponseEntity<List<SchoolClassDto>> getSchoolClassesForCurrentUser(@RequestHeader("Authorization") String authHeader) {
