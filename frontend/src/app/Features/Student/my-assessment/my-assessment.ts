@@ -44,67 +44,67 @@ export class MyAssessment {
   }> = [];
   frage = 0;
 
-  // questions = [
-  //   {
-  //     id: 0,
-  //     questionText: 'Wie schätzen Sie das Engagement im Projekt ein?',
-  //   },
+  questions = [
+    {
+      id: 0,
+      questionText: 'Wie schätzen Sie das Engagement im Projekt ein?',
+    },
 
-  //   {
-  //     id: 1,
-  //     questionText: 'Wie zielgerichtet wurde an der Aufgabenstellung gearbeitet?',
-  //   },
+    {
+      id: 1,
+      questionText: 'Wie zielgerichtet wurde an der Aufgabenstellung gearbeitet?',
+    },
 
-  //   {
-  //     id: 2,
-  //     questionText: 'Wie beurteilen Sie die Zusammenarbeit mit den anderen Gruppenmitgliedern?',
-  //   },
+    {
+      id: 2,
+      questionText: 'Wie beurteilen Sie die Zusammenarbeit mit den anderen Gruppenmitgliedern?',
+    },
 
-  //   {
-  //     id: 3,
-  //     questionText: 'Wie beurteilen Sie das Arbeitsverhalten?',
-  //   },
+    {
+      id: 3,
+      questionText: 'Wie beurteilen Sie das Arbeitsverhalten?',
+    },
 
-  //   {
-  //     id: 4,
-  //     questionText:
-  //       'Wie beurteilen Sie das Engagement hinsichtlich der Aufgabenbearbeitung am Arduino mit Sensoren/Aktoren?',
-  //   },
+    {
+      id: 4,
+      questionText:
+        'Wie beurteilen Sie das Engagement hinsichtlich der Aufgabenbearbeitung am Arduino mit Sensoren/Aktoren?',
+    },
 
-  //   {
-  //     id: 5,
-  //     questionText:
-  //       'Beurteilen Sie das Engagement bei der Realisierung der Netzwerk-Funktionalität (MQTT/Vernetzung)?',
-  //   },
+    {
+      id: 5,
+      questionText:
+        'Beurteilen Sie das Engagement bei der Realisierung der Netzwerk-Funktionalität (MQTT/Vernetzung)?',
+    },
 
-  //   {
-  //     id: 6,
-  //     questionText: 'Wie war das Engagement bei der Umsetzung der Datenbank?',
-  //   },
+    {
+      id: 6,
+      questionText: 'Wie war das Engagement bei der Umsetzung der Datenbank?',
+    },
 
-  //   {
-  //     id: 7,
-  //     questionText:
-  //       'Wie war das Engagement bei der Gestaltung und Entwicklung der Benutzerschnittstellen?',
-  //   },
+    {
+      id: 7,
+      questionText:
+        'Wie war das Engagement bei der Gestaltung und Entwicklung der Benutzerschnittstellen?',
+    },
 
-  //   {
-  //     id: 8,
-  //     questionText:
-  //       'Beurteilen Sie das Engagement bei der Realisierung der Funktionalität (Java-Backend/Vernetzung)?',
-  //   },
+    {
+      id: 8,
+      questionText:
+        'Beurteilen Sie das Engagement bei der Realisierung der Funktionalität (Java-Backend/Vernetzung)?',
+    },
 
-  //   {
-  //     id: 9,
-  //     questionText: 'Beurteilen Sie die Mitarbeit bei der Erstellung des Werbeflyers?',
-  //   },
+    {
+      id: 9,
+      questionText: 'Beurteilen Sie die Mitarbeit bei der Erstellung des Werbeflyers?',
+    },
 
-  //   {
-  //     id: 10,
-  //     questionText:
-  //       'Welche Gesamtnote würden Sie der jeweiligen Person für Ihren Beitrag zum Gelingen des Projektes geben?',
-  //   },
-  // ];
+    {
+      id: 10,
+      questionText:
+        'Welche Gesamtnote würden Sie der jeweiligen Person für Ihren Beitrag zum Gelingen des Projektes geben?',
+    },
+  ];
   question: { id: number; questionText: string }[] = [];
 
   groups: Group[] = [];
@@ -149,7 +149,7 @@ export class MyAssessment {
       .subscribe({
         next: (data) => {
           console.log('Fragen geladen:', data);
-          this.question = data;
+          this.questions = data;
         },
         error: (err) => console.error('Fehler beim Laden der Fragen', err),
       });
@@ -222,8 +222,8 @@ export class MyAssessment {
     }
 
     // Bewertung speichern
-    this.bewertung.set(this.question[this.frage].questionText, this.ratings);
-    this.createJson(this.question[this.frage].id, this.members, this.ratings);
+    this.bewertung.set(this.questions[this.frage].questionText, this.ratings);
+    this.createJson(this.questions[this.frage].id, this.members, this.ratings);
 
     this.ratings = this.members.map(() => 0);
 
