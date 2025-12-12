@@ -7,44 +7,60 @@
         {{ title }}
       </h1>
     </div>
-    <div class="sm:flex">
-      <div
-        class="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700"
-      >
-        <form class="lg:pr-3">
-          <label for="users-search" class="sr-only">Suchen</label>
-          <div class="relative mt-1 lg:w-64 xl:w-96">
-            <input
-              id="search"
-              type="text"
-              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="suchen..."
-            />
-          </div>
-        </form>
+    <div class="relative flex items-center">
+      <input
+        type="text"
+        class="bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        placeholder="Suchen..."
+        (input)="onSearch($event)"
+      />
 
-        <div class="flex pl-0 mt-3 space-x-1 sm:pl-2 sm:mt-0">
-          <button
-            class="inline-flex justify-center p-1 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-          >
-            <mat-icon class="w-5 h-5 mr-2 -ml-1">filter_alt</mat-icon>
-            Filter
-          </button>
+      <div class="relative flex pl-2 mt-3 sm:mt-0">
+        <button
+          (click)="toggleFilterDropdown()"
+          class="inline-flex justify-center p-1 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        >
+          <mat-icon class="w-5 h-5 mr-2 -ml-1">filter_alt</mat-icon>
+          Filter
+        </button>
+
+        @if (filterDropdownOpen) {
+        <div
+          class="absolute top-full right-0 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-40 mt-1"
+        >
+          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+            <li *ngFor="let f of filterOptions">
+              <label
+                class="flex items-center w-full px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <input
+                  type="radio"
+                  name="filter"
+                  [value]="f.key"
+                  [(ngModel)]="selectedFilter"
+                  (change)="onFilterChange(f.key)"
+                  class="mr-2"
+                />
+                {{ f.label }}
+              </label>
+            </li>
+          </ul>
         </div>
+        }
       </div>
 
       <div class="flex items-center ml-auto space-x-2 sm:space-x-3">
         @if (showAddButton) {
-          <button
-            type="button"
-            (click)="addClick.emit()"
-            data-modal-target="add-user-modal"
-            data-modal-toggle="add-user-modal"
-            class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            <mat-icon class="w-5 h-5 mr-2 -ml-1">add</mat-icon>
-            {{ titleAdd }}
-          </button>
+        <button
+          type="button"
+          (click)="addClick.emit()"
+          data-modal-target="add-user-modal"
+          data-modal-toggle="add-user-modal"
+          class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          <mat-icon class="w-5 h-5 mr-2 -ml-1">add</mat-icon>
+          {{ titleAdd }}
+        </button>
         }
 
   @if (showExportButton) {
