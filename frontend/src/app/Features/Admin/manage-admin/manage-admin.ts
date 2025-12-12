@@ -14,7 +14,10 @@ import { ExportModalComponent } from '../../../Shared/Components/export-modal/ex
 import { User, AddUser, UserResetPassword } from '../../../Shared/models/user.interface';
 import { UserService } from '../../../Shared/Services/user.service';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
-import { defaultAddFields, defaultEditFields } from '../../../Shared/Components/form-modal/form-modal-fields';
+import {
+  defaultAddFields,
+  defaultEditFields,
+} from '../../../Shared/Components/form-modal/form-modal-fields';
 import { userColumns } from '../../../Shared/Components/table-column/table-columns';
 
 @Component({
@@ -36,6 +39,9 @@ import { userColumns } from '../../../Shared/Components/table-column/table-colum
 })
 export class ManageAdmins implements OnInit {
   admins: User[] = [];
+  filteredAdmins: User[] = [];
+  selectedFilter = '';
+
   classes: { label: string; value: any }[] = [];
   loading = true;
   showImportModal = false;
@@ -55,6 +61,12 @@ export class ManageAdmins implements OnInit {
 
   editingAdmin: User | null = null;
   deletingAdmin: User | null = null;
+
+  filterOptions = [
+  { key: 'firstName', label: 'Vorname' },
+  { key: 'lastName', label: 'Nachname' },
+  { key: 'username', label: 'Benutzername' }
+];
 
   constructor(private userService: UserService) {}
 
@@ -118,8 +130,8 @@ export class ManageAdmins implements OnInit {
   loadAdmin() {
     this.userService.getUsersByRoleId(3).subscribe({
       next: (data) => {
-        console.log('API Data:', data);
         this.admins = data;
+        this.filteredAdmins = [...data];
         this.loading = false;
       },
       error: (err) => {
@@ -127,6 +139,20 @@ export class ManageAdmins implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  onHeaderSearch(searchValue: string) {
+    searchValue = searchValue.toLowerCase();
+    this.filteredAdmins = this.admins.filter((admin) => {
+      const value = admin[this.selectedFilter as keyof User];
+      return value ? value.toString().toLowerCase().includes(searchValue) : false;
+    });
+  }
+
+  onHeaderFilterChange(filterKey: string) {
+    this.selectedFilter = filterKey;
+    // Optional: Suche zurücksetzen
+    this.filteredAdmins = [...this.admins];
   }
 
   saveAdmin(formData: any) {
