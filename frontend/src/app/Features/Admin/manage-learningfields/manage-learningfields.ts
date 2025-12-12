@@ -32,6 +32,8 @@ import { LearningFieldService } from '../../../Shared/Services/learning-field.se
 })
 export class ManageLearnfields implements OnInit {
   learnfields: LearningField[] = [];
+  filteredLearningFields: LearningField[] = [];
+
   loading = true;
   showAddModel: boolean = false;
   showEditModal: boolean = false;
@@ -75,6 +77,12 @@ export class ManageLearnfields implements OnInit {
       colSpan: 6,
     },
   ];
+
+  filterOptions = [
+    { key: 'name', label: 'Lernfeldname' },
+  ];
+
+  selectedFilter = this.filterOptions[0].key; 
 
   editingLearningfields: LearningField | null = null;
   toDeleteLearnField: LearningField | null = null;
@@ -137,8 +145,8 @@ export class ManageLearnfields implements OnInit {
   loadLearningfields() {
     this.learningFieldService.getAllLearningFields().subscribe({
       next: (data) => {
-        console.log('API Data:', data);
         this.learnfields = data;
+        this.filteredLearningFields = [...data];
         this.loading = false;
       },
       error: (err) => {
@@ -147,6 +155,19 @@ export class ManageLearnfields implements OnInit {
       },
     });
   }
+
+  onHeaderSearch(searchValue: string) {
+      searchValue = searchValue.toLowerCase();
+      this.filteredLearningFields = this.learnfields.filter((learnfield) => {
+        const value = learnfield[this.selectedFilter as keyof LearningField];
+        return value ? value.toString().toLowerCase().includes(searchValue) : false;
+      });
+    }
+  
+    onHeaderFilterChange(filterKey: string) {
+      this.selectedFilter = filterKey;
+      this.filteredLearningFields = [...this.learnfields];
+    }
 
   saveLearningfields(formData: any) {
     if (
