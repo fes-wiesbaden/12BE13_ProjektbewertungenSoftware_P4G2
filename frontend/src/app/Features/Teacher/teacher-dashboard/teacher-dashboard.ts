@@ -11,17 +11,24 @@ import { PageHeaderComponents } from '../../../Shared/Components/page-header/pag
 import { Router } from '@angular/router';
 import { CourseService } from '../../../Shared/Services/course.service';
 import { Course } from '../../../Shared/models/course.interface';
+import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
+import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 
 @Component({
   selector: 'app-teacher-dashboard',
-  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponents, TableColumnComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponents, TableColumnComponent, ImportModalComponent,
+          ExportModalComponent],
   templateUrl: './teacher-dashboard.html',
 })
 export class TeacherDashboard {
   classes: { label: string; value: any }[] = [];
   myClasses: Course[] = [];
   loading = true;
-
+  showImportModal = false;
+  showExportModal = false;
+   onImportFile(file: File) {
+    console.log('Import-Datei:', file);
+  }
   columns: TableColumn<Course>[] = [
     { key: 'courseName', label: 'Kursname' },
     { key: 'className', label: 'Klassenname' },

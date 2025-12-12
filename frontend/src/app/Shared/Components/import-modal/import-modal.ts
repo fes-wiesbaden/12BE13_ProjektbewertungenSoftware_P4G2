@@ -4,6 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { ImportService, ImportResult } from './import.service';
 
+type ImportType = 'users' | 'classes';
+
 @Component({
   selector: 'app-import-modal',
   standalone: true,
@@ -13,12 +15,13 @@ import { ImportService, ImportResult } from './import.service';
 export class ImportModalComponent {
   @Input() show = false;
   @Output() close = new EventEmitter<void>();
+
   @Output() fileSelected = new EventEmitter<File>();
 
   isDragOver = false;
   selectedFile: File | null = null;
 
-  importType: 'users' | 'classes' | 'training-modules' = 'users';
+  importType: ImportType = 'users';
 
   uploading = false;
   result: ImportResult | null = null;
@@ -89,9 +92,6 @@ export class ImportModalComponent {
         break;
       case 'classes':
         request$ = this.importService.importClasses(this.selectedFile);
-        break;
-      case 'training-modules':
-        request$ = this.importService.importTrainingModules(this.selectedFile);
         break;
       default:
         this.errorMessage = 'Ungültiger Import-Typ.';

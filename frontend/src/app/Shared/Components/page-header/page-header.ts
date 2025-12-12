@@ -14,6 +14,8 @@ export class PageHeaderComponents {
   @Input() titleAdd = '';
   @Input() filterOptions: { key: string; label: string }[] = [];
   @Input() selectedFilter = '';
+  @Input() showImportButton = true;
+  @Input() showExportButton = true;
 
   @Output() addClick = new EventEmitter<void>();
   @Output() importClick = new EventEmitter<void>();

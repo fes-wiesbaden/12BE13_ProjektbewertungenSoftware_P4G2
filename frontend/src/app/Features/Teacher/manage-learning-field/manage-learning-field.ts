@@ -9,10 +9,13 @@ import {
 import { AddGradeForm } from '../../../Shared/Components/add-grade-form/add-grade-form';
 import { Grade } from '../../../Interfaces/grade.interface';
 import { LearningField } from '../../../Shared/models/learning-fields.interface';
+import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
+import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
 
 @Component({
   selector: 'app-manage-learning-field',
-  imports: [PageHeaderComponents, TableColumnComponent, AddGradeForm],
+  imports: [PageHeaderComponents, TableColumnComponent, AddGradeForm, ImportModalComponent,
+        ExportModalComponent,],
   templateUrl: './manage-learning-field.html',
 })
 export class ManageLearningField implements OnInit {
@@ -22,7 +25,11 @@ export class ManageLearningField implements OnInit {
   grades: Grade[] = [];
   loading = true;
   isAddModalVisible = false;
-
+  showImportModal = false;
+  showExportModal = false;
+   onImportFile(file: File) {
+    console.log('Import-Datei:', file);
+  }
   columns: TableColumn<LearningField>[] = [
     { key: 'name', label: 'Lernfeldname' },
     { key: 'weightingHours', label: 'Gewichtung' },

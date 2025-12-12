@@ -4,7 +4,6 @@
 >
   <div class="relative w-full max-w-lg px-4">
     <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
-      <!-- Header -->
       <div class="flex items-start justify-between p-5 border-b rounded-t border-gray-200 dark:border-gray-700">
         <h3 class="text-xl font-semibold dark:text-white">
           Import
@@ -17,9 +16,8 @@
         </button>
       </div>
 
-      <!-- Body -->
       <div class="p-6 space-y-4">
-        <!-- Typ-Auswahl -->
+
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
             Was soll importiert werden?
@@ -30,11 +28,9 @@
           >
             <option value="users">Nutzer</option>
             <option value="classes">Klassen</option>
-            <option value="training-modules">Training-Module</option>
           </select>
         </div>
 
-        <!-- Drag & Drop Feld -->
         <div
           class="border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer transition"
           [ngClass]="{
@@ -51,7 +47,7 @@
             Datei hierher ziehen oder klicken zum Auswählen
           </p>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Unterstützt z. B. XLSX (Spalten entsprechend dem gewählten Typ).
+            Unterstützt z. B. XLSX mit passenden Spalten (z. B. first_name, last_name, username, role_name, class_name).
           </p>
 
           @if (selectedFile) {
@@ -97,7 +93,6 @@
         }
       </div>
 
-      <!-- Footer -->
       <div class="flex items-center justify-end p-5 border-t border-gray-200 rounded-b dark:border-gray-700">
         <button
           type="button"

@@ -3,11 +3,9 @@ package de.assessify.app.assessifyapi.api.service;
 import de.assessify.app.assessifyapi.api.dtos.response.ImportResultDto;
 import de.assessify.app.assessifyapi.api.entity.Role;
 import de.assessify.app.assessifyapi.api.entity.SchoolClass;
-import de.assessify.app.assessifyapi.api.entity.TrainingModule;
 import de.assessify.app.assessifyapi.api.entity.User;
 import de.assessify.app.assessifyapi.api.repository.RoleRepository;
 import de.assessify.app.assessifyapi.api.repository.SchoolClassRepository;
-import de.assessify.app.assessifyapi.api.repository.TrainingModuleRepository;
 import de.assessify.app.assessifyapi.api.repository.UserRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -25,22 +23,18 @@ public class ImportService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final SchoolClassRepository schoolClassRepository;
-    private final TrainingModuleRepository trainingModuleRepository;
 
     public ImportService(
             UserRepository userRepository,
             RoleRepository roleRepository,
             SchoolClassRepository schoolClassRepository,
-            TrainingModuleRepository trainingModuleRepository,
             BCryptPasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.schoolClassRepository = schoolClassRepository;
-        this.trainingModuleRepository = trainingModuleRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     public ImportResultDto importUsersFromExcel(MultipartFile file) {
         ImportResultDto result = new ImportResultDto(0, 0, 0, new ArrayList<>());
@@ -86,16 +80,18 @@ public class ImportService {
                         errors.add("Zeile " + (rowIdx + 1) + ": username fehlt.");
                         continue;
                     }
+
                     Integer roleId = null;
                     if (roleName != null && !roleName.isBlank()) {
+                        String roleNameNorm = roleName.trim();
                         Optional<Role> roleOpt = roleRepository.findAll().stream()
-                                .filter(r -> roleName.equalsIgnoreCase(r.getName()))
+                                .filter(r -> roleNameNorm.equalsIgnoreCase(r.getName()))
                                 .findFirst();
                         if (roleOpt.isPresent()) {
                             roleId = roleOpt.get().getId();
                         } else {
                             errors.add("Zeile " + (rowIdx + 1) + ": Rolle '" + roleName + "' nicht gefunden.");
-                            continue;
+                            continue; 
                         }
                     }
 
@@ -107,16 +103,18 @@ public class ImportService {
                         user.setRoleId(roleId);
                     }
 
-                    String rawPassword = "meinPasswort1234";
+                    String rawPassword = "meinPasswort1234"; 
                     user.setPassword(passwordEncoder.encode(rawPassword));
 
                     if (className != null && !className.isBlank()) {
+                        String normalizedClassName = className.trim();
+
                         SchoolClass schoolClass = schoolClassRepository.findAll().stream()
-                                .filter(c -> className.equalsIgnoreCase(c.getClassName()))
+                                .filter(c -> normalizedClassName.equalsIgnoreCase(c.getClassName()))
                                 .findFirst()
                                 .orElseGet(() -> {
                                     SchoolClass sc = new SchoolClass();
-                                    sc.setClassName(className);
+                                    sc.setClassName(normalizedClassName);
                                     return schoolClassRepository.save(sc);
                                 });
 
@@ -145,7 +143,7 @@ public class ImportService {
         }
     }
 
-
+ 
     public ImportResultDto importClassesFromExcel(MultipartFile file) {
         ImportResultDto result = new ImportResultDto(0, 0, 0, new ArrayList<>());
 
@@ -188,88 +186,13 @@ public class ImportService {
                         continue;
                     }
 
+                    String normalizedClassName = className.trim();
+
                     SchoolClass schoolClass = new SchoolClass();
-                    schoolClass.setClassName(className);
+                    schoolClass.setClassName(normalizedClassName);
                     schoolClass.setCourseName(courseName);
 
                     schoolClassRepository.save(schoolClass);
-                    success++;
-
-                } catch (Exception ex) {
-                    errors.add("Zeile " + (rowIdx + 1) + ": Fehler beim Import – " + ex.getMessage());
-                }
-            }
-
-            result.setTotalRows(total);
-            result.setSuccessCount(success);
-            result.setErrorCount(total - success);
-            return result;
-
-        } catch (IOException e) {
-            result.getErrors().add("Fehler beim Lesen der Datei: " + e.getMessage());
-            return result;
-        }
-    }
-
-
-    public ImportResultDto importTrainingModulesFromExcel(MultipartFile file) {
-        ImportResultDto result = new ImportResultDto(0, 0, 0, new ArrayList<>());
-
-        if (file == null || file.isEmpty()) {
-            result.getErrors().add("Keine Datei hochgeladen.");
-            return result;
-        }
-
-        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
-            Sheet sheet = workbook.getSheetAt(0);
-
-            if (sheet == null) {
-                result.getErrors().add("Leeres Sheet in der Datei.");
-                return result;
-            }
-
-            Map<String, Integer> headerIndex = readHeaderRow(sheet.getRow(0));
-            if (headerIndex.isEmpty()) {
-                result.getErrors().add("Konnte Header-Zeile nicht lesen.");
-                return result;
-            }
-
-            int total = 0;
-            int success = 0;
-            List<String> errors = result.getErrors();
-
-            for (int rowIdx = 1; rowIdx <= sheet.getLastRowNum(); rowIdx++) {
-                Row row = sheet.getRow(rowIdx);
-                if (row == null) {
-                    continue;
-                }
-                total++;
-
-                try {
-                    String name = getCellString(row, headerIndex.get("training_module_name"));
-                    String weightingStr = getCellString(row, headerIndex.get("training_module_weighting"));
-
-                    if (name == null || name.isBlank()) {
-                        errors.add("Zeile " + (rowIdx + 1) + ": training_module_name fehlt.");
-                        continue;
-                    }
-
-                    float weighting = 0.0f;
-                    if (weightingStr != null && !weightingStr.isBlank()) {
-                        try {
-                            weighting = Float.parseFloat(weightingStr);
-                        } catch (NumberFormatException nfe) {
-                            errors.add("Zeile " + (rowIdx + 1) + ": Ungültige Gewichtung '" + weightingStr + "'. Setze 0.0.");
-                        }
-                    }
-
-                    TrainingModule module = new TrainingModule();
-                    module.setName(name);
-                    module.setWeightingHours((int) weighting);
-
-                    module.setDescription(name);
-
-                    trainingModuleRepository.save(module);
                     success++;
 
                 } catch (Exception ex) {

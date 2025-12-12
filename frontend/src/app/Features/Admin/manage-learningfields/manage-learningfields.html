@@ -17,6 +17,8 @@
   (exportClick)="showExportModal = true"
   (search)="onHeaderSearch($event)"
   (filterChange)="onHeaderFilterChange($event)"
+  [showImportButton]="false"
+  [showExportButton]="false"
 ></app-page-header>
 
 <app-table-column
