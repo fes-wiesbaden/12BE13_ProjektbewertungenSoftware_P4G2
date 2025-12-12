@@ -16,7 +16,10 @@ import { UpdateUser, User, UserResetPassword } from '../../../Shared/models/user
 import { CourseService } from '../../../Shared/Services/course.service';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
 import { userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
-import { courseAddFields, courseEditFields } from '../../../Shared/Components/form-modal/form-modal-fields';
+import {
+  courseAddFields,
+  courseEditFields,
+} from '../../../Shared/Components/form-modal/form-modal-fields';
 
 @Component({
   selector: 'app-manage-teachers',
@@ -37,6 +40,8 @@ import { courseAddFields, courseEditFields } from '../../../Shared/Components/fo
 })
 export class ManageTeachers implements OnInit {
   teachers: User[] = [];
+  filteredTeachers: User[] = [];
+  selectedFilter = '';
   courses: { label: string; value: number }[] = [];
   loading = true;
   showImportModal = false;
@@ -44,10 +49,16 @@ export class ManageTeachers implements OnInit {
   onImportFile(file: File) {
     console.log('Import-Datei:', file);
   }
-  
+
   columns: TableColumn<User>[] = userCourseColumns;
   addFields: FormField[] = courseAddFields;
   editFields: FormField[] = courseEditFields;
+
+  filterOptions = [
+    { key: 'firstName', label: 'Vorname' },
+    { key: 'lastName', label: 'Nachname' },
+    { key: 'username', label: 'Benutzername' },
+  ];
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
@@ -114,7 +125,7 @@ export class ManageTeachers implements OnInit {
 
   saveEdit(formData: any) {
     if (!this.editingTeacher) return;
-    
+
     const updatedTeacher: UpdateUser = {
       id: this.editingTeacher.id,
       firstName: formData.firstName,
@@ -141,8 +152,8 @@ export class ManageTeachers implements OnInit {
   loadTeachers() {
     this.userService.getUsersByRoleId(1).subscribe({
       next: (data) => {
-        console.log('API Data:', data);
         this.teachers = data;
+        this.filteredTeachers = [...data];
         this.loading = false;
       },
       error: (err) => {
@@ -150,6 +161,19 @@ export class ManageTeachers implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  onHeaderSearch(searchValue: string) {
+    searchValue = searchValue.toLowerCase();
+    this.filteredTeachers = this.teachers.filter((teacher) => {
+      const value = teacher[this.selectedFilter as keyof User];
+      return value ? value.toString().toLowerCase().includes(searchValue) : false;
+    });
+  }
+
+  onHeaderFilterChange(filterKey: string) {
+    this.selectedFilter = filterKey;
+    this.filteredTeachers = [...this.teachers];
   }
 
   saveTeacher(formData: any) {

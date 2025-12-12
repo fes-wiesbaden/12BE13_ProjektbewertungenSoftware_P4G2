@@ -22,14 +22,17 @@
   title="Lehrer verwalten"
   [titleAdd]="'Lehrer hinzufügen'"
   [showAddButton]="true"
+  [filterOptions]="filterOptions"
   (addClick)="openAddModel()"
+  (search)="onHeaderSearch($event)"
+  (filterChange)="onHeaderFilterChange($event)"
   (importClick)="showImportModal = true"
   (exportClick)="showExportModal = true"
 >
 </app-page-header>
 
 <app-table-column
-  [items]="teachers"
+  [items]="filteredTeachers"
   [columns]="columns"
   [showEditButtons]="true"
   [showDeleteButtons]="true"
