@@ -10,7 +10,7 @@ import {AuthService} from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-projects-list',
-  imports: [MatIcon, CommonModule, ReactiveFormsModule],
+  imports: [MatIcon, CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './projects.html',
   styleUrls: ['./projects.css'],
   standalone: true
@@ -61,7 +61,8 @@ export class Projects implements OnInit {
   }
 
   viewProjectDetails(projectId: string): void {
-    this.router.navigate(['/projects', projectId]);
+    console.log('Navigating to project:', projectId);
+    this.router.navigate(['/projects', projectId]); // ✅ Fixed navigation path
   }
 
   deleteProject(projectId: number, event: Event): void {

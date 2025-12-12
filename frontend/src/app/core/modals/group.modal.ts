@@ -16,7 +16,9 @@ export interface IGroup {
   id: string;
   name: string;
   projectName: string;
+  projectId: string;
   members: MemberSummaryDto[];
+  memberCount: number;
 }
 
 
