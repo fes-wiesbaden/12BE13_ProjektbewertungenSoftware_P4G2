@@ -15,7 +15,7 @@ import { UserService } from '../../../Shared/Services/user.service';
 import { CourseService } from '../../../Shared/Services/course.service';
 import { AddUser, UpdateUser, User, UserResetPassword } from '../../../Shared/models/user.interface';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
-import { userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
+import { FilterOption, filterOptionColumn, userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
 import { courseAddFields, courseAddSingleOptionFields, courseEditFields, courseEditSingleOptionFields } from '../../../Shared/Components/form-modal/form-modal-fields';
 
 @Component({
@@ -50,6 +50,7 @@ export class ManageStudents implements OnInit {
   columns: TableColumn<User>[] = userCourseColumns;
   addFields: FormField[] = courseAddSingleOptionFields;
   editFields: FormField[] = courseEditSingleOptionFields;
+  filterOptions: FilterOption[] = filterOptionColumn;
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
@@ -59,12 +60,6 @@ export class ManageStudents implements OnInit {
 
   editingStudent: User | null = null;
   deletingStudent: User | null = null;
-
-  filterOptions = [
-    { key: 'firstName', label: 'Vorname' },
-    { key: 'lastName', label: 'Nachname' },
-    { key: 'username', label: 'Benutzername' },
-  ];
 
   selectedFilter = this.filterOptions[0].key; 
 

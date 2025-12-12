@@ -15,7 +15,7 @@ import { UserService } from '../../../Shared/Services/user.service';
 import { UpdateUser, User, UserResetPassword } from '../../../Shared/models/user.interface';
 import { CourseService } from '../../../Shared/Services/course.service';
 import { ResetPassword } from '../../../Shared/Components/reset-password/reset-password';
-import { userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
+import { FilterOption, filterOptionColumn, userCourseColumns } from '../../../Shared/Components/table-column/table-columns';
 import {
   courseAddFields,
   courseEditFields,
@@ -52,12 +52,7 @@ export class ManageTeachers implements OnInit {
   columns: TableColumn<User>[] = userCourseColumns;
   addFields: FormField[] = courseAddFields;
   editFields: FormField[] = courseEditFields;
-
-  filterOptions = [
-    { key: 'firstName', label: 'Vorname' },
-    { key: 'lastName', label: 'Nachname' },
-    { key: 'username', label: 'Benutzername' },
-  ];
+  filterOptions: FilterOption[] = filterOptionColumn;
 
   selectedFilter = this.filterOptions[0].key; 
 

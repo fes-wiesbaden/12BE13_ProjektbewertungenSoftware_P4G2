@@ -18,7 +18,7 @@ import {
   defaultAddFields,
   defaultEditFields,
 } from '../../../Shared/Components/form-modal/form-modal-fields';
-import { userColumns } from '../../../Shared/Components/table-column/table-columns';
+import { FilterOption, filterOptionColumn, userColumns } from '../../../Shared/Components/table-column/table-columns';
 
 @Component({
   selector: 'app-manage-admin',
@@ -57,15 +57,10 @@ export class ManageAdmins implements OnInit {
   columns: TableColumn<User>[] = userColumns;
   addFields: FormField[] = defaultAddFields;
   editFields: FormField[] = defaultEditFields;
+  filterOptions: FilterOption[] = filterOptionColumn;
 
   editingAdmin: User | null = null;
   deletingAdmin: User | null = null;
-
-  filterOptions = [
-    { key: 'firstName', label: 'Vorname' },
-    { key: 'lastName', label: 'Nachname' },
-    { key: 'username', label: 'Benutzername' },
-  ];
 
   selectedFilter = this.filterOptions[0].key; 
 
