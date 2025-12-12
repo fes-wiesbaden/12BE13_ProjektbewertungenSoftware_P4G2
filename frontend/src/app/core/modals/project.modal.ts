@@ -11,8 +11,8 @@ export enum ProjectStatus {
 export interface ProjectCreateRequestDto {
   projectName: string;
   projectDescription: string;
-  startDate: Date;
-  dueDate: Date;
+  startDate: string;
+  dueDate: string;
   ProjectStatus: ProjectStatus;
 }
 

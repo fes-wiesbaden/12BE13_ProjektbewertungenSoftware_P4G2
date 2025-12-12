@@ -32,10 +32,16 @@ export class ProjectMapperService {
     return {
       projectName: project.title || '',
       projectDescription: project.description || '',
-      startDate: project.startDate || new Date(),
-      dueDate: project.dueDate || new Date(),
+      startDate: this.toLocalDateTime(project.startDate || new Date()),
+      dueDate: this.toLocalDateTime(project.dueDate || new Date()),
       ProjectStatus: this.mapToProjectStatus(project.status)
     };
+  }
+
+// Helper method in the same mapper service
+  private toLocalDateTime(date: Date | string): string {
+    const dateObj = date instanceof Date ? date : new Date(date);
+    return dateObj.toISOString().slice(0, -1);
   }
 
   // Map backend status to frontend status
