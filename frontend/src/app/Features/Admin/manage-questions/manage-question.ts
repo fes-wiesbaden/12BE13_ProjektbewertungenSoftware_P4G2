@@ -112,6 +112,7 @@ export class ManageQuestions implements OnInit {
       next: (res: Question) => {
         const index = this.questions.findIndex((s) => s.id === updatedQuestion.id);
         if (index !== -1) this.questions[index] = res;
+        this.filteredQuestions = [...this.questions];
         this.closeEditModal();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
@@ -153,6 +154,7 @@ export class ManageQuestions implements OnInit {
     this.questionService.createQuestion(dto).subscribe({
       next: (question) => {
         this.questions.push(question);
+        this.filteredQuestions = [...this.questions];
         this.closeAddModel();
         this.questionText = '';
       },
@@ -167,6 +169,7 @@ export class ManageQuestions implements OnInit {
     this.questionService.deleteQuestion(idToDelete).subscribe({
       next: () => {
         this.questions = this.questions.filter((s) => s.id !== idToDelete);
+        this.filteredQuestions = [...this.questions];
         this.deletingQuestion = null;
         this.closeDeleteModal();
       },
