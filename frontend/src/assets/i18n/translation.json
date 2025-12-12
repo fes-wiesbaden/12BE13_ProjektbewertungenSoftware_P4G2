@@ -266,6 +266,45 @@
   "lock.title": {
     "de": "Sperren",
     "en": "lock"
-  }
-    
+  },
+  "forgotPassword.title": {
+    "de": "Passwort vergessen?",
+    "en": "forgot password?"
+  },
+  "consultAdmin.title": {
+    "de": "Bitte wende dich an deinen Klassenlehrer oder Administrator, um dein Passwort zurückzusetzen.",
+    "en": "Please contact your class teacher or administrator to reset your password."
+  },
+   "login.title": {
+    "de": "Anmelden",
+    "en": "login"
+   },
+   "register.title": {
+    "de": "Du hast noch kein Konto? Bitte deinen Klassenlehrer um Zugang.",
+    "en": "You don't have an account yet? Ask your class teacher for access."
+   },
+   "gradeManagement.title": {
+    "de": "Intelligente Notenverwaltung",
+    "en": "smart grade management"
+   },
+   "gradeManagementInfo.title": {
+    "de": "Verwalte Noten, verfolge Lernfortschritte und behalte den Überblick – einfach, sicher und für Lehrer sowie Schüler perfekt abgestimmt.",
+    "en": "Manage grades, track learning progress and keep track of everything – simply, securely and perfectly tailored for teachers and students."
+   },
+   "studentCount.title": {
+    "de": "Anzahl Schüler",
+    "en": "student count"
+   },
+   "teacherCount.title": {
+    "de": "Anzahl Lehrer",
+    "en": "teacher count"
+   },
+   "adminCount.title": {
+    "de": "Anzahl Adminstratoren",
+    "en": "administrator count"
+   },
+   "courseCount.title": {
+    "de": "Anzahl Kurse",
+    "en": "course count"
+   }
 }
