@@ -96,6 +96,25 @@ public class GroupMemberService {
         );
     }
 
+
+    public List<GroupWithMembersResponseDto> getAllGroupsWithMembers() {
+        List<Group> groups = groupRepository.findAll();
+
+        return groups.stream()
+                .map(group -> {
+                    List<MemberSummaryDto> members = getMembersOfGroup(group.getId());
+                    return new GroupWithMembersResponseDto(
+                            group.getId(),
+                            group.getGroupName(),
+                            group.getProject().getId(),
+                            group.getProject() != null ? group.getProject().getProjectName() : null,
+                            members,
+                            members.size()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
     public List<GroupMemberResponseDto> getAllMemberships() {
         return groupMemberRepository.findAll()
                 .stream()

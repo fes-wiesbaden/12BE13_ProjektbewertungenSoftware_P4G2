@@ -61,6 +61,13 @@ public class GroupMemberController {
         GroupWithMembersResponseDto response = groupMemberService.getGroupWithMembers(groupId);
         return ResponseEntity.ok(response);
     }
+
+    // Get all groups details with all members
+    @GetMapping("/group/details")
+    public ResponseEntity<List<GroupWithMembersResponseDto>> getAllGroupsWithMembers() {
+        List<GroupWithMembersResponseDto> response = groupMemberService.getAllGroupsWithMembers();
+        return ResponseEntity.ok(response);
+    }
     
     // Get all group memberships
     @GetMapping
