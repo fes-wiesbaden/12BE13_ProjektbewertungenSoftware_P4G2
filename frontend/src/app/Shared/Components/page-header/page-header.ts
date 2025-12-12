@@ -15,4 +15,6 @@ export class PageHeaderComponents {
   @Output() importClick = new EventEmitter<void>();
   @Output() exportClick = new EventEmitter<void>();
   @Input() showAddButton = false;
+  @Input() showImportButton = true;
+  @Input() showExportButton = true;
 }

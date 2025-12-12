@@ -14,6 +14,8 @@
   (addClick)="openAddModel()"
   (importClick)="showImportModal = true"
   (exportClick)="showExportModal = true"
+  [showImportButton]="false"
+  [showExportButton]="false"
 ></app-page-header>
 
 <app-table-column
