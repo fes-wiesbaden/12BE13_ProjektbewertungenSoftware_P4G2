@@ -54,7 +54,7 @@ export class ManageClasses implements OnInit {
     { key: 'className', label: 'Klassenname' },
   ];
 
-  selectedFilter = this.filterOptions[0].key; 
+  selectedFilter = this.filterOptions[0].key;
 
   fields: FormField[] = [
     {
@@ -132,17 +132,17 @@ export class ManageClasses implements OnInit {
   }
 
   onHeaderSearch(searchValue: string) {
-      searchValue = searchValue.toLowerCase();
-      this.filteredCourses = this.classes.filter((course) => {
-        const value = course[this.selectedFilter as keyof Course];
-        return value ? value.toString().toLowerCase().includes(searchValue) : false;
-      });
-    }
-  
-    onHeaderFilterChange(filterKey: string) {
-      this.selectedFilter = filterKey;
-      this.filteredCourses = [...this.classes];
-    }
+    searchValue = searchValue.toLowerCase();
+    this.filteredCourses = this.classes.filter((course) => {
+      const value = course[this.selectedFilter as keyof Course];
+      return value ? value.toString().toLowerCase().includes(searchValue) : false;
+    });
+  }
+
+  onHeaderFilterChange(filterKey: string) {
+    this.selectedFilter = filterKey;
+    this.filteredCourses = [...this.classes];
+  }
 
   saveClass(formData: any) {
     const dto = {
