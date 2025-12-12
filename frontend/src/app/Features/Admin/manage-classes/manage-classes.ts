@@ -14,6 +14,7 @@ import { ExportModalComponent } from '../../../Shared/Components/export-modal/ex
 import { CourseService } from '../../../Shared/Services/course.service';
 import { Course } from '../../../Shared/models/course.interface';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
 
 @Component({
   selector: 'app-manage-classes',
@@ -34,6 +35,7 @@ import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/
 })
 export class ManageClasses implements OnInit {
   classes: Course[] = [];
+  learningFields: { label: string; value: String }[] = [];
   filteredCourses: Course[] = [];
 
   loading = true;
@@ -47,6 +49,7 @@ export class ManageClasses implements OnInit {
   columns: TableColumn<Course>[] = [
     { key: 'courseName', label: 'Kursname' },
     { key: 'className', label: 'Klassenname' },
+    { key: 'learningFieldNames', label: 'Lernfelder' },
   ];
 
   filterOptions = [
@@ -65,6 +68,14 @@ export class ManageClasses implements OnInit {
       colSpan: 6,
       placeholder: 'z.B. 23FIIRG1',
     },
+    {
+      key: 'learningFieldIds',
+      label: 'Lernfelder',
+      type: 'multiselect',
+      required: true,
+      colSpan: 6,
+      options: [],
+    },
   ];
 
   fieldsEdit: FormField[] = [
@@ -76,6 +87,14 @@ export class ManageClasses implements OnInit {
       colSpan: 6,
       placeholder: 'z.B. 23FIIRG1',
     },
+    {
+      key: 'learningFieldIds',
+      label: 'Lernfelder',
+      type: 'multiselect',
+      required: true,
+      colSpan: 6,
+      options: [],
+    },
   ];
 
   showAddModel = false;
@@ -83,10 +102,14 @@ export class ManageClasses implements OnInit {
   editingClass: Course | null = null;
   deletingClass: Course | null = null;
 
-  constructor(private courseService: CourseService) {}
+  constructor(
+    private courseService: CourseService,
+    private learningFieldService: LearningFieldService
+  ) {}
 
   ngOnInit(): void {
     this.loadClasses();
+    this.loadLearningFields();
   }
 
   openAddModel(): void {
@@ -100,6 +123,16 @@ export class ManageClasses implements OnInit {
   openEditModal(schoolClass: Course) {
     this.editingClass = schoolClass;
     this.showEditModal = true;
+
+    const selectedIds = schoolClass.learningFieldIds ?? [];
+
+    const learningFieldField = this.fieldsEdit.find((f) => f.key === 'learningFieldIds');
+    if (learningFieldField && learningFieldField.options) {
+      learningFieldField.options = learningFieldField.options.map((opt) => ({
+        ...opt,
+        selected: selectedIds.includes(opt.value),
+      }));
+    }
   }
 
   closeEditModal() {
@@ -115,6 +148,27 @@ export class ManageClasses implements OnInit {
   closeDeleteModal() {
     this.showDeleteModal = false;
     this.deletingClass = null;
+  }
+
+  loadLearningFields() {
+    this.learningFieldService.getAllLearningFields().subscribe({
+      next: (data) => {
+        this.learningFields = data.map((c: any) => ({ label: c.name, value: c.id }));
+
+        const courseField = this.fields.find((f) => f.key === 'learningFieldIds');
+        if (courseField) {
+          courseField.options = this.learningFields.map((c) => ({ ...c, selected: false }));
+        }
+        const courseFieldEdit = this.fieldsEdit.find((f) => f.key === 'learningFieldIds');
+        if (courseFieldEdit) {
+          courseFieldEdit.options = this.learningFields.map((c) => ({ ...c, selected: false }));
+        }
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Lehrer', err);
+        this.loading = false;
+      },
+    });
   }
 
   loadClasses() {
@@ -147,6 +201,7 @@ export class ManageClasses implements OnInit {
   saveClass(formData: any) {
     const dto = {
       name: formData.courseName,
+      learningFieldsIds: formData.learningFieldIds,
     };
 
     this.courseService.createCourse(dto).subscribe({
@@ -164,6 +219,7 @@ export class ManageClasses implements OnInit {
     const dto = {
       id: this.editingClass.id,
       name: formData.courseName,
+      learningFieldsIds: formData.learningFieldIds,
     };
 
     this.courseService.updateCourse(dto).subscribe({
@@ -171,6 +227,7 @@ export class ManageClasses implements OnInit {
         const index = this.classes.findIndex((s) => s.id === res.id);
         if (index !== -1) this.classes[index] = res;
         this.closeEditModal();
+        this.loadClasses();
       },
       error: (err: any) => console.error('Fehler beim Aktualisieren:', err),
     });

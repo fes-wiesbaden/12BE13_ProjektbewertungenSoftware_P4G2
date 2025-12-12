@@ -1,3 +1,6 @@
 package de.assessify.app.assessifyapi.api.dtos.request;
 
-public record UpdateSchoolClassDto (String name) {}
+import java.util.List;
+import java.util.UUID;
+
+public record UpdateSchoolClassDto (String name, List<UUID> learningFieldsIds) {}
