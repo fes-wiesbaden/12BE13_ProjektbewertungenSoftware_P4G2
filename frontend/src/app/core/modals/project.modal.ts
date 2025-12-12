@@ -1,3 +1,5 @@
+import {IGroup} from './group.modal';
+
 export enum ProjectStatus {
   PENDING,
   IN_PROGRESS,
@@ -39,8 +41,4 @@ export interface IProject {
   groups: IGroup[];
 }
 
-export interface IGroup {
-  id: string;
-  name: string;
-  members: string[];
-}
+
