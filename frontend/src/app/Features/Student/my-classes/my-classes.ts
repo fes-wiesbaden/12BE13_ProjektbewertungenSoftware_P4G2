@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { Sidebar } from '../../../layout/sidebar/sidebar';
-import { MatIcon } from '@angular/material/icon';
-import { DashboardNavbar } from '../../../layout/dashboard-navbar/dashboard-navbar';
 import { GroupService } from '../../../Shared/Services/group-member.service';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -20,7 +17,7 @@ export interface Group {
 @Component({
   selector: 'app-my-classes',
   standalone: true,
-  imports: [Sidebar, MatIcon, DashboardNavbar, FormsModule],
+  imports: [FormsModule],
   templateUrl: './my-classes.html',
   styleUrl: './my-classes.css',
 })
