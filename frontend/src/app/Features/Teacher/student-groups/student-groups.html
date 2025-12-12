@@ -139,18 +139,20 @@
               <label
                 for="project-id"
                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >Project ID</label
-              >
-              <input
-                type="text"
+              >Project</label>
+              <select
                 formControlName="projectId"
                 id="project-id"
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 [class.border-red-500]="groupForm.get('projectId')?.invalid && groupForm.get('projectId')?.touched"
-                placeholder="Enter project ID"
-              />
+              >
+                <option value="" disabled selected>Select a project</option>
+                @for (project of projectNames; track project.id) {
+                  <option [value]="project.id">{{ project.name }}</option>
+                }
+              </select>
               @if (groupForm.get('projectId')?.invalid && groupForm.get('projectId')?.touched) {
-                <p class="mt-1 text-sm text-red-600">Project ID is required</p>
+                <p class="mt-1 text-sm text-red-600">Project is required</p>
               }
             </div>
           </div>

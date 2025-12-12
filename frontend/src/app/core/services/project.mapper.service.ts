@@ -32,16 +32,23 @@ export class ProjectMapperService {
     return {
       projectName: project.title || '',
       projectDescription: project.description || '',
-      startDate: this.toLocalDateTime(project.startDate || new Date()),
-      dueDate: this.toLocalDateTime(project.dueDate || new Date()),
+      startDate: this.serializeDate(project.startDate || new Date()),
+      dueDate: this.serializeDate(project.dueDate || new Date()),
       ProjectStatus: this.mapToProjectStatus(project.status)
     };
   }
 
-// Helper method in the same mapper service
-  private toLocalDateTime(date: Date | string): string {
+  // date pattern = "yyyy-MM-dd'T'HH:mm:ss"
+
+
+  // Helper method in the same mapper service
+  public serializeDate(date: Date | string): string {
     const dateObj = date instanceof Date ? date : new Date(date);
-    return dateObj.toISOString().slice(0, -1);
+    const isoString = dateObj.toISOString(); // "2025-12-12T09:39:08.862Z"
+
+    // Remove milliseconds and 'Z'
+    // Split by '.' to remove milliseconds, then remove 'Z'
+    return isoString.split('.')[0]; // "2025-12-12T09:39:08"
   }
 
   // Map backend status to frontend status

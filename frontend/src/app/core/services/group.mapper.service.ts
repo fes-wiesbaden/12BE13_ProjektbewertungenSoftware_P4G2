@@ -20,6 +20,15 @@ export class GroupMapperService {
     };
   }
 
+  createDtoToGroup(dto: GroupResponseDto): IGroup {
+    return {
+      id: dto.id,
+      name: dto.groupName,
+      projectName: dto.projectName,
+      members: []
+    }
+  }
+
   // Convert array of DTOs to IProject array
   dtosToGroups(dtos: GroupWithMembersResponseDto[]): IGroup[] {
     return dtos.map(dto => this.dtoToGroups(dto));

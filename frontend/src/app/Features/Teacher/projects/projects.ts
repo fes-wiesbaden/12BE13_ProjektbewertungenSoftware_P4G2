@@ -102,8 +102,8 @@ export class Projects implements OnInit {
     const newProject: ProjectCreateRequestDto = {
       projectName: formValue.projectName,
       projectDescription: formValue.description || '',
-      startDate: this.toLocalDateTime(new Date(formValue.startDate)),
-      dueDate: this.toLocalDateTime(new Date(formValue.dueDate)),
+      startDate: this.mapper.serializeDate(new Date(formValue.startDate)),
+      dueDate: this.mapper.serializeDate(new Date(formValue.dueDate)),
       ProjectStatus: ProjectStatus.PENDING
     };
 

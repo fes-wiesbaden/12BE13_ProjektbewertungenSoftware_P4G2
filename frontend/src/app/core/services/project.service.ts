@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {IProject, ProjectCreateRequestDto, ProjectResponseDto} from '../modals/project.modal';
+import {IProject, ProjectCreateRequestDto, ProjectNamesResponseDto, ProjectResponseDto} from '../modals/project.modal';
 import {map, Observable} from 'rxjs';
 import {ProjectMapperService} from './project.mapper.service';
 import {AuthService} from '../auth/auth.service';
@@ -11,6 +11,8 @@ import {AuthService} from '../auth/auth.service';
 export class ProjectService {
   private projectsApi = 'http://localhost:4100/api/projects';
 
+
+
   constructor(private http: HttpClient,
               private mapper: ProjectMapperService,
               private authService: AuthService
@@ -19,13 +21,7 @@ export class ProjectService {
   createProject(project: ProjectCreateRequestDto): Observable<IProject> {
     const token = this.authService.getToken();
 
-    const payload = {
-      ...project,
-      startDate: new Date(project.startDate).toISOString().slice(0, -1),
-      dueDate: new Date(project.dueDate).toISOString().slice(0, -1),
-    }
-
-    return this.http.post<ProjectResponseDto>(`${this.projectsApi}`, payload, {
+    return this.http.post<ProjectResponseDto>(`${this.projectsApi}`, project, {
       headers: {
         Authorization: `Bearer ${token}`,
       }
@@ -47,5 +43,9 @@ export class ProjectService {
       .pipe(
         map(dtos => this.mapper.dtosToProjects(dtos))
       );
+  }
+
+  getAllProjectsNames() : Observable<ProjectNamesResponseDto[]>{
+    return this.http.get<ProjectNamesResponseDto[]>(`${this.projectsApi}/names`);
   }
 }

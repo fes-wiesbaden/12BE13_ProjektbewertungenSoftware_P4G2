@@ -26,7 +26,10 @@ export interface ProjectResponseDto {
   groupCount: number;
 }
 
-
+export interface ProjectNamesResponseDto {
+  id: string;
+  name: string;
+}
 
 // frontend
 // project.modal.ts

@@ -5,6 +5,8 @@ import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} fr
 import {GroupService} from '../../../core/services/group.service';
 import {GroupMapperService} from '../../../core/services/group.mapper.service';
 import {GroupCreateRequestDto, IGroup} from '../../../core/modals/group.modal';
+import {IProject, ProjectNamesResponseDto} from '../../../core/modals/project.modal';
+import {ProjectService} from '../../../core/services/project.service';
 
 @Component({
   selector: 'app-student-groups',
@@ -20,15 +22,19 @@ export class StudentGroups implements OnInit {
   groupForm!: FormGroup;
   isSubmitting = false;
 
+  projectNames : ProjectNamesResponseDto[] = [];
+
   constructor(private router : Router ,
               private fb: FormBuilder,
               private groupService: GroupService,
-              private mapper: GroupMapperService,) {
+              private mapper: GroupMapperService,
+              private projectService: ProjectService,) {
     this.initForm();
   }
 
   ngOnInit(): void {
     this.loadGroups();
+    this.loadProjectNames();
   }
 
   loadGroups(): void {
@@ -49,6 +55,24 @@ export class StudentGroups implements OnInit {
     });
   }
 
+  loadProjectNames(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.projectService.getAllProjectsNames().subscribe({
+      next: (projectNames) => {
+        this.projectNames = projectNames;
+        this.isLoading = false;
+        console.log('Loaded Projects Names: ', projectNames);
+      },
+      error: (error) => {
+        console.log('Error fetching projectNames: ', error)
+        this.errorMessage = 'Failed to load projectNames. Please try again';
+        this.isLoading = false;
+      }
+    })
+  }
+
   private initForm() {
     this.groupForm = this.fb.group({
       groupName: new FormControl(null, [Validators.required]),
@@ -65,12 +89,14 @@ export class StudentGroups implements OnInit {
     this.isLoading = true;
 
     const formValue = this.groupForm.value;
-    const newProject: GroupCreateRequestDto = {
+    const newGroup: GroupCreateRequestDto = {
       groupName: formValue.groupName,
-      projectId: formValue.projectName
+      projectId: formValue.projectId
     };
 
-    this.groupService.createGroup(newProject).subscribe({
+    console.log("the new grouup",newGroup);
+
+    this.groupService.createGroup(newGroup).subscribe({
       next: (createdGroup) => {
         console.log('Group created successfully', createdGroup);
         this.isSubmitting = false;
