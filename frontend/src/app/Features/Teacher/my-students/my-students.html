@@ -1,4 +1,9 @@
-<app-page-header title="Schüler"></app-page-header>
+<app-page-header
+  title="Schüler"
+  [showImportButton]="false"
+  [showExportButton]="true"
+  (exportClick)="showExportModal = true"
+></app-page-header>
 
 <app-table-column
   [items]="students"
@@ -9,3 +14,8 @@
   (view)="openStudentDetail($event)"
 >
 </app-table-column>
+
+<app-export-modal
+  [show]="showExportModal"
+  (close)="showExportModal = false"
+></app-export-modal>

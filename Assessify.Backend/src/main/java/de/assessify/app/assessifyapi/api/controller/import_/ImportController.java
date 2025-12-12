@@ -28,10 +28,4 @@ public class ImportController {
         ImportResultDto result = importService.importClassesFromExcel(file);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
-
-    @PostMapping("/training-modules")
-    public ResponseEntity<ImportResultDto> importTrainingModules(@RequestParam("file") MultipartFile file) {
-        ImportResultDto result = importService.importTrainingModulesFromExcel(file);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
-    }
 }
