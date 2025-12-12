@@ -1,35 +1,148 @@
 {
-  "export.title": {
-    "de": "Export",
-    "en": "Export"
+  "changePassword.title": {
+    "de": "Passwort ändern",
+    "en": "change password"
   },
-  "students.title": {
-    "de": "Schüler",
-    "en": "Students"
+  "logOut.title": {
+    "de": "Ausloggen",
+    "en": "log out"
   },
     "teacher.title": {
     "de": "Lehrer",
     "en": "Teacher"
   },
-  "selectAll.title": {
-    "de": "Alle auswählen",
-    "en": "select All"
+  "oldPassword.title": {
+    "de": "Bitte altes Passwort eingeben",
+    "en": "Please enter the old password"
+  },
+  "newPassword.title": {
+    "de": "Neues Passwort",
+    "en": "new password"
+  },
+  "passwordRequired.title": {
+    "de": "Passwort ist erforderlich",
+    "en": "password required"
+  },
+  "passwordLength.title": {
+    "de": "Mindestens 8 Zeichen",
+    "en": "8 characters at least"
+  },
+  "passwordConvention.title": {
+    "de": "Muss Großbuchstaben, Kleinbuchstaben, Zahl und Sonderzeichen enthalten",
+    "en": "Must contain lower case, upper case, a special character and a number"
+  },
+  "confirmPassword.title": {
+    "de": "Passwort wiederholen",
+    "en": "confrim password"
+  },
+  "wrongConfirm.title": {
+    "de": "Passwörter stimmen nicht überein",
+    "en": "passwords don't match"
+  },
+  "cancel.title": {
+    "de": "Abbrechen",
+    "en": "cancel"
+  },
+  "savePassword.title": {
+    "de": "Passwort speichern",
+    "en": "save password"
+  },
+  "saving.title": {
+    "de": "Speichern...",
+    "en": "saving..."
+  },
+  "closeButton.title": {
+    "de": "Schließen",
+    "en": "close"
+  },
+  "name.title": {
+    "de": "Name",
+    "en": "name"
+  },
+  "grade.title": {
+    "de": "Note",
+    "en": "grade"
+  },
+  "weighting.title": {
+    "de": "Gewichtung",
+    "en": "weighting"
+  },
+  "deleteButton.title":{
+    "de": "Löschen",
+    "en": "delete"
+  },
+  "editButton.title": {
+    "de": "Bearbeiten",
+    "en": "edit"
+  },
+  "addGradeButton.title": {
+    "de": "+ Neue Note",
+    "en": "+ new grade"
+  },
+  "saveButton.title": {
+    "de": "Speichern",
+    "en": "save"
+  },
+  "confirmButton.title": {
+    "de": "Ja, ich bin sicher",
+    "en": "Yes, I'm sure"
+  },
+  "declineButton.title": {
+    "de": "Nein, abbrechen",
+    "en": "No, cancel"
+  },
+  "exportButton.title": {
+    "de": "Exportieren",
+    "en": "export"
+  },
+  "selectClass.title": {
+    "de": "Klasse auswählen",
+    "en": "select class"
+  },
+  "pleaseSelect.title": {
+    "de": "Bitte wählen",
+    "en": "please select"
+  },
+  "expandButton.title": {
+    "de": "Erweitern",
+    "en": "expand more"
+  },
+  "noGrades.title": {
+    "de": "Keine Noten vorhanden",
+    "en": "No existing grades"
+  },
+  "importButton.title": {
+    "de": "Importieren",
+    "en": "import"
+  },
+  "upload.title": {
+    "de": "Hochladen",
+    "en": "upload"
+  },
+  "dragHere.title": {
+    "de": "Datei hierher ziehen oder klicken zum Auswählen",
+    "en": "Drag file here or click to select"
+  },
+  "supported.title":{
+    "de": "Unterstützt z. B. CSV, XLSX",
+    "en": "Supports e.g. CSV, XLSX"
+  },
+  "school.title": {
+    "de": "Schule",
+    "en": "school"
+  },
+  "all.title": {
+    "de": "Alle",
+    "en": "all"
   },
   "search.title": {
-    "de": "Suche...",
-    "en": "Search..."
+    "de": "Suchen",
+    "en": "search"
   },
-  "optionsSt.title": {
-    "de": "Schüler-optionen",
-    "en": "Student-Options"
-  },
-  "optionsTe.title": {
-    "de": "Lehrer-optionen",
-    "en": "Teacher-Options"
-  },
-
-  "filter.title": {
-    "de": "Filter",
-    "en": "Filter"
+  "addButton.title": {
+    "de": "Hinzufügen",
+    "en": "add"
   }
+
+  
 }
