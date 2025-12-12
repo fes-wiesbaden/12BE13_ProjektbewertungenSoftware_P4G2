@@ -6,6 +6,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AuthService } from '../../core/auth/auth.service';
 import { SidebarService } from '../../core/services/sidebar.service';
 import { CommonModule } from '@angular/common';
+import { TranslationService } from '../../core/services/translation.service';
+
 import {
   AbstractControl,
   FormBuilder,
@@ -56,6 +58,7 @@ export class DashboardNavbar implements OnInit {
     private authService: AuthService,
     private sidebarService: SidebarService,
     private userService: UserService,
+    public i18n: TranslationService,
   ) {
     this.changePasswordForm = this.fb.group(
       {
@@ -74,10 +77,18 @@ export class DashboardNavbar implements OnInit {
     );
   }
 
+  toggleLang() {
+  const next = this.i18n.getLang() === 'de' ? 'en' : 'de';
+  this.i18n.setLang(next);
+  localStorage.setItem('lang', next);
+}
+
   ngOnInit() {
     this.username = this.authService.getUsername();
     this.role = this.authService.getRole();
     this.theme = localStorage.getItem('theme') || 'dark';
+    const savedLang = (localStorage.getItem('lang') as 'de' | 'en') || 'de';
+    this.i18n.setLang(savedLang);
   }
 
   passwordsMatch(group: AbstractControl): ValidationErrors | null {
