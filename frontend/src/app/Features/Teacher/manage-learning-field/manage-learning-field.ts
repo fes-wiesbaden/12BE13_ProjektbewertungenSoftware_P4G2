@@ -21,6 +21,7 @@ import { ExportModalComponent } from '../../../Shared/Components/export-modal/ex
 export class ManageLearningField implements OnInit {
   studentId!: string;
   currentLearningFieldId!: string;
+  public classId: string = '';
   learningFields: LearningField[] = [];
   grades: Grade[] = [];
   loading = true;

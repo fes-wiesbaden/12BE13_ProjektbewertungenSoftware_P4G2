@@ -24,6 +24,7 @@ export class TeacherDashboard {
   classes: { label: string; value: any }[] = [];
   myClasses: Course[] = [];
   loading = true;
+  public classId: string = '';
   showImportModal = false;
   showExportModal = false;
    onImportFile(file: File) {
