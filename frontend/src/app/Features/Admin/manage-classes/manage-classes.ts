@@ -15,6 +15,7 @@ import { CourseService } from '../../../Shared/Services/course.service';
 import { Course } from '../../../Shared/models/course.interface';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-manage-classes',
@@ -104,7 +105,8 @@ export class ManageClasses implements OnInit {
 
   constructor(
     private courseService: CourseService,
-    private learningFieldService: LearningFieldService
+    private learningFieldService: LearningFieldService,
+    public i18n: TranslationService
   ) {}
 
   ngOnInit(): void {

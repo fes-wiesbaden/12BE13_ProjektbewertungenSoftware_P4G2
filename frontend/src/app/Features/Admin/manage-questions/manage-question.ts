@@ -13,6 +13,7 @@ import { ExportModalComponent } from '../../../Shared/Components/export-modal/ex
 import { Question } from '../../../Shared/models/question.interface';
 import { QuestionService } from '../../../Shared/Services/question.service';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-question',
@@ -65,11 +66,11 @@ export class ManageQuestions implements OnInit {
     { key: 'questionText', label: 'Text' },
   ];
 
-  selectedFilter = this.filterOptions[0].key; 
+  selectedFilter = this.filterOptions[0].key;
 
   questionText = '';
 
-  constructor(private questionService: QuestionService) {}
+  constructor(private questionService: QuestionService, public i18n: TranslationService) {}
 
   ngOnInit(): void {
     this.loadQuestions();
@@ -139,7 +140,7 @@ export class ManageQuestions implements OnInit {
         return value ? value.toString().toLowerCase().includes(searchValue) : false;
       });
     }
-  
+
     onHeaderFilterChange(filterKey: string) {
       this.selectedFilter = filterKey;
       this.filteredQuestions = [...this.questions];

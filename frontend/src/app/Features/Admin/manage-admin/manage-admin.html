@@ -1,14 +1,14 @@
 <app-form-modal
   [showModal]="showAddModel"
-  [title]="'Administrator anlegen'"
+  [title]="i18n.t('admin.create.title')"
   [fields]="addFields"
   (close)="closeAddModel()"
   (save)="saveAdmin($event)"
 ></app-form-modal>
 
 <app-page-header
-  title="Administratoren verwalten"
-  titleAdd="Administrator hinzufügen"
+  [title]="i18n.t('admin.manage.title')"
+  [titleAdd]="i18n.t('admin.add.button')"
   [showAddButton]="true"
   (addClick)="openAddModel()"
   [filterOptions]="filterOptions"
@@ -31,7 +31,7 @@
 
 <app-form-modal
   [showModal]="showEditModal"
-  [title]="'Administrator Editieren'"
+  [title]="i18n.t('admin.edit.title')"
   [fields]="editFields"
   [record]="editingAdmin"
   (close)="closeEditModal()"
@@ -41,7 +41,7 @@
 
 <app-delete-button
   [showModal]="showDeleteModal"
-  [title]="'Sind Sie sicher, dass sie den Admin löschen wollen?'"
+  [title]="i18n.t('admin.delete.confirm')"
   (close)="closeDeleteModal()"
   (delete)="deleteAdmin()"
 ></app-delete-button>
