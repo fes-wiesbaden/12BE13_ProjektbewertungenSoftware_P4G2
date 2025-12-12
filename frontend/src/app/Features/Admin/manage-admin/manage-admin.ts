@@ -40,7 +40,6 @@ import { userColumns } from '../../../Shared/Components/table-column/table-colum
 export class ManageAdmins implements OnInit {
   admins: User[] = [];
   filteredAdmins: User[] = [];
-  selectedFilter = '';
 
   classes: { label: string; value: any }[] = [];
   loading = true;
@@ -67,6 +66,8 @@ export class ManageAdmins implements OnInit {
     { key: 'lastName', label: 'Nachname' },
     { key: 'username', label: 'Benutzername' },
   ];
+
+  selectedFilter = this.filterOptions[0].key; 
 
   constructor(private userService: UserService) {}
 

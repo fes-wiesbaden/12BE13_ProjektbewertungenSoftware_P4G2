@@ -38,7 +38,6 @@ import { courseAddFields, courseEditFields } from '../../../Shared/Components/fo
 export class ManageStudents implements OnInit {
   students: User[] = [];
   filteredStudents: User[] = [];
-  selectedFilter = '';
 
   classes: { label: string; value: any }[] = [];
   loading = true;
@@ -66,6 +65,8 @@ export class ManageStudents implements OnInit {
     { key: 'lastName', label: 'Nachname' },
     { key: 'username', label: 'Benutzername' },
   ];
+
+  selectedFilter = this.filterOptions[0].key; 
 
   delete: any;
 

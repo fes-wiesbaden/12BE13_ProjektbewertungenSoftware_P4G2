@@ -41,7 +41,6 @@ import {
 export class ManageTeachers implements OnInit {
   teachers: User[] = [];
   filteredTeachers: User[] = [];
-  selectedFilter = '';
   courses: { label: string; value: number }[] = [];
   loading = true;
   showImportModal = false;
@@ -59,6 +58,8 @@ export class ManageTeachers implements OnInit {
     { key: 'lastName', label: 'Nachname' },
     { key: 'username', label: 'Benutzername' },
   ];
+
+  selectedFilter = this.filterOptions[0].key; 
 
   showAddModel: boolean = false;
   showEditModal: boolean = false;
