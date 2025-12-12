@@ -38,7 +38,7 @@ export class GroupService {
 
   getGroupById(projectId: string): Observable<IGroup> {
     // ✅ FIXED: Added parentheses around template literal
-    return this.http.get<GroupWithMembersResponseDto>(`${this.groupApi}/${projectId}`)
+    return this.http.get<GroupWithMembersResponseDto>(`${this.groupMembersApi}/group/${projectId}/details`)
       .pipe(
         map(dto => this.mapper.dtoToGroups(dto))
       );
