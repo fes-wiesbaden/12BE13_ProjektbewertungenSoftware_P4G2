@@ -4,8 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import de.assessify.app.assessifyapi.api.dtos.request.AddSchoolClassDto;
 import de.assessify.app.assessifyapi.api.dtos.request.UpdateSchoolClassDto;
+import de.assessify.app.assessifyapi.api.dtos.response.SchoolClassAndLearningFieldDto;
 import de.assessify.app.assessifyapi.api.dtos.response.SchoolClassDto;
 import de.assessify.app.assessifyapi.api.dtos.response.UserWithSchoolClassDto;
+import de.assessify.app.assessifyapi.api.entity.TrainingModule;
+import de.assessify.app.assessifyapi.api.repository.TrainingModuleRepository;
 import de.assessify.app.assessifyapi.api.service.EntityFinderService;
 import de.assessify.app.assessifyapi.api.repository.SchoolClassRepository;
 import de.assessify.app.assessifyapi.api.repository.UserRepository;
@@ -16,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -27,27 +32,45 @@ public class SchoolClassController {
     private final SchoolClassRepository schoolClassRepository;
     private final UserRepository userRepository;
     private final EntityFinderService entityFinderService;
+    private final TrainingModuleRepository trainingModuleRepository;
 
-    public SchoolClassController(SchoolClassRepository schoolClassRepository, UserRepository userRepository, EntityFinderService entityFinderService) {
+    public SchoolClassController(SchoolClassRepository schoolClassRepository, UserRepository userRepository, EntityFinderService entityFinderService, TrainingModuleRepository trainingModuleRepository) {
         this.schoolClassRepository = schoolClassRepository;
         this.userRepository = userRepository;
         this.entityFinderService = entityFinderService;
+        this.trainingModuleRepository = trainingModuleRepository;
     }
 
     private static final Logger logger = Logger.getLogger(SchoolClassController.class.getName());
 
     @GetMapping("/school-class/all")
-    public ResponseEntity<List<SchoolClassDto>> getAllSchoolClasses() {
-        var modules = schoolClassRepository.findAll()
+    public ResponseEntity<List<SchoolClassAndLearningFieldDto>> getAllSchoolClasses() {
+
+        var classes = schoolClassRepository.findAll()
                 .stream()
-                .map(field -> new SchoolClassDto(
-                        field.getId(),
-                        field.getCourseName(),
-                        field.getClassName()
-                ))
+                .map(sc -> {
+
+                    List<UUID> trainingModuleIds = sc.getTrainingModules()
+                            .stream()
+                            .map(tm -> tm.getId())
+                            .toList();
+
+                    List<String> trainingModuleNames = sc.getTrainingModules()
+                            .stream()
+                            .map(tm -> tm.getName())
+                            .toList();
+
+                    return new SchoolClassAndLearningFieldDto(
+                            sc.getId(),
+                            sc.getCourseName(),
+                            sc.getClassName(),
+                            trainingModuleIds,
+                            trainingModuleNames
+                    );
+                })
                 .toList();
 
-        return ResponseEntity.ok(modules);
+        return ResponseEntity.ok(classes);
     }
 
     @GetMapping("/school-class")
@@ -97,19 +120,33 @@ public class SchoolClassController {
     }
 
     @PostMapping("/school-class")
-    public ResponseEntity<SchoolClassDto> addSchoolClass(@RequestBody AddSchoolClassDto dto) {
-       SchoolClass entity = new SchoolClass();
-       entity.setCourseName(dto.name());
+    public ResponseEntity<SchoolClassAndLearningFieldDto> addSchoolClass(@RequestBody AddSchoolClassDto dto) {
 
-       SchoolClass saved = schoolClassRepository.save(entity);
+        SchoolClass entity = new SchoolClass();
+        entity.setCourseName(dto.name());
 
-       SchoolClassDto response = new SchoolClassDto(
-               saved.getId(),
-               saved.getCourseName(),
-               saved.getClassName()
-       );
+        List<TrainingModule> learningFields = new ArrayList<>();
 
-       return ResponseEntity.ok(response);
+        if (dto.learningFieldsIds() != null && !dto.learningFieldsIds().isEmpty()) {
+            for (UUID learningFieldId : dto.learningFieldsIds()) {
+                TrainingModule trainingModule = trainingModuleRepository.findById(learningFieldId)
+                        .orElseThrow(() -> new RuntimeException("LearningField not found: " + learningFieldId));
+                learningFields.add(trainingModule);
+            }
+            entity.setTrainingModules(learningFields);
+        }
+
+        SchoolClass saved = schoolClassRepository.save(entity);
+
+        SchoolClassAndLearningFieldDto response = new SchoolClassAndLearningFieldDto(
+                saved.getId(),
+                saved.getCourseName(),
+                saved.getClassName(),
+                learningFields.stream().map(TrainingModule::getId).toList(),
+                learningFields.stream().map(TrainingModule::getName).toList()
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/school-class/{schoolClassId}/user")
@@ -147,7 +184,7 @@ public class SchoolClassController {
     }
 
     @PutMapping("/school-class/{schoolClassId}")
-    public ResponseEntity<SchoolClassDto> updateRole(
+    public ResponseEntity<SchoolClassAndLearningFieldDto> updateRole(
             @PathVariable UUID schoolClassId,
             @RequestBody UpdateSchoolClassDto dto) {
 
@@ -155,16 +192,32 @@ public class SchoolClassController {
 
         schoolClass.setCourseName(dto.name());
 
+        List<TrainingModule> learningFields;
+        if (dto.learningFieldsIds() != null && !dto.learningFieldsIds().isEmpty()) {
+            learningFields = trainingModuleRepository.findAllById(dto.learningFieldsIds());
+
+            if (learningFields.size() != dto.learningFieldsIds().size()) {
+                return ResponseEntity.badRequest().build();
+            }
+            schoolClass.setTrainingModules(learningFields);
+        } else {
+            learningFields = Collections.emptyList();
+            schoolClass.setTrainingModules(learningFields);
+        }
+
         SchoolClass updated = schoolClassRepository.save(schoolClass);
 
-        SchoolClassDto response = new SchoolClassDto(
+        SchoolClassAndLearningFieldDto response = new SchoolClassAndLearningFieldDto(
                 updated.getId(),
                 updated.getCourseName(),
-                updated.getClassName()
+                updated.getClassName(),
+                learningFields.stream().map(TrainingModule::getId).toList(),
+                learningFields.stream().map(TrainingModule::getName).toList()
         );
 
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/school-class/amount")
     public ResponseEntity<Long> getSchoolClassAmount() {
         long amount = schoolClassRepository.count();

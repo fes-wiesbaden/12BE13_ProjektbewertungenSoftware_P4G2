@@ -38,6 +38,10 @@ public class TrainingModule {
     @OneToMany(mappedBy = "trainingModules", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> grades = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "trainingModules")
+    @JsonIgnore
+    private List<SchoolClass> schoolClasses = new ArrayList<>();
+
     public String getName() {
         return name;
     }
