@@ -4,6 +4,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { TranslationService } from '../../../core/services/translation.service';
+
 @Component({
   selector: 'app-my-results',
   imports: [ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, CommonModule],
@@ -93,7 +95,7 @@ export class MyAssessment {
 
   ratings: number[] = this.members.map((_) => 0);
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, public i18n: TranslationService) {
     this.form = this.fb.group({});
     this.members.forEach((m) => {
       this.form.addControl(`rating_${m.id}`, this.fb.control(null, Validators.required));

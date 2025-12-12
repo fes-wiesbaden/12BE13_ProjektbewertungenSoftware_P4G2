@@ -68,7 +68,7 @@
       <div class="contentList grid grid-cols-3 gap-4 mt-4">
         <!-- Teachers -->
         <div class="teacherList">
-          <h3 class="font-semibold mb-2 border-b pb-1">Teachers</h3>
+          <h3 class="font-semibold mb-2 border-b pb-1">{{ i18n.t('grades.teachers.title') }}</h3>
           <ul class="space-y-1">
             @for (item of teachers; track $index) {
               <li
@@ -82,7 +82,7 @@
 
         <!-- Grades -->
         <div class="gradesList">
-          <h3 class="font-semibold mb-2 border-b pb-1">Grades</h3>
+          <h3 class="font-semibold mb-2 border-b pb-1">{{ i18n.t('grades.grades.title') }}</h3>
           <ul class="space-y-1">
             @for (item of grades; track $index) {
               <li
@@ -96,7 +96,7 @@
 
         <!-- Overall Grade -->
         <div class="OverallGrade">
-          <h3 class="font-semibold mb-2 border-b pb-1">Overall</h3>
+          <h3 class="font-semibold mb-2 border-b pb-1">{{ i18n.t('grades.overall.title') }}</h3>
           <div class="px-2 py-2 rounded font-bold text-black bg-lime-400">
             {{ overallGrade }}
           </div>

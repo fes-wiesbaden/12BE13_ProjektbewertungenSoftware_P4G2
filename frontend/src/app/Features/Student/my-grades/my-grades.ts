@@ -9,6 +9,7 @@ import { LearningField } from '../../../Shared/models/learning-fields.interface'
 import { LearningFieldService } from '../../../Shared/Services/learning-field.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { GradeViewerModalComponent } from '../../../Shared/Components/grade-viewer/grade-viewer';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-my-grades',
@@ -32,6 +33,7 @@ export class MyGrades {
   constructor(
     private learningFieldService: LearningFieldService,
     private authService: AuthService,
+    public i18n: TranslationService
   ) {}
 
   ngOnInit(): void {
