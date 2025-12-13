@@ -1,4 +1,4 @@
-import {IGroup} from './group.modal';
+import {GroupResponseDto, IGroup} from './group.modal';
 
 export enum ProjectStatus {
   PENDING,
@@ -23,6 +23,18 @@ export interface ProjectResponseDto {
   startDate: Date;
   dueDate: Date;
   ProjectStatus: ProjectStatus;
+  groups: [];
+  groupCount: number;
+}
+
+export interface ProjectWithGroupsResponseDto{
+  id: string;
+  projectName: string;
+  projectDescription: string;
+  startDate: Date;
+  dueDate: Date;
+  ProjectStatus: ProjectStatus;
+  groups: GroupResponseDto[];
   groupCount: number;
 }
 

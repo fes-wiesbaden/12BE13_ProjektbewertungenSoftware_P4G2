@@ -1,8 +1,10 @@
 package de.assessify.app.assessifyapi.api.controller;
 
 import de.assessify.app.assessifyapi.api.dtos.request.ProjectCreateRequestDto;
+import de.assessify.app.assessifyapi.api.dtos.response.GroupResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectNamesResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ProjectResponseDto;
+import de.assessify.app.assessifyapi.api.dtos.response.ProjectWithGroupsResponseDto;
 import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.ProjectStatus;
 import de.assessify.app.assessifyapi.api.repository.GroupRepository;
@@ -11,6 +13,7 @@ import de.assessify.app.assessifyapi.api.repository.TrainingModuleRepository;
 import de.assessify.app.assessifyapi.api.repository.ProjectRepository;
 import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.entity.TrainingModule;
+import de.assessify.app.assessifyapi.api.service.GroupService;
 import de.assessify.app.assessifyapi.api.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,9 @@ public class ProjectController {
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private GroupService groupService;
 
     private final ProjectRepository projectRepository;
     private final TrainingModuleRepository trainingModuleRepository;
@@ -56,6 +62,17 @@ public class ProjectController {
                 .toList();
 
         return ResponseEntity.ok(modules);
+    }
+
+    @GetMapping("/groups")
+    public ResponseEntity<List<ProjectWithGroupsResponseDto>> getAllProjectsWithGroups() {
+        return ResponseEntity.ok(projectService.getAllProjectsWithGroups());
+    }
+
+    // controller for groups with project id
+    @GetMapping("{id}/groups")
+    public ResponseEntity<ProjectWithGroupsResponseDto> getProjectWithGroupsById(@PathVariable UUID id) {
+        return ResponseEntity.ok(projectService.getProjectWithGroupsByProjectId(id));
     }
 
     @GetMapping("/names")

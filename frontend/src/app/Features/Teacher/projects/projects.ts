@@ -42,7 +42,7 @@ export class Projects implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.projectService.getAllProjects().subscribe({
+    this.projectService.getAllProjectsWithGroups().subscribe({
       next: (projects: IProject[]) => {
         this.projects = projects;
         this.isLoading = false;

@@ -3,6 +3,7 @@ package de.assessify.app.assessifyapi.api.service;
 import de.assessify.app.assessifyapi.api.dtos.request.GroupCreateRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.request.GroupUpdateRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.response.GroupResponseDto;
+import de.assessify.app.assessifyapi.api.dtos.response.GroupWithMembersResponseDto;
 import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.mapper.GroupMapper;

@@ -28,6 +28,8 @@ export class UserService {
     return this.http.get<User[]>(`${this.apiUrl}/role/${roleId}`);
   }
 
+
+
   createUserByRoleId(roleId: number, dto: AddUser): Observable<User> {
     return this.http.post<User>(`${this.apiUrl}/role/${roleId}`, dto);
   }

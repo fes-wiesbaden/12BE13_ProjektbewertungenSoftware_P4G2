@@ -51,7 +51,7 @@
           Team Members
         </h2>
         <button
-          (click)="addMember()"
+          (click)="openAddStudentModal()"
           type="button"
           class="inline-flex items-center px-3 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
@@ -112,4 +112,165 @@
       </div>
     </div>
   }
+</div>
+
+
+<!-- Add Student Modal -->
+<div
+  id="add-student-modal"
+  [hidden]="!showAddStudentModal"
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-gray-900/50 dark:bg-gray-900/60 backdrop-blur-sm"
+  (click)="closeAddStudentModal()"
+>
+  <div
+    class="relative w-full h-full max-w-2xl px-4 md:h-auto"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+      <!-- Modal Header -->
+      <div
+        class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700 border-gray-200"
+      >
+        <h3 class="text-xl font-semibold dark:text-white">Add Students to Group</h3>
+        <button
+          (click)="closeAddStudentModal()"
+          type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
+        >
+          <mat-icon class="w-5 h-5">close</mat-icon>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-6">
+        <!-- Error Message -->
+        @if (errorMessage) {
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative dark:bg-red-900 dark:border-red-700 dark:text-red-200">
+            <span class="block sm:inline">{{ errorMessage }}</span>
+            <button
+              (click)="errorMessage = ''"
+              class="absolute top-0 bottom-0 right-0 px-4 py-3"
+            >
+              <mat-icon class="w-4 h-4">close</mat-icon>
+            </button>
+          </div>
+        }
+
+        <!-- Selected Count -->
+        <div class="flex items-center justify-between">
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Select students to add to the group
+          </p>
+          <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium dark:bg-blue-900 dark:text-blue-200">
+            {{ selectedStudents.size }} selected
+          </span>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoadingStudents) {
+          <div class="flex justify-center items-center py-8">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-700"></div>
+            <span class="ml-3 text-gray-600 dark:text-gray-300">Loading students...</span>
+          </div>
+        }
+
+        <!-- Students List -->
+        @if (!isLoadingStudents) {
+          <div class="max-h-96 overflow-y-auto space-y-2">
+            @if (availableStudents.length > 0) {
+              @for (student of availableStudents; track student.id) {
+                <div
+                  (click)="toggleStudentSelection(student.id)"
+                  class="flex items-center p-3 rounded-lg border cursor-pointer transition-all"
+                  [ngClass]="{
+                    'bg-blue-50 border-blue-500 dark:bg-blue-900/20 dark:border-blue-600': isStudentSelected(student.id),
+                    'bg-white border-gray-200 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600': !isStudentSelected(student.id)
+                  }"
+                >
+                  <!-- Checkbox -->
+                  <div class="flex-shrink-0 mr-3">
+                    <div
+                      class="w-5 h-5 rounded border-2 flex items-center justify-center transition-all"
+                      [ngClass]="{
+                        'bg-blue-600 border-blue-600': isStudentSelected(student.id),
+                        'border-gray-300 dark:border-gray-500': !isStudentSelected(student.id)
+                      }"
+                    >
+                      @if (isStudentSelected(student.id)) {
+                        <mat-icon class="text-white" style="font-size: 16px; width: 16px; height: 16px">check</mat-icon>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Student Avatar -->
+                  <div class="flex-shrink-0 mr-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold"
+                    >
+                      {{ student.fullName?.charAt(0) || '?' }}
+                    </div>
+                  </div>
+
+                  <!-- Student Info -->
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {{ student.fullName }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {{ student.username }}
+                    </p>
+                  </div>
+
+                  <!-- Selected Badge -->
+                  @if (isStudentSelected(student.id)) {
+                    <div class="flex-shrink-0">
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                        Selected
+                      </span>
+                    </div>
+                  }
+                </div>
+              }
+            } @else {
+              <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                <mat-icon class="text-5xl mb-2">person_off</mat-icon>
+                <p class="font-medium">No available students to add</p>
+                <p class="text-sm mt-1">All students are already members of this group</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Modal Footer -->
+      <div
+        class="flex items-center justify-between p-5 border-t rounded-b dark:border-gray-700 border-gray-200"
+      >
+        <button
+          (click)="closeAddStudentModal()"
+          type="button"
+          class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="addSelectedStudentsToGroup()"
+          [disabled]="isSubmitting || selectedStudents.size === 0"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center"
+          type="button"
+        >
+          @if (isSubmitting) {
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Adding...
+          } @else {
+            <mat-icon class="mr-2" style="font-size: 20px; width: 20px; height: 20px">person_add</mat-icon>
+            Add {{ selectedStudents.size }} Student{{ selectedStudents.size !== 1 ? 's' : '' }}
+          }
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

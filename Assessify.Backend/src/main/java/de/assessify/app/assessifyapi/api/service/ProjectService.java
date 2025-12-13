@@ -2,10 +2,12 @@ package de.assessify.app.assessifyapi.api.service;
 
 import de.assessify.app.assessifyapi.api.dtos.request.ProjectCreateRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.request.ProjectUpdateRequestDto;
-import de.assessify.app.assessifyapi.api.dtos.response.ProjectNamesResponseDto;
-import de.assessify.app.assessifyapi.api.dtos.response.ProjectResponseDto;
+import de.assessify.app.assessifyapi.api.dtos.response.*;
+import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.Project;
+import de.assessify.app.assessifyapi.api.mapper.GroupMapper;
 import de.assessify.app.assessifyapi.api.mapper.ProjectMapper;
+import de.assessify.app.assessifyapi.api.repository.GroupRepository;
 import de.assessify.app.assessifyapi.api.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class ProjectService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private GroupRepository groupRepository;
 
     public ProjectResponseDto createProject(ProjectCreateRequestDto requestDTO) {
         Project project = new Project(
@@ -51,6 +56,52 @@ public class ProjectService {
                 .map(ProjectMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    public List<GroupResponseDto> getAllGroupsByProjectId(UUID projectId){
+        return groupRepository.findByProjectId(projectId).stream()
+                .map(GroupMapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public ProjectWithGroupsResponseDto getProjectWithGroupsByProjectId(UUID projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + projectId));
+
+        return new ProjectWithGroupsResponseDto(
+                project.getId(),
+                project.getProjectName(),
+                project.getProjectDescription(),
+                project.getStartDate(),
+                project.getDueDate(),
+                project.getStatus(),
+                project.getCreatedAt(),
+                getAllGroupsByProjectId(projectId),
+                project.getGroups() != null ? project.getGroups().size() : 0);
+
+    }
+
+
+    public List<ProjectWithGroupsResponseDto> getAllProjectsWithGroups(){
+        List<Project> projects = projectRepository.findAll();
+
+        return projects.stream()
+                .map( project -> {
+                    List<GroupResponseDto> groups = getAllGroupsByProjectId(project.getId());
+                    return new ProjectWithGroupsResponseDto(
+                            project.getId(),
+                            project.getProjectName(),
+                            project.getProjectDescription(),
+                            project.getStartDate(),
+                            project.getDueDate(),
+                            project.getStatus(),
+                            project.getCreatedAt(),
+                            groups,
+                            project.getGroups() != null ? project.getGroups().size() : 0
+                    );
+                }).collect(Collectors.toList());
+    }
+
+
 
     public List<ProjectNamesResponseDto> getAllProjectsName() {
         return projectRepository.findAll().stream()

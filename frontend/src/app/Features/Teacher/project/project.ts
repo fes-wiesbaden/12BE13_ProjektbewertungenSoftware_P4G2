@@ -16,7 +16,7 @@ import {ProjectMapperService} from '../../../core/services/project.mapper.servic
 })
 export class Project implements OnInit {
   projectId = input.required<string>();
-  project = signal<IProject | undefined>(undefined); // ✅ Changed to signal
+  project = signal<IProject | undefined>(undefined);
   showNewModel = false;
   isLoading = false;
   errorMessage = '';
@@ -50,9 +50,9 @@ export class Project implements OnInit {
     this.errorMessage = '';
     const id = String(this.projectId());
 
-    this.projectService.getProjectById(id).subscribe({
+    this.projectService.getProjectWithGroupsById(id).subscribe({
       next: (project: IProject) => {
-        this.project.set(project); // ✅ Use .set() for signal
+        this.project.set(project); //
         this.isLoading = false;
         console.log('Loaded project:', project);
       },

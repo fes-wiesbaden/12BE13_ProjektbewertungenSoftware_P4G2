@@ -7,18 +7,24 @@ import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} fr
 import {GroupService} from '../../../core/services/group.service';
 import {GroupMapperService} from '../../../core/services/group.mapper.service';
 import {ProjectService} from '../../../core/services/project.service';
+import {UserService} from '../../../Shared/Services/user.service';
+import {GroupAddMemberRequestDto, GroupAddMembersRequestDto, StudentList} from '../../../core/modals/users.modal';
+import {User} from '../../../Shared/models/user.interface';
 
 @Component({
   selector: 'app-group',
   standalone: true,
-  imports: [MatIcon, DatePipe, NgClass, CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [MatIcon, CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './group.html',
   styleUrls: ['./group.css'],
 })
 export class Group implements OnInit {
   groupId = input.required<string>();
-  showAddGroupModal: boolean = false;
+  showAddStudentModal: boolean = false;
   group = signal<IGroup | undefined>(undefined);
+  students: StudentList[] = [];
+  selectedStudents: Set<string> = new Set(); // Track selected student IDs
+  isLoadingStudents = false;
   isLoading = false;
   errorMessage= '';
   groupForm!: FormGroup;
@@ -29,23 +35,25 @@ export class Group implements OnInit {
     private fb: FormBuilder,
     private groupService: GroupService,
     private mapper: GroupMapperService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private userservice: UserService,
   ) {
     this.initForm();
   }
 
   private initForm() {
     this.groupForm = this.fb.group({
-      groupName: new FormControl('', [Validators.required]),
-      projectId: new FormControl('', [Validators.required]),
+      memberId: new FormControl('', [Validators.required]),
+      groupId: new FormControl('', [Validators.required]),
     })
   }
 
   ngOnInit(): void {
-    this.loadGroups();
+    this.loadGroup();
+    this.loudStudents();
   }
 
-  loadGroups(): void {
+  loadGroup(): void {
     this.isLoading = true;
     this.errorMessage = '';
     const id = String(this.groupId());
@@ -54,6 +62,7 @@ export class Group implements OnInit {
       next: (group: IGroup) => {
         this.group.set(group);
         this.isLoading = false;
+        this.loudStudents();
         console.log('Loaded Group: ', group)
       },
       error: (error) => {
@@ -62,6 +71,24 @@ export class Group implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  loudStudents(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.userservice.getUsersByRoleId(2).subscribe({
+      next: (users: User[]) => {
+        this.students = this.mapper.userResponseDtoToStudentList(users);
+        this.isLoading = false;
+        console.log("Users loaded successfully.", users);
+      },
+      error: (error) => {
+        console.log('Error fetching users: ', error)
+        this.errorMessage = error.message;
+        this.isLoading = false;
+      }
+    })
   }
 
   onSubmit() {
@@ -73,19 +100,19 @@ export class Group implements OnInit {
     this.isSubmitting = true;
 
     const formValue = this.groupForm.value;
-    const newGroup: GroupCreateRequestDto = {
-      groupName: formValue.groupName,
-      projectId: formValue.projectId
+    const newMember: GroupAddMemberRequestDto = {
+      memberId: formValue.memberId,
+      groupId: formValue.groupId,
     };
 
-    console.log("Creating new group:", newGroup);
+    console.log("Creating new group:", newMember);
 
-    this.groupService.createGroup(newGroup).subscribe({
+    this.groupService.addMemberToGroup(newMember).subscribe({
       next: (createdGroup) => {
         console.log('Group created successfully', createdGroup);
         this.isSubmitting = false;
-        this.closeAddGroupModal();
-        this.loadGroups();
+        this.closeAddStudentModal();
+        this.loadGroup();
       },
       error: (error) => {
         console.log('Error creating group: ', error)
@@ -94,6 +121,66 @@ export class Group implements OnInit {
       }
     });
   }
+
+  // Toggle student selection
+  toggleStudentSelection(studentId: string): void {
+    if (this.selectedStudents.has(studentId)) {
+      this.selectedStudents.delete(studentId);
+    } else {
+      this.selectedStudents.add(studentId);
+    }
+  }
+
+  // Check if student is selected
+  isStudentSelected(studentId: string): boolean {
+    return this.selectedStudents.has(studentId);
+  }
+
+  // Add selected students to group
+  addSelectedStudentsToGroup(): void {
+    if (this.selectedStudents.size === 0) {
+      this.errorMessage = 'Please select at least one student';
+      return;
+    }
+
+    this.isSubmitting = true;
+    const studentIds = Array.from(this.selectedStudents);
+
+    const newMembers: GroupAddMembersRequestDto = {
+      memberId: studentIds,
+      groupId: this.groupId(),
+    };
+
+
+    // Call your API to add students to group
+    // Adjust this based on your API endpoint
+    this.groupService.addMembersToGroup(newMembers).subscribe({
+      next: () => {
+        console.log('Students added successfully');
+        this.isSubmitting = false;
+        this.selectedStudents.clear();
+        this.closeAddStudentModal();
+        this.loadGroup(); // Reload group to show new members
+      },
+      error: (error) => {
+        console.log('Error adding students: ', error);
+        this.errorMessage = 'Failed to add students. Please try again';
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  // Filter students that are not already in the group
+  get availableStudents(): StudentList[] {
+    const currentGroup = this.group();
+    if (!currentGroup || !currentGroup.members) {
+      return this.students;
+    }
+
+    const memberIds = currentGroup.members.map(m => m.id);
+    return this.students.filter(s => !memberIds.includes(s.id));
+  }
+
 
   // ✅ Computed signal
   currentGroup = computed(() => this.group());
@@ -123,12 +210,12 @@ export class Group implements OnInit {
     console.log('Add task to group', this.groupId());
   }
 
-  openAddGroupModal(): void {
-    this.showAddGroupModal = true;
+  openAddStudentModal(): void {
+    this.showAddStudentModal = true;
   }
 
-  closeAddGroupModal(): void {
-    this.showAddGroupModal = false;
+  closeAddStudentModal(): void {
+    this.showAddStudentModal = false;
     this.groupForm.reset();
     this.errorMessage = '';
   }

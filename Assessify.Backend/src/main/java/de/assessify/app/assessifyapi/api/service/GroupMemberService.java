@@ -1,6 +1,7 @@
 package de.assessify.app.assessifyapi.api.service;
 
 import de.assessify.app.assessifyapi.api.dtos.request.GroupMemberAddRequestDto;
+import de.assessify.app.assessifyapi.api.dtos.request.GroupMembersAddRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.response.GroupMemberResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.GroupWithMembersResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.MemberSummaryDto;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -52,6 +54,36 @@ public class GroupMemberService {
         GroupMember saved = groupMemberRepository.save(groupMember);
 
         return toResponseDto(saved);
+    }
+
+    public List<GroupMemberResponseDto> addMembersToGroup(GroupMembersAddRequestDto requestDto) {
+        List<GroupMemberResponseDto> addedMembers = new ArrayList<>();
+
+        // Validate group exists first
+        Group group = groupRepository.findById(requestDto.groupId())
+                .orElseThrow(() -> new RuntimeException("Group not found with id: " + requestDto.groupId()));
+
+        // Iterate through member IDs
+        for (UUID memberId : requestDto.memberId()) {
+            // Validate member exists
+            User member = userRepository.findById(memberId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + memberId));
+
+            // Check if already a member
+            if (groupMemberRepository.existsByMemberIdAndGroupId(memberId, requestDto.groupId())) {
+                System.out.println("User " + memberId + " is already a member of this group. Skipping...");
+                continue; // Skip this member and continue with next
+            }
+
+            // Create membership
+            GroupMember groupMember = new GroupMember(member, group);
+            GroupMember saved = groupMemberRepository.save(groupMember);
+
+            // Add to response list
+            addedMembers.add(toResponseDto(saved));
+        }
+
+        return addedMembers;
     }
 
     public void removeMemberFromGroup(UUID memberId, UUID groupId) {

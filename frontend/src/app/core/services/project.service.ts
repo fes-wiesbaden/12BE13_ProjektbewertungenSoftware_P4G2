@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {IProject, ProjectCreateRequestDto, ProjectNamesResponseDto, ProjectResponseDto} from '../modals/project.modal';
+import {
+  IProject,
+  ProjectCreateRequestDto,
+  ProjectNamesResponseDto,
+  ProjectResponseDto,
+  ProjectWithGroupsResponseDto
+} from '../modals/project.modal';
 import {map, Observable} from 'rxjs';
 import {ProjectMapperService} from './project.mapper.service';
 import {AuthService} from '../auth/auth.service';
@@ -38,11 +44,25 @@ export class ProjectService {
       );
   }
 
+  getProjectWithGroupsById(projectId: string): Observable<IProject> {
+    return this.http.get<ProjectWithGroupsResponseDto>(`${this.projectsApi}/${projectId}/groups`)
+      .pipe(
+        map(dto => this.mapper.dtoToProjectWithGroup(dto))
+      );
+  }
+
   getAllProjects(): Observable<IProject[]> {
     return this.http.get<ProjectResponseDto[]>(`${this.projectsApi}`)
       .pipe(
         map(dtos => this.mapper.dtosToProjects(dtos))
       );
+  }
+
+  getAllProjectsWithGroups(): Observable<IProject[]> {
+    return this.http.get<ProjectWithGroupsResponseDto[]>(`${this.projectsApi}/groups`)
+    .pipe(
+      map(dtos => this.mapper.dtosToProjectsWithGroups(dtos))
+    )
   }
 
   getAllProjectsNames() : Observable<ProjectNamesResponseDto[]>{

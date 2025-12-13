@@ -1,13 +1,20 @@
 // project-mapper.service.ts
 import { Injectable } from '@angular/core';
-import {IProject, ProjectCreateRequestDto, ProjectResponseDto, ProjectStatus} from '../modals/project.modal';
+import {
+  IProject,
+  ProjectCreateRequestDto,
+  ProjectResponseDto,
+  ProjectStatus,
+  ProjectWithGroupsResponseDto
+} from '../modals/project.modal';
+import {GroupMapperService} from './group.mapper.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectMapperService {
 
-  constructor() {}
+  constructor(private groupMapperService: GroupMapperService) {}
 
   // Convert single DTO to IProject
   dtoToProject(dto: ProjectResponseDto): IProject {
@@ -22,9 +29,31 @@ export class ProjectMapperService {
     };
   }
 
+  dtoToProjectWithGroup(dto: ProjectWithGroupsResponseDto): IProject {
+    return {
+      id: dto.id,
+      title: dto.projectName,
+      description: dto.projectDescription,
+      status: this.mapProjectStatus(dto.ProjectStatus),
+      startDate: new Date(dto.startDate),
+      dueDate: new Date(dto.dueDate),
+      groups: this.groupMapperService.dtosToGroups(dto.groups), // Initialize empty or fetch separately
+    };
+  }
+
+
+
+
+
   // Convert array of DTOs to IProject array
   dtosToProjects(dtos: ProjectResponseDto[]): IProject[] {
     return dtos.map(dto => this.dtoToProject(dto));
+  }
+
+  dtosToProjectsWithGroups(dtos: ProjectWithGroupsResponseDto[]): IProject[] {
+    return dtos.map(
+      dto => this.dtoToProjectWithGroup(dto)
+    );
   }
 
   // Convert IProject to CreateRequestDto

@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.ProjectStatus;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record ProjectResponseDto(
+public record ProjectWithGroupsResponseDto(
         UUID id,
 
         String projectName,
@@ -28,5 +27,9 @@ public record ProjectResponseDto(
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime createdAt,
 
+        List<GroupResponseDto> groups,
+
         int groupCount
-) {}
+) {
+}
+
