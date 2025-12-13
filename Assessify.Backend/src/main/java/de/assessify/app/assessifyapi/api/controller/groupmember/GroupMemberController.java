@@ -1,6 +1,7 @@
 package de.assessify.app.assessifyapi.api.controller.groupmember;
 
 import de.assessify.app.assessifyapi.api.dtos.request.GroupMemberAddRequestDto;
+import de.assessify.app.assessifyapi.api.dtos.request.GroupMembersAddRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.response.GroupMemberResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.GroupWithMembersResponseDto;
 import de.assessify.app.assessifyapi.api.dtos.response.MemberSummaryDto;
@@ -26,6 +27,14 @@ public class GroupMemberController {
     public ResponseEntity<GroupMemberResponseDto> addMemberToGroup(
             @RequestBody GroupMemberAddRequestDto requestDto) {
         GroupMemberResponseDto response = groupMemberService.addMemberToGroup(requestDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // Add member to group
+    @PostMapping("/members")
+    public ResponseEntity<List<GroupMemberResponseDto>> addMembersToGroup(
+            @RequestBody GroupMembersAddRequestDto requestDto) {
+        List<GroupMemberResponseDto> response = groupMemberService.addMembersToGroup(requestDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     

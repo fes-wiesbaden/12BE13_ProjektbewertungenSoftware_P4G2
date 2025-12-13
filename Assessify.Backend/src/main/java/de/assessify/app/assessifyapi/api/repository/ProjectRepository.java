@@ -1,5 +1,6 @@
 package de.assessify.app.assessifyapi.api.repository;
 
+import de.assessify.app.assessifyapi.api.entity.Group;
 import de.assessify.app.assessifyapi.api.entity.Project;
 import de.assessify.app.assessifyapi.api.entity.ProjectStatus;
 import org.springframework.data.jpa.repository.JpaRepository;

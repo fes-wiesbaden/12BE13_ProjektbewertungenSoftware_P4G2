@@ -1,4 +1,4 @@
-package de.assessify.app.assessifyapi.api.controller.classTeacher;
+package de.assessify.app.assessifyapi.api.controller.classteacher;
 
 import de.assessify.app.assessifyapi.api.dtos.request.ClassTeacherAssignRequestDto;
 import de.assessify.app.assessifyapi.api.dtos.response.ClassTeacherResponseDto;
