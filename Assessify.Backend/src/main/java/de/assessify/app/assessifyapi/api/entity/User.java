@@ -66,10 +66,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> grades = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
-
-
     // members
     @OneToMany(mappedBy="member", cascade= CascadeType.ALL, orphanRemoval=true)
     @JsonIgnore
@@ -176,13 +172,6 @@ public class User {
         this.grades = grades;
     }
 
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
 
     public List<SchoolClass> getSchoolClass (){
         return schoolClasses;

@@ -3,14 +3,15 @@ import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import {IProject, ProjectCreateRequestDto, ProjectStatus} from '../../../core/modals/project.modal';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {ProjectService} from '../../../core/services/project.service';
 import {ProjectMapperService} from '../../../core/services/project.mapper.service';
+import {User} from '../../../Shared/models/user.interface';
 
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [MatIcon, CommonModule, ReactiveFormsModule],
+  imports: [MatIcon, CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './project.html',
   styleUrls: ['./project.css'],
 })
@@ -62,6 +63,10 @@ export class Project implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  openGroupDetail(groupId: string) {
+    this.router.navigate(['/teacher/groups', groupId]);
   }
 
   onSubmit(): void {

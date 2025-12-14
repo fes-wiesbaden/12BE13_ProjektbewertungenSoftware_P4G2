@@ -10,10 +10,12 @@ import {
 import { FormField, FormModalComponent } from '../../../Shared/Components/form-modal/form-modal';
 import { ImportModalComponent } from '../../../Shared/Components/import-modal/import-modal';
 import { ExportModalComponent } from '../../../Shared/Components/export-modal/export-modal';
-import { Question } from '../../../Shared/models/question.interface';
+import { QuestionResponseDto } from '../../../Shared/models/question.interface';
 import { QuestionService } from '../../../Shared/Services/question.service';
 import { DeleteButtonComponent } from '../../../Shared/Components/delete-button/delete-button';
 import { TranslationService } from '../../../core/services/translation.service';
+import {ProjectService} from '../../../core/services/project.service';
+import {IProject} from '../../../core/modals/project.modal';
 
 @Component({
   selector: 'app-question',
@@ -32,21 +34,27 @@ import { TranslationService } from '../../../core/services/translation.service';
   templateUrl: './manage-question.html',
 })
 export class ManageQuestions implements OnInit {
-  questions: Question[] = [];
-  filteredQuestions: Question[] = [];
-
+  questions: QuestionResponseDto[] = [];
+  filteredQuestions: QuestionResponseDto[] = [];
+  projects: IProject[] = []; // ADD THIS
   loading = true;
   showAddModel: boolean = false;
   showEditModal: boolean = false;
-  selectedQuestion: Question | null = null;
+  selectedQuestion: QuestionResponseDto | null = null;
   showEditModel: boolean = false;
   showImportModal = false;
   showExportModal = false;
   showDeleteModal: boolean = false;
+  selectedProjectId: string = ''; // ADD THIS
+
   onImportFile(file: File) {
     console.log('Import-Datei:', file);
   }
-  columns: TableColumn<Question>[] = [{ key: 'questionText', label: 'Frage' }];
+
+  columns: TableColumn<QuestionResponseDto>[] = [
+    { key: 'questionText', label: 'Frage' },
+    { key: 'projectId', label: 'Projekt ID' } // ADD THIS
+  ];
 
   fields: FormField[] = [
     {
@@ -57,26 +65,59 @@ export class ManageQuestions implements OnInit {
       placeholder: 'Deine Frage...',
       colSpan: 6,
     },
+    {
+      key: 'projectId',
+      label: 'Projekt',
+      type: 'select',
+      required: true,
+      options: [], // Will be populated dynamically
+      colSpan: 6,
+    },
   ];
 
-  editingQuestions: Question | null = null;
-  deletingQuestion: Question | null = null;
+  editingQuestions: QuestionResponseDto | null = null;
+  deletingQuestion: QuestionResponseDto | null = null;
 
   filterOptions = [
     { key: 'questionText', label: 'Text' },
+    { key: 'projectId', label: 'Projekt ID' }, // ADD THIS
   ];
 
   selectedFilter = this.filterOptions[0].key;
-
   questionText = '';
 
-  constructor(private questionService: QuestionService, public i18n: TranslationService) {}
+  constructor(
+    private questionService: QuestionService,
+    private projectService: ProjectService, // ADD THIS
+    public i18n: TranslationService
+  ) {}
 
   ngOnInit(): void {
+    this.loadProjects();
     this.loadQuestions();
   }
 
-  openEditModal(question: Question) {
+  // ADD THIS METHOD
+  loadProjects() {
+    this.projectService.getAllProjects().subscribe({
+      next: (projects) => {
+        this.projects = projects;
+        // Update the projectId field options
+        const projectField = this.fields.find(f => f.key === 'projectId');
+        if (projectField) {
+          projectField.options = projects.map((p: any) => ({
+            value: p.id,
+            label: p.projectName || p.id
+          }));
+        }
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Projekte', err);
+      }
+    });
+  }
+
+  openEditModal(question: QuestionResponseDto) {
     this.editingQuestions = question;
     this.showEditModal = true;
   }
@@ -94,7 +135,7 @@ export class ManageQuestions implements OnInit {
     this.showAddModel = false;
   }
 
-  openDeleteModal(admin: Question) {
+  openDeleteModal(admin: QuestionResponseDto) {
     this.deletingQuestion = admin;
     this.showDeleteModal = true;
   }
@@ -110,7 +151,7 @@ export class ManageQuestions implements OnInit {
     const updatedQuestion = { ...this.editingQuestions, ...formData };
 
     this.questionService.updateQuestion(updatedQuestion).subscribe({
-      next: (res: Question) => {
+      next: (res: QuestionResponseDto) => {
         const index = this.questions.findIndex((s) => s.id === updatedQuestion.id);
         if (index !== -1) this.questions[index] = res;
         this.filteredQuestions = [...this.questions];
@@ -128,28 +169,42 @@ export class ManageQuestions implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Fehler beim Laden der Lehrer', err);
+        console.error('Fehler beim Laden der Fragen', err);
         this.loading = false;
       },
     });
   }
 
   onHeaderSearch(searchValue: string) {
-      searchValue = searchValue.toLowerCase();
-      this.filteredQuestions = this.questions.filter((question) => {
-        const value = question[this.selectedFilter as keyof Question];
-        return value ? value.toString().toLowerCase().includes(searchValue) : false;
-      });
-    }
+    searchValue = searchValue.toLowerCase();
+    this.filteredQuestions = this.questions.filter((question) => {
+      const value = question[this.selectedFilter as keyof QuestionResponseDto];
+      return value ? value.toString().toLowerCase().includes(searchValue) : false;
+    });
+  }
 
-    onHeaderFilterChange(filterKey: string) {
-      this.selectedFilter = filterKey;
+  onHeaderFilterChange(filterKey: string) {
+    this.selectedFilter = filterKey;
+    this.filteredQuestions = [...this.questions];
+  }
+
+  // MODIFIED METHOD
+  onProjectFilterChange(projectId: string) {
+    this.selectedProjectId = projectId;
+    if (projectId === '' || projectId === 'all') {
       this.filteredQuestions = [...this.questions];
+    } else {
+      this.filteredQuestions = this.questions.filter(
+        (q) => q.projectId === projectId
+      );
     }
+  }
 
+  // MODIFIED METHOD
   saveQuestion(formData: any) {
     const dto = {
       questionText: formData.questionText,
+      projectId: formData.projectId, // ADD THIS
     };
 
     this.questionService.createQuestion(dto).subscribe({
@@ -167,6 +222,7 @@ export class ManageQuestions implements OnInit {
     if (!this.deletingQuestion) return;
 
     const idToDelete = this.deletingQuestion.id;
+
     this.questionService.deleteQuestion(idToDelete).subscribe({
       next: () => {
         this.questions = this.questions.filter((s) => s.id !== idToDelete);
@@ -176,5 +232,11 @@ export class ManageQuestions implements OnInit {
       },
       error: (err) => console.error('Fehler beim Löschen', err),
     });
+  }
+
+  // ADD THIS METHOD - Get project name by ID
+  getProjectName(projectId: string): string {
+    const project = this.projects.find(p => p.id === projectId);
+    return project ? (project.title || projectId) : projectId;
   }
 }

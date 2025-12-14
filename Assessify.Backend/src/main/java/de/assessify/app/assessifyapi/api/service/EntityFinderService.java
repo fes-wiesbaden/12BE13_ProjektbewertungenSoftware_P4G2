@@ -14,7 +14,7 @@ public class EntityFinderService {
     private final TrainingModuleRepository trainingModuleRepository;
     private final GradeRepository gradeRepository;
     private final ProjectRepository projectRepository;
-    private final QuestionRepository questionRepository;
+    private final ReviewQuestionRepository reviewQuestionRepository;
     private final ReviewAnswerRepository reviewAnswerRepository;
     private final ReviewRepository reviewRepository;
     private final RoleRepository roleRepository;
@@ -24,7 +24,7 @@ public class EntityFinderService {
                                TrainingModuleRepository trainingModuleRepository,
                                GradeRepository gradeRepository,
                                ProjectRepository projectRepository,
-                               QuestionRepository questionRepository,
+                               ReviewQuestionRepository reviewQuestionRepository,
                                ReviewAnswerRepository reviewAnswerRepository,
                                ReviewRepository reviewRepository,
                                RoleRepository roleRepository,
@@ -34,7 +34,7 @@ public class EntityFinderService {
         this.trainingModuleRepository = trainingModuleRepository;
         this.gradeRepository = gradeRepository;
         this.projectRepository = projectRepository;
-        this.questionRepository = questionRepository;
+        this.reviewQuestionRepository = reviewQuestionRepository;
         this.reviewAnswerRepository = reviewAnswerRepository;
         this.reviewRepository = reviewRepository;
         this.roleRepository = roleRepository;
@@ -56,8 +56,8 @@ public class EntityFinderService {
         return projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
     }
-    public Question findQuestion(UUID questionId) {
-        return questionRepository.findById(questionId)
+    public ReviewQuestion findQuestion(UUID questionId) {
+        return reviewQuestionRepository.findById(questionId)
                 .orElseThrow(() -> new EntityNotFoundException("Question not found"));
     }
     public ReviewAnswer findReviewAnswer(UUID answerId) {

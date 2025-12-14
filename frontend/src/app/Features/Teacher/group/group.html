@@ -117,7 +117,7 @@
 
 <!-- Add Student Modal -->
 <div
-  id="add-student-modal"
+  id="add-student-Modal"
   [hidden]="!showAddStudentModal"
   class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-gray-900/50 dark:bg-gray-900/60 backdrop-blur-sm"
   (click)="closeAddStudentModal()"
@@ -274,3 +274,200 @@
     </div>
   </div>
 </div>
+
+
+<!-- Edit group Modal -->
+<!--<div-->
+<!--  *ngIf="showEditModal"-->
+<!--  class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-gray-900/50 dark:bg-gray-900/60 backdrop-blur-sm"-->
+<!--  (click)="closeEditModal()"-->
+<!--&gt;-->
+<!--  <div-->
+<!--    class="relative w-full h-full max-w-2xl px-4 md:h-auto"-->
+<!--    (click)="$event.stopPropagation()"-->
+<!--  >-->
+<!--    <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">-->
+<!--      &lt;!&ndash; Modal Header &ndash;&gt;-->
+<!--      <div-->
+<!--        class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700 border-gray-200"-->
+<!--      >-->
+<!--        <h3 class="text-xl font-semibold dark:text-white">Add New Project</h3>-->
+<!--        <button-->
+<!--          type="button"-->
+<!--          (click)="closeEditModal()"-->
+<!--          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"-->
+<!--        >-->
+<!--          <mat-icon class="w-5 h-5">close</mat-icon>-->
+<!--        </button>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Modal Body &ndash;&gt;-->
+<!--      <div class="p-6 space-y-6">-->
+<!--        <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">-->
+<!--          <div class="grid grid-cols-1 gap-6">-->
+<!--            &lt;!&ndash; Project Name &ndash;&gt;-->
+<!--            <div>-->
+<!--              <label-->
+<!--                for="project-name"-->
+<!--                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"-->
+<!--              >-->
+<!--                Project Name <span class="text-red-500">*</span>-->
+<!--              </label>-->
+<!--              <input-->
+<!--                type="text"-->
+<!--                formControlName="projectName"-->
+<!--                id="project-name"-->
+<!--                class="shadow-sm bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"-->
+<!--                [ngClass]="{-->
+<!--                  'border-gray-300':-->
+<!--                    !projectForm.get('projectName')?.invalid ||-->
+<!--                    !projectForm.get('projectName')?.touched,-->
+<!--                  'border-red-500':-->
+<!--                    projectForm.get('projectName')?.invalid &&-->
+<!--                    projectForm.get('projectName')?.touched-->
+<!--                }"-->
+<!--                placeholder="Einrichtung eines IT-gestützten Arbeitsplatzes"-->
+<!--              />-->
+<!--              <p-->
+<!--                *ngIf="-->
+<!--                  projectForm.get('projectName')?.invalid &&-->
+<!--                  projectForm.get('projectName')?.touched-->
+<!--                "-->
+<!--                class="mt-1 text-sm text-red-600 dark:text-red-400"-->
+<!--              >-->
+<!--                Project name is required (min 3 characters)-->
+<!--              </p>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; StartDate &ndash;&gt;-->
+<!--            <div>-->
+<!--              <label-->
+<!--                for="startDate"-->
+<!--                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"-->
+<!--              >-->
+<!--                Start Date <span class="text-red-500">*</span>-->
+<!--              </label>-->
+<!--              <input-->
+<!--                type="date"-->
+<!--                formControlName="startDate"-->
+<!--                id="startDate"-->
+<!--                class="shadow-sm bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"-->
+<!--                [ngClass]="{-->
+<!--                  'border-gray-300':-->
+<!--                    !projectForm.get('startDate')?.invalid ||-->
+<!--                    !projectForm.get('startDate')?.touched,-->
+<!--                  'border-red-500':-->
+<!--                    projectForm.get('startDate')?.invalid &&-->
+<!--                    projectForm.get('startDate')?.touched-->
+<!--                }"-->
+<!--              />-->
+<!--              <p-->
+<!--                *ngIf="-->
+<!--                  projectForm.get('startDate')?.invalid &&-->
+<!--                  projectForm.get('startDate')?.touched-->
+<!--                "-->
+<!--                class="mt-1 text-sm text-red-600 dark:text-red-400"-->
+<!--              >-->
+<!--                Start Date is required-->
+<!--              </p>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Deadline &ndash;&gt;-->
+<!--            <div>-->
+<!--              <label-->
+<!--                for="dueDate"-->
+<!--                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"-->
+<!--              >-->
+<!--                Due Date <span class="text-red-500">*</span>-->
+<!--              </label>-->
+<!--              <input-->
+<!--                type="date"-->
+<!--                formControlName="dueDate"-->
+<!--                id="dueDate"-->
+<!--                class="shadow-sm bg-gray-50 border text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"-->
+<!--                [ngClass]="{-->
+<!--                  'border-gray-300':-->
+<!--                    !projectForm.get('dueDate')?.invalid ||-->
+<!--                    !projectForm.get('dueDate')?.touched,-->
+<!--                  'border-red-500':-->
+<!--                    projectForm.get('dueDate')?.invalid &&-->
+<!--                    projectForm.get('dueDate')?.touched-->
+<!--                }"-->
+<!--              />-->
+<!--              <p-->
+<!--                *ngIf="-->
+<!--                  projectForm.get('dueDate')?.invalid &&-->
+<!--                  projectForm.get('dueDate')?.touched-->
+<!--                "-->
+<!--                class="mt-1 text-sm text-red-600 dark:text-red-400"-->
+<!--              >-->
+<!--                Due Date is required-->
+<!--              </p>\-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Description &ndash;&gt;-->
+<!--            <div>-->
+<!--              <label-->
+<!--                for="description"-->
+<!--                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"-->
+<!--              >-->
+<!--                Description-->
+<!--              </label>-->
+<!--              <textarea-->
+<!--                formControlName="description"-->
+<!--                id="description"-->
+<!--                rows="4"-->
+<!--                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"-->
+<!--                placeholder="Project Description here..."-->
+<!--              ></textarea>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          &lt;!&ndash; Modal Footer &ndash;&gt;-->
+<!--          <div-->
+<!--            class="flex items-center justify-between pt-6 mt-6 border-t border-gray-200 dark:border-gray-700"-->
+<!--          >-->
+<!--            <button-->
+<!--              type="button"-->
+<!--              (click)="closeEditModal()"-->
+<!--              class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"-->
+<!--            >-->
+<!--              Cancel-->
+<!--            </button>-->
+<!--            <button-->
+<!--              type="submit"-->
+<!--              [disabled]="projectForm.invalid || isSubmitting"-->
+<!--              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center"-->
+<!--            >-->
+<!--              <span *ngIf="isSubmitting" class="mr-2">-->
+<!--                <svg-->
+<!--                  class="animate-spin h-4 w-4 text-white"-->
+<!--                  xmlns="http://www.w3.org/2000/svg"-->
+<!--                  fill="none"-->
+<!--                  viewBox="0 0 24 24"-->
+<!--                >-->
+<!--                  <circle-->
+<!--                    class="opacity-25"-->
+<!--                    cx="12"-->
+<!--                    cy="12"-->
+<!--                    r="10"-->
+<!--                    stroke="currentColor"-->
+<!--                    stroke-width="4"-->
+<!--                  ></circle>-->
+<!--                  <path-->
+<!--                    class="opacity-75"-->
+<!--                    fill="currentColor"-->
+<!--                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"-->
+<!--                  ></path>-->
+<!--                </svg>-->
+<!--              </span>-->
+<!--              {{ isSubmitting ? "Saving..." : "Save Project" }}-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+

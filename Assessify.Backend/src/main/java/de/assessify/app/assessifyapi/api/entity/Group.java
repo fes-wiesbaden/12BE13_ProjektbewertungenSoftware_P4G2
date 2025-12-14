@@ -39,7 +39,6 @@ public class Group {
     
 
     public Group() {
-
     }
 
     public Group(String groupName, Project project ) {
