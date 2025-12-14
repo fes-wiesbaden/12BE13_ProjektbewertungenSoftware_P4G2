@@ -8,11 +8,6 @@ import { MyGrades } from './my-grades/my-grades';
 export const StudentRoutes: Routes = [
   {
     path: 'dashboard',
-    component: StudentDashboard,
-  },
-  {
-    //noten
-    path: 'my-profile',
     component: MyGrades,
   },
   {

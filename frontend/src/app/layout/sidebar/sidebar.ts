@@ -72,9 +72,8 @@ export class Sidebar implements OnInit {
         },
       ],
       student: [
-        { icon: 'dashboard', label: 'Übersicht', route: '/student/dashboard' },
+        { icon: 'assignment_ind', label: 'Meine Noten', route: '/student/dashboard' },
         { icon: 'group', label: 'Meine Gruppe', route: '/student/my-classes' },
-        { icon: 'assignment_ind', label: 'Meine Noten', route: '/student/my-profile' },
         { icon: 'assignment', label: 'Selbst-/Fremdbewertung', route: '/student/my-assessment' },
       ],
     };
