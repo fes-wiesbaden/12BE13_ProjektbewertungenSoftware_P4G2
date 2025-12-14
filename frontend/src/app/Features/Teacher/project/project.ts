@@ -11,7 +11,7 @@ import {User} from '../../../Shared/models/user.interface';
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [MatIcon, CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [MatIcon, CommonModule, ReactiveFormsModule],
   templateUrl: './project.html',
   styleUrls: ['./project.css'],
 })

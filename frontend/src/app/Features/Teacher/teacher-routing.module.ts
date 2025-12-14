@@ -6,6 +6,7 @@ import { Projects } from './projects/projects';
 import { Project } from './project/project';
 import { Group } from './group/group';
 import { ManageLearningField } from './manage-learning-field/manage-learning-field';
+import {TeacherAssessmentResults} from './teacher-assessment-results/teacher-assessment-results';
 
 export const TeacherRoutes: Routes = [
   {
@@ -36,4 +37,12 @@ export const TeacherRoutes: Routes = [
     path: 'projects/:projectId',
     component: Project,
   },
+  {
+    path: 'assessment-results',
+    component: TeacherAssessmentResults,
+  },
+  {
+    path: 'assessment-results/:studentId',
+    component: TeacherAssessmentResults,
+  }
 ];
