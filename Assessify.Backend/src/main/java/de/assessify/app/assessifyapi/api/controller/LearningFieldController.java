@@ -58,8 +58,10 @@ public class LearningFieldController {
 
         User user = entityFinderService.findUser(userId);
 
-        var modules = user.getTrainingModules()
+        var modules = user.getSchoolClasses()
                 .stream()
+                .flatMap(schoolClass -> schoolClass.getTrainingModules().stream())
+                .distinct()
                 .map(module -> new TrainingModuleSummaryDto(
                         module.getId(),
                         module.getName(),

@@ -76,9 +76,8 @@ export class Sidebar implements OnInit {
     ],
 
     student: [
-      { icon: 'dashboard', label: this.i18n.t('sidebar.overview'), route: '/student/dashboard' },
+      { icon: 'assignment_ind', label: this.i18n.t('sidebar.overview'), route: '/student/my-profile' },
       { icon: 'group', label: this.i18n.t('sidebar.myGroup'), route: '/student/my-classes' },
-      { icon: 'assignment_ind', label: this.i18n.t('sidebar.myGrades'), route: '/student/my-profile' },
       { icon: 'assignment', label: this.i18n.t('sidebar.assessment'), route: '/student/my-assessment' },
     ],
   };
