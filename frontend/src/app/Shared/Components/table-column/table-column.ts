@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslationService } from '../../../core/services/translation.service';
+
 export interface TableColumn<T> {
   key: keyof T;
   label: string;
@@ -14,6 +16,8 @@ export interface TableColumn<T> {
   templateUrl: './table-column.html',
 })
 export class TableColumnComponent<T extends { id?: any } = any> {
+  constructor(public i18n: TranslationService) {}
+
   @Input() items: T[] = [];
   @Input() columns: TableColumn<T>[] = [];
 

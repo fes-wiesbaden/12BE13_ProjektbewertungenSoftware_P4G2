@@ -7,21 +7,21 @@ export interface FilterOption {
 }
 
 export const userColumns: TableColumn<User>[] = [
-  { key: 'firstName', label: 'Vorname' },
-  { key: 'lastName', label: 'Nachname' },
-  { key: 'username', label: 'Benutzername' },
-  { key: 'roleName', label: 'Rolle' },
+  { key: 'firstName', label: 'table.firstname' },
+  { key: 'lastName', label: 'table.lastname' },
+  { key: 'username', label: 'table.username' },
+  { key: 'roleName', label: 'table.role' },
 ];
 
 export const userCourseColumns: TableColumn<User>[] = [
-  { key: 'firstName', label: 'First Name' },
-  { key: 'lastName', label: 'Last Name' },
-  { key: 'username', label: 'Username' },
-  { key: 'courseName', label: 'Kursname' },
+  { key: 'firstName', label: 'table.firstname' },
+  { key: 'lastName', label: 'table.lastname' },
+  { key: 'username', label: 'table.username' },
+  { key: 'courseName', label: 'table.course' },
 ];
 
 export const filterOptionColumn: FilterOption[] = [
-  { key: 'firstName', label: 'Vorname' },
-  { key: 'lastName', label: 'Nachname' },
-  { key: 'username', label: 'Benutzername' },
+  { key: 'firstName', label: 'table.firstname' },
+  { key: 'lastName', label: 'table.lastname' },
+  { key: 'username', label: 'table.username' },
 ];

@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidebarService } from '../../core/services/sidebar.service';
 import { MenuItem } from '../../Shared/models/sidebar.interface';
+import { TranslationService } from '../../core/services/translation.service';
+
 
 @Component({
   selector: 'app-sidebar',
@@ -23,7 +25,7 @@ export class Sidebar implements OnInit {
 
   constructor(
     private auth: AuthService,
-    private sidebarService: SidebarService,
+    private sidebarService: SidebarService, public i18n: TranslationService
   ) {}
 
   ngOnInit() {
@@ -42,42 +44,45 @@ export class Sidebar implements OnInit {
   }
 
   getMenuForRole(role: string): MenuItem[] {
-    const menus: { [key: string]: MenuItem[] } = {
-      admin: [
-        { icon: 'dashboard', label: 'Übersicht', route: '/admin/dashboard' },
-        {
-          icon: 'group',
-          label: 'Nutzer',
-          route: '/admin/users',
-          subMenu: [
-            { icon: 'shield_person', label: 'Admin', route: '/admin/manage-admin' },
-            { icon: 'assignment_ind', label: 'Lehrer', route: '/admin/manage-teachers' },
-            { icon: 'person', label: 'Schüler', route: '/admin/manage-students' },
-          ],
-        },
-        { icon: 'groups', label: 'Klassen', route: '/admin/manage-classes' },
-        { icon: 'help_outlined', label: 'Fragen', route: '/admin/manage-questions' },
-        { icon: 'school', label: 'Lernfelder', route: '/admin/manage-learningfields' },
-      ],
-      teacher: [
-        { icon: 'groups', label: 'Meine Kurse', route: '/teacher/dashboard' },
-        {
-          icon: 'manage_accounts',
-          label: 'Verwaltung',
-          route: '',
-          subMenu: [
-            { icon: 'group', label: 'Projektgruppe', route: '/teacher/groups' },
-            { icon: 'assignment', label: 'Projekte', route: '/teacher/projects' },
-          ],
-        },
-      ],
-      student: [
-        { icon: 'dashboard', label: 'Übersicht', route: '/student/dashboard' },
-        { icon: 'group', label: 'Meine Gruppe', route: '/student/my-classes' },
-        { icon: 'assignment_ind', label: 'Meine Noten', route: '/student/my-profile' },
-        { icon: 'assignment', label: 'Selbst-/Fremdbewertung', route: '/student/my-assessment' },
-      ],
-    };
-    return menus[role] || [];
-  }
+  const menus: { [key: string]: MenuItem[] } = {
+    admin: [
+      { icon: 'dashboard', label: this.i18n.t('sidebar.overview'), route: '/admin/dashboard' },
+      {
+        icon: 'group',
+        label: this.i18n.t('sidebar.users'),
+        route: '/admin/users',
+        subMenu: [
+          { icon: 'shield_person', label: this.i18n.t('sidebar.admin'), route: '/admin/manage-admin' },
+          { icon: 'assignment_ind', label: this.i18n.t('sidebar.teacher'), route: '/admin/manage-teachers' },
+          { icon: 'person', label: this.i18n.t('sidebar.student'), route: '/admin/manage-students' },
+        ],
+      },
+      { icon: 'groups', label: this.i18n.t('sidebar.classes'), route: '/admin/manage-classes' },
+      { icon: 'help_outlined', label: this.i18n.t('sidebar.questions'), route: '/admin/manage-questions' },
+      { icon: 'school', label: this.i18n.t('sidebar.learningFields'), route: '/admin/manage-learningfields' },
+    ],
+
+    teacher: [
+      { icon: 'groups', label: this.i18n.t('sidebar.myCourses'), route: '/teacher/dashboard' },
+      {
+        icon: 'manage_accounts',
+        label: this.i18n.t('sidebar.management'),
+        route: '',
+        subMenu: [
+          { icon: 'group', label: this.i18n.t('sidebar.projectGroup'), route: '/teacher/groups' },
+          { icon: 'assignment', label: this.i18n.t('sidebar.projects'), route: '/teacher/projects' },
+        ],
+      },
+    ],
+
+    student: [
+      { icon: 'dashboard', label: this.i18n.t('sidebar.overview'), route: '/student/dashboard' },
+      { icon: 'group', label: this.i18n.t('sidebar.myGroup'), route: '/student/my-classes' },
+      { icon: 'assignment_ind', label: this.i18n.t('sidebar.myGrades'), route: '/student/my-profile' },
+      { icon: 'assignment', label: this.i18n.t('sidebar.assessment'), route: '/student/my-assessment' },
+    ],
+  };
+
+  return menus[role] || [];
+}
 }
