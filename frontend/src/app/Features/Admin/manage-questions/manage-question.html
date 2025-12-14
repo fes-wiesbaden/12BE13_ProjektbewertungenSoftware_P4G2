@@ -1,3 +1,4 @@
+<!-- Add Question Modal -->
 <app-form-modal
   [showModal]="showAddModel"
   [title]="i18n.t('question.create.title')"
@@ -7,6 +8,7 @@
 >
 </app-form-modal>
 
+<!-- Page Header with Project Filter -->
 <app-page-header
   [title]="i18n.t('question.manage.title')"
   [titleAdd]="i18n.t('question.add.button')"
@@ -21,6 +23,46 @@
   [showExportButton]="false"
 ></app-page-header>
 
+<!-- Project Filter Section -->
+<div class="bg-white shadow rounded-lg p-4 mb-4 dark:bg-gray-800">
+  <div class="flex items-center space-x-4">
+    <div class="flex items-center space-x-2">
+      <mat-icon class="text-purple-600 dark:text-purple-400">work</mat-icon>
+      <label for="projectFilter" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Nach Projekt filtern:
+      </label>
+    </div>
+    <select
+      id="projectFilter"
+      [(ngModel)]="selectedProjectId"
+      (change)="onProjectFilterChange(selectedProjectId)"
+      class="block px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    >
+      <option value="">Alle Projekte</option>
+      @for (project of projects; track project.id) {
+        <option [value]="project.id">
+          {{ project.title || project.id }}
+        </option>
+      }
+    </select>
+
+    @if (selectedProjectId) {
+      <button
+        (click)="onProjectFilterChange('')"
+        class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+      >
+        <mat-icon class="text-sm mr-1">clear</mat-icon>
+        Filter zurücksetzen
+      </button>
+    }
+
+    <div class="ml-auto text-sm text-gray-600 dark:text-gray-400">
+      {{ filteredQuestions.length }} von {{ questions.length }} Fragen
+    </div>
+  </div>
+</div>
+
+<!-- Questions Table -->
 <app-table-column
   [items]="filteredQuestions"
   [columns]="columns"
@@ -28,8 +70,67 @@
   [showDeleteButtons]="true"
   (delete)="openDeleteModal($event)"
   (edit)="openEditModal($event)"
-></app-table-column>
+>
+  <!-- Custom column template for projectId -->
+  <ng-template #customColumn let-item="item" let-column="column">
+    @if (column.key === 'projectId') {
+      <div class="flex items-center space-x-2">
+        <mat-icon class="text-purple-500 text-sm">work</mat-icon>
+        <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded text-xs font-medium">
+          {{ getProjectName(item.projectId) }}
+        </span>
+      </div>
+    }
+  </ng-template>
+</app-table-column>
 
+<!-- No Questions Message -->
+@if (filteredQuestions.length === 0 && !loading) {
+  <div class="bg-white shadow rounded-lg p-8 text-center dark:bg-gray-800">
+    <mat-icon class="text-6xl text-gray-400 dark:text-gray-600 mb-4">quiz</mat-icon>
+    @if (selectedProjectId) {
+      <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        Keine Fragen für dieses Projekt gefunden
+      </h3>
+      <p class="text-gray-500 dark:text-gray-400 mb-4">
+        Für das ausgewählte Projekt "{{ getProjectName(selectedProjectId) }}" sind keine Fragen vorhanden.
+      </p>
+      <button
+        (click)="openAddModel()"
+        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300"
+      >
+        <mat-icon class="mr-2">add</mat-icon>
+        Erste Frage hinzufügen
+      </button>
+    } @else {
+      <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        Keine Fragen vorhanden
+      </h3>
+      <p class="text-gray-500 dark:text-gray-400 mb-4">
+        Erstellen Sie Ihre erste Frage für ein Projekt.
+      </p>
+      <button
+        (click)="openAddModel()"
+        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300"
+      >
+        <mat-icon class="mr-2">add</mat-icon>
+        Frage hinzufügen
+      </button>
+    }
+  </div>
+}
+
+<!-- Loading State -->
+@if (loading) {
+  <div class="bg-white shadow rounded-lg p-8 text-center dark:bg-gray-800">
+    <div class="flex flex-col items-center justify-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mb-4"></div>
+      <span class="text-gray-600 dark:text-gray-300">Lade Fragen...</span>
+    </div>
+  </div>
+}
+
+<!-- Edit Question Modal -->
 <app-form-modal
   [showModal]="showEditModal"
   [title]="i18n.t('question.edit.title')"
@@ -40,14 +141,20 @@
 >
 </app-form-modal>
 
+<!-- Import Modal -->
 <app-import-modal
   [show]="showImportModal"
   (close)="showImportModal = false"
   (fileSelected)="onImportFile($event)"
 ></app-import-modal>
 
-<app-export-modal [show]="showExportModal" (close)="showExportModal = false"></app-export-modal>
+<!-- Export Modal -->
+<app-export-modal
+  [show]="showExportModal"
+  (close)="showExportModal = false"
+></app-export-modal>
 
+<!-- Delete Confirmation Modal -->
 <app-delete-button
   [showModal]="showDeleteModal"
   [title]="i18n.t('question.delete.confirm')"

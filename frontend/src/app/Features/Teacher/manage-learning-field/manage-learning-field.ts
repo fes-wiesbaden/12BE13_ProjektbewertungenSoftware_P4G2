@@ -40,7 +40,9 @@ export class ManageLearningField implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private manageLearningFieldService: ManageLearningFieldService,
-  ) {}
+  ) {
+    console.log(this.studentId);
+  }
 
   openAddModal(item: any) {
     this.loading = true;
@@ -109,6 +111,7 @@ export class ManageLearningField implements OnInit {
       return;
     }
     this.studentId = studentIdParam;
+    console.log(studentIdParam);  // log student id from param
     this.loadLearningFields();
   }
 

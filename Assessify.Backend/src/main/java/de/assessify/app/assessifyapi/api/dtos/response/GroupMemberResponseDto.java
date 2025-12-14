@@ -12,6 +12,7 @@ public record GroupMemberResponseDto(
     String memberFullName,
     Integer memberRoleId,
     UUID groupId,
+    UUID projectId,
     String groupName,
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

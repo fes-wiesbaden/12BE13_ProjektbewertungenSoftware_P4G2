@@ -1,32 +1,71 @@
 package de.assessify.app.assessifyapi.api.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
+@Table(name = "review_answers")
 @Data
-@Table(name = "review-answer")
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReviewAnswer {
+
     @Id
     @UuidGenerator
-    @Column(name = "review_answer_id", nullable = false, unique = true)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
     private Review review;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
+    @Column(name = "question_id", nullable = false)
+    private UUID questionId; // Foreign key to Review_Question
 
-    @Column(name = "rating", nullable = false)
-    private float rating;
+    public UUID getId() {
+        return id;
+    }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewed_user_id")
-    private User reviewedUser;
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
+    }
+
+    public UUID getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(UUID questionId) {
+        this.questionId = questionId;
+    }
+
+    public Integer getRate() {
+        return rate;
+    }
+
+    public void setRate(Integer rate) {
+        this.rate = rate;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    @Column(name = "rate", nullable = false, precision = 3, scale = 2)
+    private Integer rate; // Rating value (1-6)
+
+    @Column(name = "comment", columnDefinition = "TEXT")
+    private String comment;
 }

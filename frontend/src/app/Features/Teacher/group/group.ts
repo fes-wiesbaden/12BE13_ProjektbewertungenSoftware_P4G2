@@ -21,6 +21,7 @@ import {User} from '../../../Shared/models/user.interface';
 export class Group implements OnInit {
   groupId = input.required<string>();
   showAddStudentModal: boolean = false;
+  showEditModal: boolean = false;
   group = signal<IGroup | undefined>(undefined);
   students: StudentList[] = [];
   selectedStudents: Set<string> = new Set(); // Track selected student IDs
@@ -212,6 +213,14 @@ export class Group implements OnInit {
 
   openAddStudentModal(): void {
     this.showAddStudentModal = true;
+  }
+
+  openEditModal(): void {
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
   }
 
   closeAddStudentModal(): void {

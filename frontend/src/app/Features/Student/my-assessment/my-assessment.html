@@ -1,52 +1,398 @@
-<!-- Gruppe auswählen -->
-<div>
-  <label for="groupSelect" class="dark:text-white">Gruppe auswählen:</label>
-  <select id="groupSelect" [(ngModel)]="selectedGroupId" (change)="onGroupChange()" class="p-2 rounded border">
-    <option value="" disabled>-- Bitte wählen --</option>
-    <option *ngFor="let group of groups" [value]="group.groupId">{{ group.groupName }}</option>
-  </select>
-</div>
-
-<!-- Rating Card -->
-<div class="rating-card flex flex-col rounded-lg p-6 mb-4 dark:bg-gray-800" *ngIf="members.length > 0">
-  <div class="mb-4">
-    <h2 class="text-lg dark:text-white font-semibold">{{ questions[frage].questionText }}</h2>
-    <p class="text-sm dark:text-white">{{ i18n.t('rating.choose') }}</p>
+<div class="p-4">
+  <!-- Header -->
+  <div class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800">
+    <h1 class="font-bold text-3xl dark:text-white mb-2">Selbst- und Fremdbewertung</h1>
+    <p class="text-gray-600 dark:text-gray-400">Bewerten Sie sich selbst und Ihre Teammitglieder</p>
   </div>
 
-  <div>
-    <div *ngFor="let member of members; let i = index" class="mb-4">
-      <h3 class="font-medium dark:text-white">{{ member.fullName }}</h3>
-      <div class="rating flex space-x-2">
-        <button *ngFor="let val of [1,2,3,4,5,6]" (click)="setRating(member.memberNumberId, val)" type="button">
-          <mat-icon
-            [class.active1]="ratings[member.memberNumberId] === 1 && val === 1"
-            [class.active2]="ratings[member.memberNumberId] === 2 && val === 2"
-            [class.active3]="ratings[member.memberNumberId] === 3 && val === 3"
-            [class.active4]="ratings[member.memberNumberId] === 4 && val === 4"
-            [class.active5]="ratings[member.memberNumberId] === 5 && val === 5"
-            [class.active6]="ratings[member.memberNumberId] === 6 && val === 6"
-          >
-            filter_{{ val }}
-          </mat-icon>
-        </button>
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <div class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+        <span class="ml-3 text-gray-600 dark:text-gray-300">Lade Daten...</span>
       </div>
     </div>
-  </div>
+  }
 
-  <div class="mat-card-actions mt-4 flex space-x-2">
-    <button
-      class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg rounded-lg text-sm px-5 py-2.5 text-center"
-      (click)="deleteAll()"
-    >
-      {{ i18n.t('rating.reset') }}
-    </button>
+  <!-- Error Message -->
+  @if (errorMessage && !isLoading) {
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 my-4">
+      <div class="flex items-center space-x-3">
+        <mat-icon class="text-red-600 dark:text-red-400">error</mat-icon>
+        <div>
+          <h3 class="font-semibold text-red-800 dark:text-red-200">Fehler</h3>
+          <p class="text-sm text-red-700 dark:text-red-300">{{ errorMessage }}</p>
+        </div>
+      </div>
+    </div>
+  }
 
-    <button
-      class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg rounded-lg text-sm px-5 py-2.5 text-center"
-      (click)="submitRating()"
-    >
-      {{ i18n.t('rating.save') }}
-    </button>
-  </div>
+  <!-- Project Selection (Before Rating Started) -->
+  @if (!ratingStarted && !isLoading && !errorMessage) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <!-- No Projects Available -->
+      @if (projects.length === 0) {
+        <div class="flex flex-col items-center justify-center py-12">
+          <mat-icon class="text-6xl text-gray-400 dark:text-gray-600 mb-4">work_off</mat-icon>
+          <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Keine Projekte gefunden
+          </h2>
+          <p class="text-gray-500 dark:text-gray-400">
+            Sie sind derzeit keinem Projekt zugewiesen.
+          </p>
+        </div>
+      } @else {
+        <!-- Project Selection Dropdown -->
+        <div class="mb-6">
+          <label for="projectSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Wählen Sie ein Projekt aus:
+          </label>
+          <select
+            id="projectSelect"
+            [(ngModel)]="selectedProjectId"
+            (change)="onProjectSelect()"
+            class="block w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          >
+            <option value="">-- Bitte Projekt wählen --</option>
+            @for (project of projects; track project.id) {
+              <option [value]="project.id">
+                {{ project.title }}
+                @if (project.status) {
+                  - ({{ project.status }})
+                }
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- Selected Project Details -->
+        @if (selectedProjectId && getProject(selectedProjectId)) {
+          <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800 mb-6">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-purple-600 dark:text-purple-400">work</mat-icon>
+                  <h3 class="font-semibold text-purple-900 dark:text-purple-100">
+                    {{ getProject(selectedProjectId)?.title }}
+                  </h3>
+                </div>
+                @if (getProject(selectedProjectId)?.description) {
+                  <p class="text-sm text-purple-700 dark:text-purple-300 mb-3">
+                    {{ getProject(selectedProjectId)?.description }}
+                  </p>
+                }
+                <div class="flex items-center space-x-4 text-xs text-purple-600 dark:text-purple-400">
+                  <div class="flex items-center space-x-1">
+                    <mat-icon class="text-sm">event</mat-icon>
+                    <span>Start: {{ getProject(selectedProjectId)?.startDate | date:'dd.MM.yyyy' }}</span>
+                  </div>
+                  <div class="flex items-center space-x-1">
+                    <mat-icon class="text-sm">event_available</mat-icon>
+                    <span>Fällig: {{ getProject(selectedProjectId)?.dueDate | date:'dd.MM.yyyy' }}</span>
+                  </div>
+                </div>
+              </div>
+              @if (getProject(selectedProjectId)?.status) {
+                <span [ngClass]="getProjectStatusColor(getProject(selectedProjectId)?.status)"
+                      class="px-3 py-1 rounded-full text-xs font-medium">
+                  {{ getProject(selectedProjectId)?.status }}
+                </span>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Group and Members Info (Auto-selected) -->
+        @if (selectedProjectId && selectedGroup) {
+          <div class="flex flex-col items-center justify-center py-8">
+            <!-- Group Icon -->
+            <mat-icon class="text-6xl text-blue-600 dark:text-blue-400 mb-4">groups</mat-icon>
+
+            <!-- Group Info -->
+            <div class="text-center mb-6">
+              <h2 class="text-2xl font-bold dark:text-white mb-2">{{ selectedGroup.groupName }}</h2>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Ihre Gruppe für dieses Projekt</p>
+
+              @if (isLoadingMembers) {
+                <p class="text-gray-600 dark:text-gray-400 mt-4">Lade Mitglieder...</p>
+              } @else {
+                <p class="text-gray-600 dark:text-gray-400 mt-4">
+                  {{ members.length }} Mitglied{{ members.length !== 1 ? 'er' : '' }} in dieser Gruppe
+                </p>
+              }
+            </div>
+
+            <!-- Member Preview -->
+            @if (!isLoadingMembers && members.length > 0) {
+              <div class="w-full max-w-2xl mb-6">
+                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 text-center">
+                  Gruppenmitglieder
+                </h3>
+                <div class="flex flex-wrap justify-center gap-2">
+                  @for (member of members; track member.id) {
+                    <div class="flex items-center space-x-2 px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
+                      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
+                        {{ member.fullName?.charAt(0) || '?' }}
+                      </div>
+                      <span class="text-sm text-gray-700 dark:text-gray-300">{{ member.fullName }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Questions Info -->
+            @if (questions.length > 0) {
+              <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6 max-w-md">
+                <div class="flex items-center space-x-2 text-blue-700 dark:text-blue-300 mb-2">
+                  <mat-icon>quiz</mat-icon>
+                  <span class="text-sm font-medium">
+                    {{ questions.length }} Fragen für dieses Projekt
+                  </span>
+                </div>
+                <p class="text-xs text-blue-600 dark:text-blue-400 ml-8">
+                  Projektspezifische Bewertungsfragen
+                </p>
+              </div>
+            }
+
+            <!-- Already Evaluated Warning -->
+            @if (isAlreadyEvaluated()) {
+              <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6 max-w-md">
+                <div class="flex items-center space-x-2 text-yellow-700 dark:text-yellow-300">
+                  <mat-icon>warning</mat-icon>
+                  <span class="text-sm font-medium">
+                    Diese Gruppe wurde bereits bewertet
+                  </span>
+                </div>
+              </div>
+            }
+
+            <!-- Start Button -->
+            <button
+              (click)="startRating()"
+              [disabled]="members.length === 0 || questions.length === 0 || isAlreadyEvaluated() || isLoadingMembers"
+              class="inline-flex items-center px-6 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              <mat-icon class="mr-2">rate_review</mat-icon>
+              Bewertung Starten
+            </button>
+
+            @if (members.length === 0 && !isLoadingMembers) {
+              <p class="text-sm text-red-600 dark:text-red-400 mt-2">
+                Keine Mitglieder in dieser Gruppe gefunden
+              </p>
+            }
+            @if (questions.length === 0 && !isLoadingMembers) {
+              <p class="text-sm text-red-600 dark:text-red-400 mt-2">
+                Keine Fragen für dieses Projekt verfügbar
+              </p>
+            }
+          </div>
+        }
+      }
+    </div>
+  }
+
+  <!-- Rating Card (After Rating Started) -->
+  @if (ratingStarted && members.length > 0 && questions.length > 0) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <!-- Progress Indicator with Project Info -->
+      <div class="mb-6">
+        <!-- Project Context Bar -->
+        <div class="flex items-center justify-between mb-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+          <div class="flex items-center space-x-3">
+            <mat-icon class="text-purple-600 dark:text-purple-400">work</mat-icon>
+            <div>
+              <span class="text-sm font-medium text-purple-700 dark:text-purple-300 block">
+                {{ projectName }}
+              </span>
+              @if (getProject(projectId)?.status) {
+                <span [ngClass]="getProjectStatusColor(getProject(projectId)?.status)"
+                      class="px-2 py-0.5 rounded-full text-xs font-medium inline-block mt-1">
+                  {{ getProject(projectId)?.status }}
+                </span>
+              }
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <mat-icon class="text-blue-600 dark:text-blue-400">groups</mat-icon>
+            <span class="text-sm font-medium text-blue-700 dark:text-blue-300">
+              {{ selectedGroup?.groupName }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Frage {{ currentQuestionIndex + 1 }} von {{ questions.length }}
+          </span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">
+            {{ Math.round(((currentQuestionIndex + 1) / questions.length) * 100) }}%
+          </span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+          <div
+            class="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+            [style.width.%]="((currentQuestionIndex + 1) / questions.length) * 100"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Question -->
+      <div class="mb-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+        <div class="flex items-start space-x-3">
+          <mat-icon class="text-blue-600 dark:text-blue-400 mt-1">help_outline</mat-icon>
+          <div>
+            <h2 class="text-xl font-semibold dark:text-white mb-2">
+              {{ questions[currentQuestionIndex].questionText }}
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Bitte bewerten Sie jedes Mitglied auf einer Skala von 1 (schlecht) bis 6 (sehr gut)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rating for each member -->
+      <div class="space-y-4 mb-6">
+        @for (member of members; track member.id) {
+          <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 transition-all hover:shadow-md">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold">
+                  {{ member.fullName?.charAt(0) || '?' }}
+                </div>
+                <div>
+                  <h3 class="font-medium dark:text-white">{{ member.fullName }}</h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Mitglied bewerten</p>
+                </div>
+              </div>
+              @if (getRatingValue(member.id) > 0) {
+                <span class="px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full text-sm font-medium">
+                  Bewertet: {{ getRatingValue(member.id) }}
+                </span>
+              }
+            </div>
+
+            <!-- Rating Stars -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-1">
+                @for (val of [1, 2, 3, 4, 5, 6]; track val) {
+                  <button
+                    (click)="setRating(member.id, val)"
+                    type="button"
+                    class="transition-transform hover:scale-110 focus:outline-none p-1"
+                  >
+                    <mat-icon
+                      class="text-3xl"
+                      [ngClass]="getStarColor(member.id, val)"
+                    >
+                      filter_{{ val }}
+                    </mat-icon>
+                  </button>
+                }
+              </div>
+              <div class="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400">
+                <span>1</span>
+                <span class="mx-2">-</span>
+                <span>6</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Warning if not all rated -->
+      @if (!allMembersRated()) {
+        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-4">
+          <div class="flex items-center space-x-2 text-yellow-700 dark:text-yellow-300">
+            <mat-icon class="text-sm">warning</mat-icon>
+            <span class="text-sm">Bitte bewerten Sie alle Mitglieder, um fortzufahren</span>
+          </div>
+        </div>
+      }
+
+      <!-- Action Buttons -->
+      <div class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button
+          class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600"
+          (click)="deleteAll()"
+        >
+          <mat-icon class="mr-2">restart_alt</mat-icon>
+          Zurücksetzen
+        </button>
+
+        <div class="flex space-x-2">
+          @if (currentQuestionIndex > 0) {
+            <button
+              class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 rounded-lg hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700"
+              (click)="previousQuestion()"
+            >
+              <mat-icon class="mr-2">arrow_back</mat-icon>
+              Zurück
+            </button>
+          }
+
+          @if (currentQuestionIndex < questions.length - 1) {
+            <button
+              class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              (click)="nextQuestion()"
+              [disabled]="!allMembersRated()"
+            >
+              Weiter
+              <mat-icon class="ml-2">arrow_forward</mat-icon>
+            </button>
+          } @else {
+            <button
+              class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              (click)="submitRating()"
+              [disabled]="!allMembersRated()"
+            >
+              <mat-icon class="mr-2">check_circle</mat-icon>
+              Bewertung Absenden
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Success Message (After submission) -->
+  @if (isAlreadyEvaluated() && !ratingStarted && selectedGroup) {
+    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 my-4">
+      <div class="flex items-center space-x-3">
+        <mat-icon class="text-green-600 dark:text-green-400 text-3xl">check_circle</mat-icon>
+        <div class="flex-1">
+          <h3 class="font-semibold text-green-800 dark:text-green-200 mb-1">Bewertung abgeschlossen</h3>
+          <p class="text-sm text-green-700 dark:text-green-300 mb-2">
+            Sie haben diese Gruppe bereits bewertet. Vielen Dank für Ihre Teilnahme!
+          </p>
+          @if (projectId) {
+            <div class="flex items-center space-x-2 mt-2">
+              <mat-icon class="text-green-600 dark:text-green-400 text-sm">work</mat-icon>
+              <span class="text-xs font-medium text-green-600 dark:text-green-400">
+                Projekt: {{ projectName }}
+              </span>
+              @if (getProject(projectId)?.status) {
+                <span [ngClass]="getProjectStatusColor(getProject(projectId)?.status)"
+                      class="px-2 py-0.5 rounded-full text-xs font-medium">
+                  {{ getProject(projectId)?.status }}
+                </span>
+              }
+            </div>
+          }
+          <button
+            (click)="selectedProjectId = ''; selectedGroup = null; members = []; questions = []; errorMessage = ''"
+            class="mt-3 inline-flex items-center px-4 py-2 text-sm font-medium text-green-700 bg-green-100 rounded-lg hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800"
+          >
+            <mat-icon class="mr-2 text-sm">refresh</mat-icon>
+            Neue Bewertung starten
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>

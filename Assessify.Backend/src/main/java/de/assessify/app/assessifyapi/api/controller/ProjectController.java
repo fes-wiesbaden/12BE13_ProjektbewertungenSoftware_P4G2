@@ -181,7 +181,7 @@ public class ProjectController {
 //        return ResponseEntity.ok(response);
 //    }
 
-    @DeleteMapping("/project/{projectId}")
+    @DeleteMapping("/{projectId}/")
     public ResponseEntity<Void> deleteProject(
             @PathVariable UUID projectId) {
 

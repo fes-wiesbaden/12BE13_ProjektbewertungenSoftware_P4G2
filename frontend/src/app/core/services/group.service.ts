@@ -37,7 +37,16 @@ export class GroupService {
   }
 
   getGroupById(projectId: string): Observable<IGroup> {
-    return this.http.get<GroupWithMembersResponseDto>(`${this.groupMembersApi}/group/${projectId}/details`)
+    const token = this.authService.getToken();
+    console.log('Token:', token);
+    console.log('Group API URL:', this.groupApi);
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.get<GroupWithMembersResponseDto>(`${this.groupMembersApi}/group/${projectId}/details`, { headers: headers })
       .pipe(
         map(dto => this.mapper.dtoWithMembersToGroups(dto))
       );

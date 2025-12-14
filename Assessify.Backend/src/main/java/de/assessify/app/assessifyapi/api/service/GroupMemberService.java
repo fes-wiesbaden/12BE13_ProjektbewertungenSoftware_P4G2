@@ -166,6 +166,7 @@ public class GroupMemberService {
                 member.getFirstName() + " " + member.getLastName(),
                 member.getRoleId(),
                 group.getId(),
+                group.getProject().getId(),
                 group.getGroupName(),
                 groupMember.getJoinedDate()
         );
