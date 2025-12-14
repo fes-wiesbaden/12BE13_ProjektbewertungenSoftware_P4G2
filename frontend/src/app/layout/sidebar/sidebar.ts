@@ -71,6 +71,7 @@ export class Sidebar implements OnInit {
         subMenu: [
           { icon: 'group', label: this.i18n.t('sidebar.projectGroup'), route: '/teacher/groups' },
           { icon: 'assignment', label: this.i18n.t('sidebar.projects'), route: '/teacher/projects' },
+          { icon: 'cards_star', label: this.i18n.t('sidebar.assessmentResults'), route: '/teacher/assessment-results' },
         ],
       },
     ],

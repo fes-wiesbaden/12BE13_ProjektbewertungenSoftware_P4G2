@@ -1,0 +1,256 @@
+<div class="p-4">
+  <!-- ================= HEADER ================= -->
+  <div class="bg-white shadow rounded-lg p-4 my-4 sm:p-6 xl:p-8 dark:bg-gray-800">
+    <h1 class="font-bold text-3xl dark:text-white mb-2">Assessment Results – Teacher View</h1>
+    <p class="text-gray-600 dark:text-gray-400">Review student assessments and performance</p>
+  </div>
+
+  <!-- ================= LOADING ================= -->
+  @if (isLoading) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <div class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+        <span class="ml-3 text-gray-600 dark:text-gray-300">Loading data...</span>
+      </div>
+    </div>
+  }
+
+  <!-- ================= SELECTION ================= -->
+  @if (!isLoading) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Project -->
+        <div>
+          <label for="projectSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Project
+          </label>
+          <select
+            id="projectSelect"
+            [(ngModel)]="selectedProjectId"
+            (change)="onProjectChange()"
+            class="block w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          >
+            <option value="">-- Select Project --</option>
+            @for (p of projects; track p.id) {
+              <option [value]="p.id">{{ p.title }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Group -->
+        <div>
+          <label for="groupSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Group
+          </label>
+          <select
+            id="groupSelect"
+            [(ngModel)]="selectedGroupId"
+            (change)="onGroupChange()"
+            [disabled]="!groups.length"
+            class="block w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white disabled:opacity-50"
+          >
+            <option value="">-- Select Group --</option>
+            @for (g of groups; track g.id) {
+              <option [value]="g.id">{{ g.name }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Reviewer -->
+        <div>
+          <label for="reviewerSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Reviewer (Student)
+          </label>
+          <select
+            id="reviewerSelect"
+            [(ngModel)]="selectedReviewerId"
+            (change)="onReviewerChange()"
+            [disabled]="!reviewers.length"
+            class="block w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white disabled:opacity-50"
+          >
+            <option value="">-- Select Reviewer --</option>
+            @for (reviewer of reviewers; track reviewer.id) {
+              <option [value]="reviewer.id">{{ reviewer.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Members Info Card (Optional - shows loaded members) -->
+      @if (currentGroupMembers.length > 0) {
+        <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <div class="flex items-center space-x-2 text-sm text-blue-700 dark:text-blue-300">
+            <mat-icon class="text-lg">info</mat-icon>
+            <span>{{ currentGroupMembers.length }} member(s) loaded</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ================= TABLE ================= -->
+  @if (!isLoading && selectedReview && selectedReview.length > 0) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800 overflow-x-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold dark:text-white">Assessment Matrix</h3>
+
+        <!-- Reviewer Info Badge -->
+        @if (selectedReviewerId) {
+          <div class="flex items-center space-x-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+              {{ getReviewerName().charAt(0).toUpperCase() }}
+            </div>
+            <div>
+              <p class="text-xs text-gray-600 dark:text-gray-400">Reviewer:</p>
+              <p class="text-sm font-semibold dark:text-white">
+                {{ getReviewerName() }}
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <!-- ===== HEADER ROW ===== -->
+        <thead class="bg-gray-50 dark:bg-gray-700">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
+            Question
+          </th>
+          @for (member of reviewees; track member.id) {
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-xs">
+                  {{ member.name.charAt(0).toUpperCase() }}
+                </div>
+                <span class="max-w-[150px] truncate" [title]="member.name">
+                    {{ member.name }}
+                  </span>
+              </div>
+            </th>
+          }
+        </tr>
+        </thead>
+
+        <!-- ===== QUESTION ROWS ===== -->
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          @for (q of questions; track q.id) {
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+              <!-- Question -->
+              <td class="px-6 py-4 text-left font-medium sticky left-0 bg-white dark:bg-gray-800 z-10">
+                <div class="flex items-start space-x-2">
+                  <mat-icon class="text-blue-600 dark:text-blue-400 text-sm mt-0.5">help_outline</mat-icon>
+                  <span class="text-sm dark:text-white max-w-md">{{ q.questionText }}</span>
+                </div>
+              </td>
+
+              <!-- Ratings -->
+              @for (member of reviewees; track member.id) {
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  @if (getRating(q.id, member.id) !== null) {
+                    <div
+                      [ngClass]="getRatingBgColor(getRating(q.id, member.id))"
+                      class="inline-flex items-center justify-center px-3 py-2 rounded-full min-w-[3rem]"
+                    >
+                      <span
+                        [ngClass]="getRatingTextColor(getRating(q.id, member.id))"
+                        class="text-sm font-bold"
+                      >
+                        {{ getRating(q.id, member.id) }}
+                      </span>
+                    </div>
+                  } @else {
+                    <span class="text-gray-400 text-sm">–</span>
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Table Summary -->
+      <div class="mt-4 flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+        <span>{{ questions.length }} question(s) × {{ reviewees.length }} member(s)</span>
+        <span>Total ratings: {{ questions.length * reviewees.length }}</span>
+      </div>
+    </div>
+  }
+
+  <!-- ================= EMPTY STATE - NO ASSESSMENT ================= -->
+  @if (!isLoading && selectedReviewerId && (!selectedReview || selectedReview.length === 0)) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <div class="flex flex-col items-center justify-center py-12">
+        <mat-icon class="text-6xl text-gray-400 dark:text-gray-600 mb-4">assessment</mat-icon>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          No Assessment Found
+        </h3>
+        <p class="text-gray-500 dark:text-gray-400">
+          No assessment found for {{ getReviewerName() }}.
+        </p>
+      </div>
+    </div>
+  }
+
+  <!-- ================= EMPTY STATE - NO REVIEWER SELECTED ================= -->
+  @if (!isLoading && !selectedReviewerId && selectedGroupId && reviewers.length > 0) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <div class="flex flex-col items-center justify-center py-12">
+        <mat-icon class="text-6xl text-gray-400 dark:text-gray-600 mb-4">person_search</mat-icon>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Select a Reviewer
+        </h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-4">
+          Please select a reviewer to view their assessments.
+        </p>
+        <p class="text-sm text-gray-400">{{ reviewers.length }} reviewer(s) available</p>
+      </div>
+    </div>
+  }
+
+  <!-- ================= EMPTY STATE - NO REVIEWERS ================= -->
+  @if (!isLoading && selectedGroupId && reviewers.length === 0 && currentGroupMembers.length > 0) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <div class="flex flex-col items-center justify-center py-12">
+        <mat-icon class="text-6xl text-yellow-400 dark:text-yellow-600 mb-4">warning</mat-icon>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          No Reviews Submitted
+        </h3>
+        <p class="text-gray-500 dark:text-gray-400">
+          No assessments have been submitted for this group yet.
+        </p>
+        <p class="text-sm text-gray-400 mt-2">{{ currentGroupMembers.length }} member(s) in group</p>
+      </div>
+    </div>
+  }
+
+  <!-- ================= EMPTY STATE - NO PROJECT SELECTED ================= -->
+  @if (!isLoading && !selectedProjectId) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <div class="flex flex-col items-center justify-center py-12">
+        <mat-icon class="text-6xl text-gray-400 dark:text-gray-600 mb-4">folder_open</mat-icon>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Select a Project
+        </h3>
+        <p class="text-gray-500 dark:text-gray-400">
+          Please select a project to view assessments.
+        </p>
+      </div>
+    </div>
+  }
+
+  <!-- ================= EMPTY STATE - NO GROUPS ================= -->
+  @if (!isLoading && selectedProjectId && groups.length === 0) {
+    <div class="bg-white shadow rounded-lg p-6 my-4 dark:bg-gray-800">
+      <div class="flex flex-col items-center justify-center py-12">
+        <mat-icon class="text-6xl text-gray-400 dark:text-gray-600 mb-4">group_off</mat-icon>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          No Groups Found
+        </h3>
+        <p class="text-gray-500 dark:text-gray-400">
+          No groups found for this project.
+        </p>
+      </div>
+    </div>
+  }
+</div>

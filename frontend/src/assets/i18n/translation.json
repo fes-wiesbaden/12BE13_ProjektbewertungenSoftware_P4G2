@@ -96,6 +96,7 @@
   "sidebar.management": { "de": "Verwaltung", "en": "Management" },
   "sidebar.projectGroup": { "de": "Projektgruppe", "en": "Project group" },
   "sidebar.projects": { "de": "Projekte", "en": "Projects" },
+  "sidebar.assessmentResults": { "de": "Bewertung Ergebnisse", "en": "Assessment Results" },
 
   "sidebar.myGroup": { "de": "Meine Gruppe", "en": "My group" },
   "sidebar.myGrades": { "de": "Meine Noten", "en": "My grades" },
