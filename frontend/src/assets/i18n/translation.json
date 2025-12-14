@@ -80,6 +80,37 @@
   },
   "requests.error": {
     "de": "Senectus malesuada suspendisse bibendum elit amet vitae.",
-    "en": "Senectus malesuada suspendisse bibendum elit amet vitae."}
+    "en": "Senectus malesuada suspendisse bibendum elit amet vitae."},
 
-  }
+
+  "sidebar.overview": { "de": "Übersicht", "en": "Overview" },
+  "sidebar.users": { "de": "Nutzer", "en": "Users" },
+  "sidebar.admin": { "de": "Admin", "en": "Admin" },
+  "sidebar.teacher": { "de": "Lehrer", "en": "Teachers" },
+  "sidebar.student": { "de": "Schüler", "en": "Students" },
+  "sidebar.classes": { "de": "Klassen", "en": "Classes" },
+  "sidebar.questions": { "de": "Fragen", "en": "Questions" },
+  "sidebar.learningFields": { "de": "Lernfelder", "en": "Learning fields" },
+
+  "sidebar.myCourses": { "de": "Meine Kurse", "en": "My courses" },
+  "sidebar.management": { "de": "Verwaltung", "en": "Management" },
+  "sidebar.projectGroup": { "de": "Projektgruppe", "en": "Project group" },
+  "sidebar.projects": { "de": "Projekte", "en": "Projects" },
+
+  "sidebar.myGroup": { "de": "Meine Gruppe", "en": "My group" },
+  "sidebar.myGrades": { "de": "Meine Noten", "en": "My grades" },
+  "sidebar.assessment": { "de": "Selbst-/Fremdbewertung", "en": "Self/peer assessment" },
+
+  "table.firstname": { "de": "Vorname", "en": "First name" },
+  "table.lastname": { "de": "Nachname", "en": "Last name" },
+  "table.username": { "de": "Benutzername", "en": "Username" },
+  "table.role": { "de": "Rolle", "en": "Role" },
+  "table.course": { "de": "Kursname", "en": "Course name" },
+
+  "table.actions": { "de": "Aktionen", "en": "Actions" },
+  "table.edit": { "de": "Bearbeiten", "en": "Edit" },
+  "table.delete": { "de": "Löschen", "en": "Delete" },
+  "table.view": { "de": "Anzeigen", "en": "View" },
+  "table.resetPassword": { "de": "Passwort zurücksetzen", "en": "Reset password" }
+}
+
