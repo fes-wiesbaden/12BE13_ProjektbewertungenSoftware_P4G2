@@ -10,6 +10,7 @@ import { LearningFieldService } from '../../../Shared/Services/learning-field.se
 import { AuthService } from '../../../core/auth/auth.service';
 import { GradeViewerModalComponent } from '../../../Shared/Components/grade-viewer/grade-viewer';
 import { TranslationService } from '../../../core/services/translation.service';
+import { ManageLearningFieldService } from '../../Teacher/manage-learning-field/manage-learning-field.service';
 
 @Component({
   selector: 'app-my-grades',
@@ -26,14 +27,16 @@ export class MyGrades {
 
   columns: TableColumn<LearningField>[] = [
     { key: 'name', label: 'Lernfeldname' },
-    { key: 'weightingHours', label: 'Gewichtung' },
+    { key: 'weightingHours', label: 'Gewichtung in Stunden' },
+    { key: 'averageGrade', label: 'Durchschnittsnote' },
   ];
   showViewer: boolean = false;
 
   constructor(
     private learningFieldService: LearningFieldService,
     private authService: AuthService,
-    public i18n: TranslationService
+    public i18n: TranslationService,
+    private manageLearningFieldService: ManageLearningFieldService,
   ) {}
 
   ngOnInit(): void {
@@ -52,6 +55,23 @@ export class MyGrades {
       next: (data) => {
         this.learningFields = data;
         this.loading = false;
+        this.learningFields.forEach((lf) => {
+          this.manageLearningFieldService
+            .getAverageGrade(this.userId, lf.id)
+            .subscribe({
+              next: (avg) => {
+                lf.averageGrade = avg.averageGrade;
+                lf.weightSum = avg.weightSum;
+                lf.gradeCount = avg.gradeCount;
+              },
+              error: (err) => {
+                console.error(
+                  `Fehler beim Laden der Durchschnittsnote für Lernfeld ${lf.id}`,
+                  err,
+                );
+              },
+            });
+        });
       },
       error: (err) => {
         console.error('Fehler beim Laden der Lernfelder', err);
@@ -59,6 +79,7 @@ export class MyGrades {
       },
     });
   }
+
   showGrade(learningFieldId: string) {
     this.learningFieldService.getGradeByUserId(this.userId, learningFieldId).subscribe({
       next: (data) => {
