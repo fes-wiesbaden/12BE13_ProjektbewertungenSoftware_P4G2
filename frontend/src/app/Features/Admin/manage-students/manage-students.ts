@@ -116,12 +116,26 @@ export class ManageStudents implements OnInit {
   saveEdit(formData: any) {
     if (!this.editingStudent) return;
 
+      let courseIds: any[] = [];
+
+      if (Array.isArray(formData.courseId)) {
+        courseIds = formData.courseId.map((c: any) =>
+          typeof c === 'object' && 'value' in c ? c.value : c
+        );
+      } else if (formData.courseId) {
+        if (typeof formData.courseId === 'object' && 'value' in formData.courseId) {
+          courseIds = [formData.courseId.value];
+        } else {
+          courseIds = [formData.courseId];
+        }
+      }
+
     const updatedStudent: UpdateUser = {
       id: this.editingStudent.id,
       firstName: formData.firstName,
       lastName: formData.lastName,
       username: formData.username,
-      courseId: formData.courseId ? [formData.courseId] : [],
+      courseId: courseIds,
     };
 
     this.userService.updateUser(updatedStudent).subscribe({
