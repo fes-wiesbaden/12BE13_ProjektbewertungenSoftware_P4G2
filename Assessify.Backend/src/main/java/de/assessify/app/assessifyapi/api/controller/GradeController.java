@@ -10,8 +10,10 @@ import de.assessify.app.assessifyapi.api.repository.GradeRepository;
 import de.assessify.app.assessifyapi.api.entity.Grade;
 import de.assessify.app.assessifyapi.api.entity.TrainingModule;
 import de.assessify.app.assessifyapi.api.entity.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -38,13 +40,25 @@ public class GradeController {
             @PathVariable UUID trainingModulesId) {
 
         User user = entityFinderService.findUser(userId);
-        TrainingModule trainingModule = entityFinderService.findTrainingModule(trainingModulesId);
+        TrainingModule trainingModule =
+                entityFinderService.findTrainingModule(trainingModulesId);
 
-        if (!user.getTrainingModules().contains(trainingModule)) {
-            throw new RuntimeException("User is not enrolled in this Training Module");
+        // ✅ Zugriff prüfen: User -> Klassen -> TrainingModules
+        boolean hasAccess = user.getSchoolClasses()
+                .stream()
+                .flatMap(sc -> sc.getTrainingModules().stream())
+                .anyMatch(tm -> tm.getId().equals(trainingModulesId));
+
+        if (!hasAccess) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "User has no access to this training module"
+            );
         }
-        
-        List<GradeDto> dtos = trainingModule.getGrades().stream()
+
+        // ✅ Nur Noten dieses Users für dieses Lernfeld
+        List<GradeDto> dtos = trainingModule.getGrades()
+                .stream()
                 .filter(grade -> grade.getUser().getId().equals(userId))
                 .map(g -> new GradeDto(
                         g.getId(),
@@ -93,10 +107,20 @@ public class GradeController {
             @RequestBody AddGradeDto dto){
 
         User user = entityFinderService.findUser(userId);
-        TrainingModule trainingModule = entityFinderService.findTrainingModule(trainingModulesId);
+        TrainingModule trainingModule =
+                entityFinderService.findTrainingModule(trainingModulesId);
 
-        if (!user.getTrainingModules().contains(trainingModule)) {
-            throw new RuntimeException("User is not enrolled in this Training Module");
+        // ✅ Zugriff prüfen über_attach Klassen
+        boolean hasAccess = user.getSchoolClasses()
+                .stream()
+                .flatMap(sc -> sc.getTrainingModules().stream())
+                .anyMatch(tm -> tm.getId().equals(trainingModulesId));
+
+        if (!hasAccess) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "User has no access to this training module"
+            );
         }
 
         Grade grade = new Grade();
@@ -127,11 +151,9 @@ public class GradeController {
             @PathVariable UUID gradeId,
             @RequestBody UpdateGradeDto dto) {
 
-        entityFinderService.findUser(userId);
-        entityFinderService.findTrainingModule(trainingModulesId);
-        Grade grade = entityFinderService.findGrade(gradeId);
-
         entityFinderService.validateUserTrainingModuleAndGrade(userId, trainingModulesId, gradeId);
+
+        Grade grade = entityFinderService.findGrade(gradeId);
 
         if (dto.value() != null) grade.setValue(dto.value());
         if (dto.gradeName() != null) grade.setGradeName(dto.gradeName());
@@ -140,15 +162,13 @@ public class GradeController {
 
         Grade updated = gradeRepository.save(grade);
 
-        GradeDto response = new GradeDto(
+        return ResponseEntity.ok(new GradeDto(
                 updated.getId(),
                 updated.getGradeName(),
                 updated.getValue(),
                 updated.getGradeWeighting(),
                 updated.getDate()
-        );
-
-        return ResponseEntity.ok(response);
+        ));
     }
 
     @DeleteMapping("/user/{userId}/training-modules/{trainingModulesId}/grade/{gradeId}")

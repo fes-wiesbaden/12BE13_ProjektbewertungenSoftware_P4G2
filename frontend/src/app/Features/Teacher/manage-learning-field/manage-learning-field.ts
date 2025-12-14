@@ -33,7 +33,7 @@ export class ManageLearningField implements OnInit {
   }
   columns: TableColumn<LearningField>[] = [
     { key: 'name', label: 'Lernfeldname' },
-    { key: 'weightingHours', label: 'Gewichtung' },
+    { key: 'weightingHours', label: 'Gewichtung in Stunden' },
     { key: 'averageGrade', label: 'Durchschnittsnote' },
   ];
 
@@ -46,7 +46,7 @@ export class ManageLearningField implements OnInit {
     this.loading = true;
     this.manageLearningFieldService.getGrades(item.id, this.studentId).subscribe({
       next: (data) => {
-        this.grades = data;
+        this.grades = data;  
         this.loading = false;
         this.currentLearningFieldId = item.id;
         this.isAddModalVisible = true;

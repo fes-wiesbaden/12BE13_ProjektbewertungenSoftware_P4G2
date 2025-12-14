@@ -59,6 +59,7 @@ export class MyGrades {
       },
     });
   }
+  
   showGrade(learningFieldId: string) {
     this.learningFieldService.getGradeByUserId(this.userId, learningFieldId).subscribe({
       next: (data) => {

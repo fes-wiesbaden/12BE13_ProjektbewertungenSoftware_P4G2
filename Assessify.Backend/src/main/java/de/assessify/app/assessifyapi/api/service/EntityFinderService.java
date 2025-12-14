@@ -2,7 +2,9 @@ package de.assessify.app.assessifyapi.api.service;
 
 import de.assessify.app.assessifyapi.api.entity.*;
 import de.assessify.app.assessifyapi.api.repository.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -76,15 +78,21 @@ public class EntityFinderService {
     }
     public void validateUserTrainingModuleAndGrade(UUID userId, UUID trainingModuleId, UUID gradeId) {
         User user = findUser(userId);
-        TrainingModule trainingModule = findTrainingModule(trainingModuleId);
+        TrainingModule module = findTrainingModule(trainingModuleId);
         Grade grade = findGrade(gradeId);
 
-        if (!grade.getTrainingModules().equals(trainingModule)) {
-            throw new InvalidRelationException("Grade does not belong to this Training Module");
+        // Prüfen: Grade gehört zu User & Module
+        if (!grade.getUser().getId().equals(userId) || !grade.getTrainingModules().getId().equals(trainingModuleId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Grade does not belong to user or module");
         }
 
-        if (!user.getTrainingModules().contains(trainingModule)) {
-            throw new InvalidRelationException("User is not enrolled in this Training Module");
+        // Prüfen: User hat über Klasse Zugriff auf das TrainingModule
+        boolean hasAccess = user.getSchoolClasses().stream()
+                .flatMap(sc -> sc.getTrainingModules().stream())
+                .anyMatch(tm -> tm.getId().equals(trainingModuleId));
+
+        if (!hasAccess) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User has no access to this training module");
         }
     }
 }
